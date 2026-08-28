@@ -310,54 +310,63 @@ nav ul.nav-links li a.admin-btn:hover {
   color: #fff;
 }
 
-/* --- Professional Mobile Navbar Fix (Laptop untouched) --- */
+/* --- Professional Top Mobile App Bar --- */
 @media (max-width: 768px) {
-  /* Navbar ko mobile par flex column aur clean spacing dena */
+  /* Navbar container ko top par fix aur clean rakhein */
   nav, .navbar {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    padding: 12px 15px;
     background: #ffffff;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-  }
-
-  /* Logo / Brand name ko thoda sa set karna */
-  .logo, nav a:first-child {
-    font-size: 18px;
-    font-weight: bold;
-  }
-
-  /* Links ko mobile par ek clean horizontal scroll ya compact row banana taake Home, Services sab nazar aayein */
-  .nav-links, nav ul, .navbar div {
-    display: flex;
-    gap: 12px;
-    overflow-x: auto;
-    white-space: nowrap;
+    padding: 10px 10px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
     width: 100%;
-    padding-top: 8px;
-    scrollbar-width: none; /* Firefox ke liye scrollbar chupana */
   }
 
-  /* Scrollbar hide for Chrome/Safari */
-  .nav-links::-webkit-scrollbar, nav ul::-webkit-scrollbar {
+  /* Logo / Brand name upar center ya left mein achi look de */
+  .logo, nav a:first-child {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 6px;
+    color: #1e293b;
+  }
+
+  /* Links ki row ko horizontal scrollable banayein taake koi option chup na ho */
+  .nav-links, nav ul {
+    display: flex;
+    gap: 8px;
+    overflow-x: auto;
+    width: 100%;
+    padding-bottom: 4px;
+    justify-content: flex-start;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  /* Chrome/Safari ka scrollbar chupane ke liye */
+  .nav-links::-webkit-scrollbar {
     display: none;
   }
 
-  /* Har link ka size mobile ke liye perfect karna */
-  .nav-links a, nav a, .navbar a {
-    font-size: 13px;
-    padding: 6px 10px;
-    background: #f1f5f9;
-    border-radius: 6px;
-    color: #333;
+  /* Har link ko modern pill button jaisa banayein */
+  .nav-links a, nav a {
+    font-size: 12px;
+    padding: 5px 12px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 20px;
+    color: #475569;
     text-decoration: none;
+    white-space: nowrap;
+    font-weight: 500;
   }
 
-  /* Active ya touch karne par color change */
+  /* Touch ya active hone par professional blue shade */
   .nav-links a:hover, .nav-links a:active {
     background: #0066ff;
-    color: #fff;
+    color: #ffffff;
+    border-color: #0066ff;
   }
 }

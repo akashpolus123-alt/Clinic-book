@@ -310,42 +310,54 @@ nav ul.nav-links li a.admin-btn:hover {
   color: #fff;
 }
 
-/* --- Professional Mobile Navbar & Layout Fix --- */
+/* --- Professional Mobile Navbar Fix (Laptop untouched) --- */
 @media (max-width: 768px) {
-  /* Navbar container ko compact karein */
+  /* Navbar ko mobile par flex column aur clean spacing dena */
   nav, .navbar {
     display: flex;
-    justify-content: space-around;
+    flex-wrap: wrap;
+    justify-content: space-between;
     align-items: center;
+    padding: 12px 15px;
     background: #ffffff;
-    padding: 8px 5px;
-    box-shadow: 0 -2px 10px rgba(0,0,0,0.05);
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    z-index: 1000;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
   }
 
-  /* Saare links ko barabar jagah dein taake Home bhi nazar aaye */
-  nav a, .navbar a, nav ul li a {
-    font-size: 11px;
-    padding: 4px 6px;
-    text-align: center;
+  /* Logo / Brand name ko thoda sa set karna */
+  .logo, nav a:first-child {
+    font-size: 18px;
+    font-weight: bold;
+  }
+
+  /* Links ko mobile par ek clean horizontal scroll ya compact row banana taake Home, Services sab nazar aayein */
+  .nav-links, nav ul, .navbar div {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    white-space: nowrap;
+    width: 100%;
+    padding-top: 8px;
+    scrollbar-width: none; /* Firefox ke liye scrollbar chupana */
+  }
+
+  /* Scrollbar hide for Chrome/Safari */
+  .nav-links::-webkit-scrollbar, nav ul::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Har link ka size mobile ke liye perfect karna */
+  .nav-links a, nav a, .navbar a {
+    font-size: 13px;
+    padding: 6px 10px;
+    background: #f1f5f9;
+    border-radius: 6px;
     color: #333;
     text-decoration: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
   }
 
-  /* Active ya hover state */
-  nav a:hover {
-    color: #0066ff;
-  }
-
-  /* Neeche fixed navbar ki wajah se content chup na ho, isliye body mein space dein */
-  body {
-    padding-bottom: 60px;
+  /* Active ya touch karne par color change */
+  .nav-links a:hover, .nav-links a:active {
+    background: #0066ff;
+    color: #fff;
   }
 }

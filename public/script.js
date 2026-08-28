@@ -214,3 +214,24 @@ loadClinics();
 loadBookingPage();
 handleAppointmentForm();
 setMinimumDate();
+
+document.addEventListener("DOMContentLoaded", () => {
+  const searchInput = document.getElementById("clinicSearch");
+  
+  if (searchInput) {
+    searchInput.addEventListener("input", (e) => {
+      const searchTerm = e.target.value.toLowerCase();
+      // Aapke clinic cards ka jo bhi class name ho (jaise .clinic-card)
+      const clinicCards = document.querySelectorAll(".clinic-card, .card"); 
+
+      clinicCards.forEach(card => {
+        const text = card.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          card.style.display = "block"; // Match ho toh dikhao
+        } else {
+          card.style.display = "none";  // Match na ho toh chhupao
+        }
+      });
+    });
+  }
+});

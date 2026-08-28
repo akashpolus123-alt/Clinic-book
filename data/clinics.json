@@ -1,0 +1,20 @@
+[
+  {
+    "id": "clinic-1",
+    "name": "City Care Clinic",
+    "address": "Rawalpindi",
+    "phone": "0300-1111111"
+  },
+  {
+    "id": "clinic-2",
+    "name": "Health Plus Clinic",
+    "address": "Islamabad",
+    "phone": "0300-2222222"
+  },
+  {
+    "id": "clinic-3",
+    "name": "Family Medical Center",
+    "address": "Rawalpindi",
+    "phone": "0300-3333333"
+  }
+]

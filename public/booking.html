@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Book Appointment - ClinicBook</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+  <header>
+    <div class="logo">🏥 ClinicBook</div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="booking.html">Book Appointment</a>
+      <a href="admin.html">Admin</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <section class="booking-section">
+
+      <div class="booking-card">
+
+        <h1>Book an Appointment</h1>
+        <p id="selectedClinicName">Loading clinic...</p>
+
+        <form id="appointmentForm">
+
+          <input type="hidden" id="clinicId">
+
+          <div class="form-group">
+            <label>Select Doctor *</label>
+            <select id="doctorId" required>
+              <option value="">Loading doctors...</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Patient Name *</label>
+            <input
+              type="text"
+              id="name"
+              placeholder="Enter your full name"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input
+              type="tel"
+              id="phone"
+              placeholder="03XXXXXXXXX"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Age</label>
+            <input
+              type="number"
+              id="age"
+              placeholder="Enter your age"
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Select Date *</label>
+            <input
+              type="date"
+              id="date"
+              required
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Select Time *</label>
+            <select id="time" required>
+              <option value="">Select Time</option>
+              <option value="09:00 AM">09:00 AM</option>
+              <option value="10:00 AM">10:00 AM</option>
+              <option value="11:00 AM">11:00 AM</option>
+              <option value="12:00 PM">12:00 PM</option>
+              <option value="01:00 PM">01:00 PM</option>
+              <option value="02:00 PM">02:00 PM</option>
+              <option value="03:00 PM">03:00 PM</option>
+              <option value="04:00 PM">04:00 PM</option>
+              <option value="05:00 PM">05:00 PM</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Problem / Note</label>
+
+            <textarea
+              id="problem"
+              rows="4"
+              placeholder="Write your problem (optional)"
+            ></textarea>
+          </div>
+
+          <button type="submit" class="submit-btn">
+            Book Appointment
+          </button>
+
+        </form>
+
+        <div id="bookingMessage"></div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <footer>
+    <p>© 2026 ClinicBook. All rights reserved.</p>
+  </footer>
+
+  <script src="script.js"></script>
+
+</body>
+</html>

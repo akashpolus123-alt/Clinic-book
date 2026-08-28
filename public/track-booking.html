@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Appointment - ClinicBook</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <div class="logo"><a href="index.html">🏥 ClinicBook</a></div>
+    <nav>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="track-booking.html" class="active">My Appointments</a></li>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="admin.html" class="admin-btn">Admin Panel</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main style="padding: 40px 20px; max-width: 600px; margin: auto;">
+    <h2>Track Your Appointment</h2>
+    <p>Enter your Booking ID to check your appointment status.</p>
+    
+    <div style="margin-top: 20px;">
+      <input type="text" id="searchBookingId" placeholder="e.g., APT-172485..." style="padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 4px;">
+      <button onclick="trackAppointment()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
+    </div>
+
+    <div id="trackingResult" style="margin-top: 20px;"></div>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 ClinicBook. All rights reserved.</p>
+  </footer>
+
+  <script>
+    async function trackAppointment() {
+      const id = document.getElementById("searchBookingId").value.trim();
+      const resultDiv = document.getElementById("trackingResult");
+      
+      if (!id) {
+        resultDiv.innerHTML = "<p style='color: red;'>Please enter a valid Booking ID.</p>";
+        return;
+      }
+
+      try {
+        const response = await fetch("/api/appointments");
+        const appointments = await response.json();
+        const found = appointments.find(item => item.id === id);
+
+        if (found) {
+          resultDiv.innerHTML = `
+            <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 10px;">
+              <p><strong>Booking ID:</strong> ${found.id}</p>
+              <p><strong>Patient Name:</strong> ${found.name}</p>
+              <p><strong>Date & Time:</strong> ${found.date} at ${found.time}</p>
+              <p><strong>Status:</strong> <span style="color: ${found.status === 'Pending' ? 'orange' : 'green'}; font-weight: bold;">${found.status}</span></p>
+            </div>
+          `;
+        } else {
+          resultDiv.innerHTML = "<p style='color: red;'>No appointment found with this ID.</p>";
+        }
+      } catch (err) {
+        resultDiv.innerHTML = "<p style='color: red;'>Error fetching data. Try again later.</p>";
+      }
+    }
+  </script>
+</body>
+</html>

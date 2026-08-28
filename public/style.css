@@ -309,3 +309,18 @@ nav ul.nav-links li a.admin-btn:hover {
   background-color: #0056b3;
   color: #fff;
 }
+/* Mobile Navbar Fix */
+@media (max-width: 768px) {
+  /* Navbar ko column ya scrollable bananey ke liye */
+  nav, .navbar, header nav {
+    flex-wrap: wrap;
+    justify-content: space-between;
+    padding: 10px;
+  }
+  
+  /* Links ko chota ya compact karne ke liye */
+  nav a, .nav-links a {
+    font-size: 14px;
+    padding: 5px 8px;
+  }
+}

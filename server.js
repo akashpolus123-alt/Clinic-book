@@ -150,7 +150,6 @@ app.get("/api/booked-slots", (req, res) => {
   res.json(bookedSlots);
 });
 
-const fs = require('fs');
 const path = require('path');
 
 app.post("/api/appointments", (req, res) => {

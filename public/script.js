@@ -207,7 +207,7 @@ function setMinimumDate() {
 
 
 // =============================
-// RUN FUNCTIONS
+// RUN INITIAL FUNCTIONS
 // =============================
 
 loadClinics();
@@ -215,30 +215,46 @@ loadBookingPage();
 handleAppointmentForm();
 setMinimumDate();
 
+
+// =============================
+// SEARCH CLINICS LOGIC
+// =============================
+
 document.addEventListener("DOMContentLoaded", () => {
   const searchInput = document.getElementById("clinicSearch");
   
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const searchTerm = e.target.value.toLowerCase();
-      // Aapke clinic cards ka jo bhi class name ho (jaise .clinic-card)
       const clinicCards = document.querySelectorAll(".clinic-card, .card"); 
 
       clinicCards.forEach(card => {
         const text = card.textContent.toLowerCase();
         if (text.includes(searchTerm)) {
-          card.style.display = "block"; // Match ho toh dikhao
+          card.style.display = "block";
         } else {
-          card.style.display = "none";  // Match na ho toh chhupao
+          card.style.display = "none";
         }
       });
     });
   }
+
+  const doctorSelect = document.getElementById("doctorId");
+  const dateInput = document.getElementById("date");
+
+  if (doctorSelect) {
+    doctorSelect.addEventListener("change", loadAvailableSlots);
+  }
+  if (dateInput) {
+    dateInput.addEventListener("change", loadAvailableSlots);
+  }
 });
+
 
 // =============================
 // DYNAMIC COLOR-CODED SLOTS LOGIC
 // =============================
+
 const STANDARD_SLOTS = [
   "09:00 AM", "10:00 AM", "11:00 AM", 
   "12:00 PM", "01:00 PM", "02:00 PM", 
@@ -303,16 +319,3 @@ function selectSlot(element, slotTime) {
 
   document.getElementById("time").value = slotTime;
 }
-
-document.addEventListener("DOMContentLoaded", () => {
-  const doctorSelect = document.getElementById("doctorId");
-  const dateInput = document.getElementById("date");
-
-  if (doctorSelect) {
-    doctorSelect.addEventListener("change", loadAvailableSlots);
-  }
-  if (dateInput) {
-    dateInput.addEventListener("change", loadAvailableSlots);
-  }
-});
-loadClinics();

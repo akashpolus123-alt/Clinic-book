@@ -277,7 +277,7 @@ async function loadAvailableSlots() {
   selectedSlotElement = null;
 
   if (!doctorId || !date) {
-    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
+    slotContainer.innerHTML = `<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>`;
     return;
   }
 
@@ -303,7 +303,7 @@ async function loadAvailableSlots() {
 
   } catch (error) {
     console.error("Error loading slots:", error);
-    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
+    slotContainer.innerHTML = `<p style="color: red; font-size: 13px;">Failed to load slots.</p>`;
   }
 }
 

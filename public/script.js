@@ -321,3 +321,45 @@ function selectSlot(element, slotTime) {
 
   document.getElementById("time").value = slotTime;
 }
+
+const bookingForm = document.getElementById("bookingForm");
+
+if (bookingForm) {
+  bookingForm.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const clinicId = document.getElementById("clinicId")?.value;
+    const doctorId = document.getElementById("doctorId")?.value;
+    const patientName = document.getElementById("patientName")?.value;
+    const phone = document.getElementById("phone")?.value;
+    const age = document.getElementById("age")?.value;
+    const date = document.getElementById("date")?.value;
+    const time = document.getElementById("time")?.value;
+    const problem = document.getElementById("problem")?.value;
+
+    if (!time) {
+      alert("Please select a time slot first!");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/appointments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ clinicId, doctorId, patientName, phone, age, date, time, problem })
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        alert("Appointment booked successfully!");
+        window.location.href = "index.html";
+      } else {
+        alert(result.error || "Failed to book appointment.");
+      }
+    } catch (error) {
+      console.error("Booking error:", error);
+      alert("Something went wrong. Please try again.");
+    }
+  });
+}

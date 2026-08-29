@@ -150,6 +150,35 @@ app.get("/api/booked-slots", (req, res) => {
   res.json(bookedSlots);
 });
 
+const fs = require('fs');
+const path = require('path');
+
+app.post("/api/appointments", (req, res) => {
+  try {
+    const newAppointment = req.body;
+    const dataDir = path.join(__dirname, "data");
+    const dataPath = path.join(dataDir, "appointments.json");
+
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir);
+    }
+
+    let appointments = [];
+    if (fs.existsSync(dataPath)) {
+      const fileData = fs.readFileSync(dataPath, "utf8");
+      appointments = JSON.parse(fileData);
+    }
+
+    appointments.push({ id: Date.now(), ...newAppointment });
+    fs.writeFileSync(dataPath, JSON.stringify(appointments, null, 2));
+
+    res.json({ success: true, message: "Appointment saved successfully!" });
+  } catch (error) {
+    console.error("Error saving appointment:", error);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Clinic Booking App running on http://localhost:${PORT}`);

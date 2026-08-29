@@ -19,9 +19,11 @@ async function loadClinics() {
       clinicCard.className = "clinic-card";
 
       clinicCard.innerHTML = `
+        <div style="font-size: 30px; margin-bottom: 8px;">${clinic.logo || '🏥'}</div>
         <h3>${clinic.name}</h3>
         <p>📍 ${clinic.address}</p>
         <p>📞 ${clinic.phone}</p>
+        <p>🕒 ${clinic.timing || 'Timings not available'}</p>
 
         <a href="booking.html?clinic=${clinic.id}" class="book-btn">
           Book Appointment

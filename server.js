@@ -46,41 +46,57 @@ app.get("/api/doctors/:clinicId", (req, res) => {
   res.json(clinicDoctors);
 });
 
-// Create appointment
+// Create appointment (Safely handles directory and file creation)
 app.post("/api/appointments", (req, res) => {
-  const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
+  try {
+    const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
 
-  if (!clinicId || !doctorId || !name || !phone || !date || !time) {
-    return res.status(400).json({
-      success: false,
-      message: "Please fill all required fields"
+    if (!clinicId || !doctorId || !name || !phone || !date || !time) {
+      return res.status(400).json({
+        success: false,
+        message: "Please fill all required fields"
+      });
+    }
+
+    const dataDir = path.join(__dirname, "data");
+    const dataPath = path.join(dataDir, "appointments.json");
+
+    if (!fs.existsSync(dataDir)) {
+      fs.mkdirSync(dataDir);
+    }
+
+    let appointments = [];
+    if (fs.existsSync(dataPath)) {
+      const fileData = fs.readFileSync(dataPath, "utf8");
+      appointments = JSON.parse(fileData);
+    }
+
+    const newAppointment = {
+      id: "APT-" + Date.now(),
+      clinicId,
+      doctorId,
+      name,
+      phone,
+      age,
+      date,
+      time,
+      problem,
+      status: "Pending",
+      createdAt: new Date().toISOString()
+    };
+
+    appointments.push(newAppointment);
+    fs.writeFileSync(dataPath, JSON.stringify(appointments, null, 2));
+
+    res.json({
+      success: true,
+      message: "Appointment booked successfully",
+      appointment: newAppointment
     });
+  } catch (error) {
+    console.error("Error saving appointment:", error);
+    res.status(500).json({ success: false, error: "Internal Server Error" });
   }
-
-  const appointments = readJSON(appointmentsFile);
-
-  const newAppointment = {
-    id: "APT-" + Date.now(),
-    clinicId,
-    doctorId,
-    name,
-    phone,
-    age,
-    date,
-    time,
-    problem,
-    status: "Pending",
-    createdAt: new Date().toISOString()
-  };
-
-  appointments.push(newAppointment);
-  writeJSON(appointmentsFile, appointments);
-
-  res.json({
-    success: true,
-    message: "Appointment booked successfully",
-    appointment: newAppointment
-  });
 });
 
 // Get all appointments
@@ -132,7 +148,7 @@ app.delete("/api/appointments/:id", (req, res) => {
   });
 });
 
-// Get booked slots for a specific doctor on a specific date (Yahan add karein)
+// Get booked slots for a specific doctor on a specific date
 app.get("/api/booked-slots", (req, res) => {
   const { clinicId, doctorId, date } = req.query;
   const appointments = readJSON(appointmentsFile);
@@ -148,32 +164,6 @@ app.get("/api/booked-slots", (req, res) => {
     .map(item => item.time);
 
   res.json(bookedSlots);
-});
-
-app.post("/api/appointments", (req, res) => {
-  try {
-    const newAppointment = req.body;
-    const dataDir = path.join(__dirname, "data");
-    const dataPath = path.join(dataDir, "appointments.json");
-
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir);
-    }
-
-    let appointments = [];
-    if (fs.existsSync(dataPath)) {
-      const fileData = fs.readFileSync(dataPath, "utf8");
-      appointments = JSON.parse(fileData);
-    }
-
-    appointments.push({ id: Date.now(), ...newAppointment });
-    fs.writeFileSync(dataPath, JSON.stringify(appointments, null, 2));
-
-    res.json({ success: true, message: "Appointment saved successfully!" });
-  } catch (error) {
-    console.error("Error saving appointment:", error);
-    res.status(500).json({ error: "Internal Server Error" });
-  }
 });
 
 // Start server

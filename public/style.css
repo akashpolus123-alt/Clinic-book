@@ -370,3 +370,40 @@ nav ul.nav-links li a.admin-btn:hover {
     border-color: #0066ff;
   }
 }
+
+.slot-container {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 5px;
+}
+.slot {
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  border: 1px solid #ccc;
+  transition: 0.2s;
+}
+.slot.available {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+  border-color: #a5d6a7;
+}
+.slot.available:hover {
+  background-color: #c8e6c9;
+}
+.slot.selected {
+  background-color: #4caf50;
+  color: white;
+  border-color: #388e3c;
+}
+.slot.booked {
+  background-color: #ffebee;
+  color: #c62828;
+  border-color: #ef9a9a;
+  cursor: not-allowed;
+  text-decoration: line-through;
+}

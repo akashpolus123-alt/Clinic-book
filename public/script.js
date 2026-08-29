@@ -235,3 +235,83 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+// =============================
+// DYNAMIC COLOR-CODED SLOTS LOGIC
+// =============================
+const STANDARD_SLOTS = [
+  "09:00 AM", "10:00 AM", "11:00 AM", 
+  "12:00 PM", "01:00 PM", "02:00 PM", 
+  "03:00 PM", "04:00 PM", "05:00 PM"
+];
+
+let selectedSlotElement = null;
+
+async function loadAvailableSlots() {
+  const clinicId = document.getElementById("clinicId")?.value;
+  const doctorId = document.getElementById("doctorId")?.value;
+  const date = document.getElementById("date")?.value;
+  const slotContainer = document.getElementById("slotContainer");
+  const timeInput = document.getElementById("time");
+
+  if (!slotContainer) return;
+
+  slotContainer.innerHTML = "";
+  if (timeInput) timeInput.value = "";
+  selectedSlotElement = null;
+
+  if (!doctorId || !date) {
+    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
+    return;
+  }
+
+  try {
+    const response = await fetch(/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date});
+    const bookedSlots = await response.json();
+
+    STANDARD_SLOTS.forEach(slotTime => {
+      const slotDiv = document.createElement("div");
+      slotDiv.className = "slot";
+      slotDiv.textContent = slotTime;
+
+      if (bookedSlots.includes(slotTime)) {
+        slotDiv.classList.add("booked");
+        slotDiv.textContent += " (Booked)";
+      } else {
+        slotDiv.classList.add("available");
+        slotDiv.onclick = () => selectSlot(slotDiv, slotTime);
+      }
+
+      slotContainer.appendChild(slotDiv);
+    });
+
+  } catch (error) {
+    console.error("Error loading slots:", error);
+    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
+  }
+}
+
+function selectSlot(element, slotTime) {
+  if (selectedSlotElement) {
+    selectedSlotElement.classList.remove("selected");
+    selectedSlotElement.classList.add("available");
+  }
+
+  element.classList.remove("available");
+  element.classList.add("selected");
+  selectedSlotElement = element;
+
+  document.getElementById("time").value = slotTime;
+}
+
+document.addEventListener("DOMContentLoaded", () => {
+  const doctorSelect = document.getElementById("doctorId");
+  const dateInput = document.getElementById("date");
+
+  if (doctorSelect) {
+    doctorSelect.addEventListener("change", loadAvailableSlots);
+  }
+  if (dateInput) {
+    dateInput.addEventListener("change", loadAvailableSlots);
+  }
+});

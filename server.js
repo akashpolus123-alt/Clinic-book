@@ -132,6 +132,24 @@ app.delete("/api/appointments/:id", (req, res) => {
   });
 });
 
+// Get booked slots for a specific doctor on a specific date (Yahan add karein)
+app.get("/api/booked-slots", (req, res) => {
+  const { clinicId, doctorId, date } = req.query;
+  const appointments = readJSON(appointmentsFile);
+
+  const bookedSlots = appointments
+    .filter(
+      item =>
+        item.clinicId === clinicId &&
+        item.doctorId === doctorId &&
+        item.date === date &&
+        item.status !== "Cancelled"
+    )
+    .map(item => item.time);
+
+  res.json(bookedSlots);
+});
+
 // Start server
 app.listen(PORT, () => {
   console.log(`Clinic Booking App running on http://localhost:${PORT}`);

@@ -315,3 +315,4 @@ document.addEventListener("DOMContentLoaded", () => {
     dateInput.addEventListener("change", loadAvailableSlots);
   }
 });
+loadClinics();

@@ -1,20 +1,26 @@
 [
   {
-    "id": "clinic-1",
+    "id": "city-care",
     "name": "City Care Clinic",
     "address": "Rawalpindi",
-    "phone": "0300-1111111"
+    "phone": "0300-1111111",
+    "logo": "🏥",
+    "timing": "09:00 AM - 05:00 PM"
   },
   {
-    "id": "clinic-2",
+    "id": "health-plus",
     "name": "Health Plus Clinic",
     "address": "Islamabad",
-    "phone": "0300-2222222"
+    "phone": "0300-2222222",
+    "logo": "🩺",
+    "timing": "10:00 AM - 08:00 PM"
   },
   {
-    "id": "clinic-3",
+    "id": "family-medical",
     "name": "Family Medical Center",
     "address": "Rawalpindi",
-    "phone": "0300-3333333"
+    "phone": "0300-3333333",
+    "logo": "👨‍⚕️",
+    "timing": "09:00 AM - 09:00 PM"
   }
 ]

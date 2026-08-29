@@ -1,37 +1,23 @@
 [
   {
-    "id": "doctor-1",
-    "clinicId": "clinic-1",
+    "id": "doc-1",
+    "clinicId": "city-care",
     "name": "Dr. Ahmed Khan",
     "specialization": "General Physician",
-    "timing": "10:00 AM - 4:00 PM"
+    "timing": "09:00 AM - 02:00 PM"
   },
   {
-    "id": "doctor-2",
-    "clinicId": "clinic-1",
-    "name": "Dr. Sara Ali",
+    "id": "doc-2",
+    "clinicId": "health-plus",
+    "name": "Dr. Sana Ali",
     "specialization": "Gynecologist",
-    "timing": "2:00 PM - 8:00 PM"
+    "timing": "03:00 PM - 08:00 PM"
   },
   {
-    "id": "doctor-3",
-    "clinicId": "clinic-2",
+    "id": "doc-3",
+    "clinicId": "family-medical",
     "name": "Dr. Usman Malik",
     "specialization": "Cardiologist",
-    "timing": "11:00 AM - 5:00 PM"
-  },
-  {
-    "id": "doctor-4",
-    "clinicId": "clinic-2",
-    "name": "Dr. Ayesha Noor",
-    "specialization": "Pediatrician",
-    "timing": "4:00 PM - 9:00 PM"
-  },
-  {
-    "id": "doctor-5",
-    "clinicId": "clinic-3",
-    "name": "Dr. Bilal Hussain",
-    "specialization": "General Physician",
-    "timing": "9:00 AM - 3:00 PM"
+    "timing": "10:00 AM - 05:00 PM"
   }
 ]

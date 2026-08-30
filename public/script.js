@@ -1,10 +1,5 @@
-// =============================
-// HOME PAGE - LOAD CLINICS
-// =============================
-
 async function loadClinics() {
   const container = document.getElementById("clinicsContainer");
-
   if (!container) return;
 
   try {
@@ -15,7 +10,6 @@ async function loadClinics() {
 
     clinics.forEach((clinic) => {
       const clinicCard = document.createElement("div");
-
       clinicCard.className = "clinic-card";
 
       clinicCard.innerHTML = `
@@ -35,25 +29,15 @@ async function loadClinics() {
 
   } catch (error) {
     console.error("Error loading clinics:", error);
-
-    container.innerHTML = `
-      <p>Unable to load clinics. Please try again.</p>
-    `;
+    container.innerHTML = `<p>Unable to load clinics. Please try again.</p>`;
   }
 }
 
-
-// =============================
-// BOOKING PAGE - LOAD CLINIC
-// =============================
-
 async function loadBookingPage() {
   const form = document.getElementById("appointmentForm") || document.getElementById("bookingForm");
-
   if (!form) return;
 
   const params = new URLSearchParams(window.location.search);
-
   const clinicId = params.get("clinic");
 
   const clinicIdInput = document.getElementById("clinicId");
@@ -62,80 +46,53 @@ async function loadBookingPage() {
 
   if (!clinicId) {
     if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic first.";
-
     if (doctorSelect) {
-      doctorSelect.innerHTML = `
-        <option value="">Select a clinic first</option>
-      `;
+      doctorSelect.innerHTML = `<option value="">Select a clinic first</option>`;
     }
-
     return;
   }
 
   if (clinicIdInput) clinicIdInput.value = clinicId;
 
   try {
-    // Load clinic information
     const clinicResponse = await fetch("/api/clinics");
     const clinics = await clinicResponse.json();
-
-    const selectedClinic = clinics.find(
-      (clinic) => clinic.id === clinicId
-    );
+    const selectedClinic = clinics.find((clinic) => clinic.id === clinicId);
 
     if (selectedClinic && clinicNameElement) {
-      clinicNameElement.textContent =
-        "Booking at: " + selectedClinic.name;
+      clinicNameElement.textContent = "Booking at: " + selectedClinic.name;
     }
 
-    // Load doctors for selected clinic
-    const doctorResponse = await fetch(
-      `/api/doctors/${clinicId}`
-    );
-
+    const doctorResponse = await fetch(`/api/doctors/${clinicId}`);
     const doctors = await doctorResponse.json();
 
     if (doctorSelect) {
       doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
-
       doctors.forEach((doctor) => {
         const option = document.createElement("option");
-
         option.value = doctor.id;
-
-        option.textContent =
-          `${doctor.name} - ${doctor.specialization}`;
-
+        option.textContent = `${doctor.name} - ${doctor.specialization}`;
         doctorSelect.appendChild(option);
       });
     }
-
   } catch (error) {
     console.error("Error loading booking page:", error);
-
     if (clinicNameElement) {
-      clinicNameElement.textContent =
-        "Unable to load clinic information.";
+      clinicNameElement.textContent = "Unable to load clinic information.";
     }
   }
 }
 
-
-// =============================
-// BOOK APPOINTMENT (Unified Handler)
-// =============================
-
 function handleAppointmentForm() {
   const form = document.getElementById("appointmentForm") || document.getElementById("bookingForm");
-
   if (!form) return;
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     const bookingMessage = document.getElementById("bookingMessage");
-
     const time = document.getElementById("time")?.value;
+    
     if (!time) {
       if (bookingMessage) {
         bookingMessage.textContent = "Please select a time slot first!";
@@ -146,7 +103,6 @@ function handleAppointmentForm() {
       return;
     }
 
-    // Support both 'name' and 'patientName' input IDs across different HTML layouts
     const nameInput = document.getElementById("name") || document.getElementById("patientName");
 
     const appointmentData = {
@@ -168,9 +124,7 @@ function handleAppointmentForm() {
 
       const response = await fetch("/api/appointments", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(appointmentData)
       });
 
@@ -178,16 +132,13 @@ function handleAppointmentForm() {
 
       if (response.ok && result.success) {
         if (bookingMessage) {
-          bookingMessage.textContent =
-            `Appointment booked successfully! Your Booking ID is: ${result.appointment.id}`;
+          bookingMessage.textContent = `Appointment booked successfully! Your Booking ID is: ${result.appointment.id}`;
           bookingMessage.className = "success-message";
         } else {
           alert("Appointment booked successfully!");
         }
 
         form.reset();
-
-        // Keep clinic selected after reset
         const clinicIdField = document.getElementById("clinicId");
         if (clinicIdField) {
           clinicIdField.value = appointmentData.clinicId;
@@ -206,10 +157,8 @@ function handleAppointmentForm() {
           alert(errorMsg);
         }
       }
-
     } catch (error) {
       console.error("Booking error:", error);
-
       if (bookingMessage) {
         bookingMessage.textContent = "Something went wrong. Please try again.";
         bookingMessage.className = "error-message";
@@ -220,32 +169,18 @@ function handleAppointmentForm() {
   });
 }
 
-
-// =============================
-// SET MINIMUM DATE AS TODAY
-// =============================
-
 function setMinimumDate() {
   const dateInput = document.getElementById("date");
-
   if (!dateInput) return;
 
   const today = new Date();
-
   const formattedDate =
-    today.getFullYear() +
-    "-" +
-    String(today.getMonth() + 1).padStart(2, "0") +
-    "-" +
+    today.getFullYear() + "-" +
+    String(today.getMonth() + 1).padStart(2, "0") + "-" +
     String(today.getDate()).padStart(2, "0");
 
   dateInput.min = formattedDate;
 }
-
-
-// =============================
-// RUN INITIAL FUNCTIONS
-// =============================
 
 document.addEventListener("DOMContentLoaded", () => {
   loadClinics();
@@ -254,19 +189,14 @@ document.addEventListener("DOMContentLoaded", () => {
   setMinimumDate();
 
   const searchInput = document.getElementById("clinicSearch");
-  
   if (searchInput) {
     searchInput.addEventListener("input", (e) => {
       const searchTerm = e.target.value.toLowerCase();
-      const clinicCards = document.querySelectorAll(".clinic-card, .card"); 
+      const clinicCards = document.querySelectorAll(".clinic-card, .card");
 
       clinicCards.forEach(card => {
         const text = card.textContent.toLowerCase();
-        if (text.includes(searchTerm)) {
-          card.style.display = "block";
-        } else {
-          card.style.display = "none";
-        }
+        card.style.display = text.includes(searchTerm) ? "block" : "none";
       });
     });
   }
@@ -274,22 +204,13 @@ document.addEventListener("DOMContentLoaded", () => {
   const doctorSelect = document.getElementById("doctorId");
   const dateInput = document.getElementById("date");
 
-  if (doctorSelect) {
-    doctorSelect.addEventListener("change", loadAvailableSlots);
-  }
-  if (dateInput) {
-    dateInput.addEventListener("change", loadAvailableSlots);
-  }
+  if (doctorSelect) doctorSelect.addEventListener("change", loadAvailableSlots);
+  if (dateInput) dateInput.addEventListener("change", loadAvailableSlots);
 });
 
-
-// =============================
-// DYNAMIC COLOR-CODED SLOTS LOGIC
-// =============================
-
 const STANDARD_SLOTS = [
-  "09:00 AM", "10:00 AM", "11:00 AM", 
-  "12:00 PM", "01:00 PM", "02:00 PM", 
+  "09:00 AM", "10:00 AM", "11:00 AM",
+  "12:00 PM", "01:00 PM", "02:00 PM",
   "03:00 PM", "04:00 PM", "05:00 PM"
 ];
 
@@ -309,7 +230,7 @@ async function loadAvailableSlots() {
   selectedSlotElement = null;
 
   if (!doctorId || !date) {
-    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
+    slotContainer.innerHTML = `<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>`;
     return;
   }
 
@@ -335,7 +256,7 @@ async function loadAvailableSlots() {
 
   } catch (error) {
     console.error("Error loading slots:", error);
-    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
+    slotContainer.innerHTML = `<p style="color: red; font-size: 13px;">Failed to load slots.</p>`;
   }
 }
 

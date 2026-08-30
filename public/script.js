@@ -48,7 +48,7 @@ async function loadClinics() {
 // =============================
 
 async function loadBookingPage() {
-  const form = document.getElementById("appointmentForm");
+  const form = document.getElementById("appointmentForm") || document.getElementById("bookingForm");
 
   if (!form) return;
 
@@ -61,16 +61,18 @@ async function loadBookingPage() {
   const doctorSelect = document.getElementById("doctorId");
 
   if (!clinicId) {
-    clinicNameElement.textContent = "Please select a clinic first.";
+    if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic first.";
 
-    doctorSelect.innerHTML = `
-      <option value="">Select a clinic first</option>
-    `;
+    if (doctorSelect) {
+      doctorSelect.innerHTML = `
+        <option value="">Select a clinic first</option>
+      `;
+    }
 
     return;
   }
 
-  clinicIdInput.value = clinicId;
+  if (clinicIdInput) clinicIdInput.value = clinicId;
 
   try {
     // Load clinic information
@@ -81,7 +83,7 @@ async function loadBookingPage() {
       (clinic) => clinic.id === clinicId
     );
 
-    if (selectedClinic) {
+    if (selectedClinic && clinicNameElement) {
       clinicNameElement.textContent =
         "Booking at: " + selectedClinic.name;
     }
@@ -93,57 +95,76 @@ async function loadBookingPage() {
 
     const doctors = await doctorResponse.json();
 
-    doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
+    if (doctorSelect) {
+      doctorSelect.innerHTML = '<option value="">Select Doctor</option>';
 
-    doctors.forEach((doctor) => {
-      const option = document.createElement("option");
+      doctors.forEach((doctor) => {
+        const option = document.createElement("option");
 
-      option.value = doctor.id;
+        option.value = doctor.id;
 
-      option.textContent =
-        `${doctor.name} - ${doctor.specialization}`;
+        option.textContent =
+          `${doctor.name} - ${doctor.specialization}`;
 
-      doctorSelect.appendChild(option);
-    });
+        doctorSelect.appendChild(option);
+      });
+    }
 
   } catch (error) {
     console.error("Error loading booking page:", error);
 
-    clinicNameElement.textContent =
-      "Unable to load clinic information.";
+    if (clinicNameElement) {
+      clinicNameElement.textContent =
+        "Unable to load clinic information.";
+    }
   }
 }
 
 
 // =============================
-// BOOK APPOINTMENT
+// BOOK APPOINTMENT (Unified Handler)
 // =============================
 
-async function handleAppointmentForm() {
-  const form = document.getElementById("appointmentForm");
+function handleAppointmentForm() {
+  const form = document.getElementById("appointmentForm") || document.getElementById("bookingForm");
 
   if (!form) return;
 
   form.addEventListener("submit", async (event) => {
     event.preventDefault();
 
-    const bookingMessage =
-      document.getElementById("bookingMessage");
+    const bookingMessage = document.getElementById("bookingMessage");
+
+    const time = document.getElementById("time")?.value;
+    if (!time) {
+      if (bookingMessage) {
+        bookingMessage.textContent = "Please select a time slot first!";
+        bookingMessage.className = "error-message";
+      } else {
+        alert("Please select a time slot first!");
+      }
+      return;
+    }
+
+    // Support both 'name' and 'patientName' input IDs across different HTML layouts
+    const nameInput = document.getElementById("name") || document.getElementById("patientName");
 
     const appointmentData = {
-      clinicId: document.getElementById("clinicId").value,
-      doctorId: document.getElementById("doctorId").value,
-      name: document.getElementById("name").value.trim(),
-      phone: document.getElementById("phone").value.trim(),
-      age: document.getElementById("age").value,
-      date: document.getElementById("date").value,
-      time: document.getElementById("time").value,
-      problem: document.getElementById("problem").value.trim()
+      clinicId: document.getElementById("clinicId")?.value,
+      doctorId: document.getElementById("doctorId")?.value,
+      name: nameInput ? nameInput.value.trim() : "",
+      phone: document.getElementById("phone")?.value.trim(),
+      age: document.getElementById("age")?.value,
+      date: document.getElementById("date")?.value,
+      time: time,
+      problem: document.getElementById("problem")?.value.trim()
     };
 
     try {
-      bookingMessage.textContent = "Booking appointment...";
-      bookingMessage.className = "";
+      if (bookingMessage) {
+        bookingMessage.textContent = "Booking appointment...";
+        bookingMessage.className = "";
+      }
 
       const response = await fetch("/api/appointments", {
         method: "POST",
@@ -155,32 +176,46 @@ async function handleAppointmentForm() {
 
       const result = await response.json();
 
-      if (result.success) {
-        bookingMessage.textContent =
-          `Appointment booked successfully! Your Booking ID is: ${result.appointment.id}`;
-
-        bookingMessage.className = "success-message";
+      if (response.ok && result.success) {
+        if (bookingMessage) {
+          bookingMessage.textContent =
+            `Appointment booked successfully! Your Booking ID is: ${result.appointment.id}`;
+          bookingMessage.className = "success-message";
+        } else {
+          alert("Appointment booked successfully!");
+        }
 
         form.reset();
 
         // Keep clinic selected after reset
-        document.getElementById("clinicId").value =
-          appointmentData.clinicId;
+        const clinicIdField = document.getElementById("clinicId");
+        if (clinicIdField) {
+          clinicIdField.value = appointmentData.clinicId;
+        }
+
+        setTimeout(() => {
+          window.location.href = "index.html";
+        }, 2000);
 
       } else {
-        bookingMessage.textContent =
-          result.message || "Booking failed.";
-
-        bookingMessage.className = "error-message";
+        const errorMsg = result.message || result.error || "Booking failed.";
+        if (bookingMessage) {
+          bookingMessage.textContent = errorMsg;
+          bookingMessage.className = "error-message";
+        } else {
+          alert(errorMsg);
+        }
       }
 
     } catch (error) {
       console.error("Booking error:", error);
 
-      bookingMessage.textContent =
-        "Something went wrong. Please try again.";
-
-      bookingMessage.className = "error-message";
+      if (bookingMessage) {
+        bookingMessage.textContent = "Something went wrong. Please try again.";
+        bookingMessage.className = "error-message";
+      } else {
+        alert("Something went wrong. Please try again.");
+      }
     }
   });
 }
@@ -212,17 +247,12 @@ function setMinimumDate() {
 // RUN INITIAL FUNCTIONS
 // =============================
 
-loadClinics();
-loadBookingPage();
-handleAppointmentForm();
-setMinimumDate();
-
-
-// =============================
-// SEARCH CLINICS LOGIC
-// =============================
-
 document.addEventListener("DOMContentLoaded", () => {
+  loadClinics();
+  loadBookingPage();
+  handleAppointmentForm();
+  setMinimumDate();
+
   const searchInput = document.getElementById("clinicSearch");
   
   if (searchInput) {
@@ -279,7 +309,7 @@ async function loadAvailableSlots() {
   selectedSlotElement = null;
 
   if (!doctorId || !date) {
-    slotContainer.innerHTML = `<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>`;
+    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
     return;
   }
 
@@ -305,7 +335,7 @@ async function loadAvailableSlots() {
 
   } catch (error) {
     console.error("Error loading slots:", error);
-    slotContainer.innerHTML = `<p style="color: red; font-size: 13px;">Failed to load slots.</p>`;
+    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
   }
 }
 
@@ -319,47 +349,8 @@ function selectSlot(element, slotTime) {
   element.classList.add("selected");
   selectedSlotElement = element;
 
-  document.getElementById("time").value = slotTime;
-}
-
-const bookingForm = document.getElementById("bookingForm");
-
-if (bookingForm) {
-  bookingForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
-
-    const clinicId = document.getElementById("clinicId")?.value;
-    const doctorId = document.getElementById("doctorId")?.value;
-    const patientName = document.getElementById("patientName")?.value;
-    const phone = document.getElementById("phone")?.value;
-    const age = document.getElementById("age")?.value;
-    const date = document.getElementById("date")?.value;
-    const time = document.getElementById("time")?.value;
-    const problem = document.getElementById("problem")?.value;
-
-    if (!time) {
-      alert("Please select a time slot first!");
-      return;
-    }
-
-    try {
-      const response = await fetch("/api/appointments", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clinicId, doctorId, patientName, phone, age, date, time, problem })
-      });
-
-      const result = await response.json();
-
-      if (response.ok) {
-        alert("Appointment booked successfully!");
-        window.location.href = "index.html";
-      } else {
-        alert(result.error || "Failed to book appointment.");
-      }
-    } catch (error) {
-      console.error("Booking error:", error);
-      alert("Something went wrong. Please try again.");
-    }
-  });
+  const timeField = document.getElementById("time");
+  if (timeField) {
+    timeField.value = slotTime;
+  }
 }

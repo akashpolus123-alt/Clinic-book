@@ -18,6 +18,7 @@ const appointmentsFile = path.join(__dirname, "data", "appointments.json");
 function readJSON(file) {
   try {
     const data = fs.readFileSync(file, "utf8");
+    if (!data.trim()) return [];
     return JSON.parse(data);
   } catch (error) {
     return [];
@@ -62,13 +63,20 @@ app.post("/api/appointments", async (req, res) => {
     const dataPath = path.join(dataDir, "appointments.json");
 
     if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir);
+      fs.mkdirSync(dataDir, { recursive: true });
     }
 
     let appointments = [];
     if (fs.existsSync(dataPath)) {
-      const fileData = fs.readFileSync(dataPath, "utf8");
-      appointments = JSON.parse(fileData);
+      try {
+        const fileData = fs.readFileSync(dataPath, "utf8");
+        if (fileData.trim() !== "") {
+          appointments = JSON.parse(fileData);
+        }
+      } catch (parseError) {
+        console.log("Resetting corrupted appointments.json file.");
+        appointments = [];
+      }
     }
 
     const newAppointment = {
@@ -77,10 +85,10 @@ app.post("/api/appointments", async (req, res) => {
       doctorId,
       name,
       phone,
-      age,
+      age: age || "",
       date,
       time,
-      problem,
+      problem: problem || "",
       status: "Pending",
       createdAt: new Date().toISOString()
     };
@@ -89,7 +97,6 @@ app.post("/api/appointments", async (req, res) => {
     fs.writeFileSync(dataPath, JSON.stringify(appointments, null, 2));
 
     // --- SMS Notification Integration ---
-    // Jab aap Twilio account banayein, toh yahan apne credentials daal dein:
     try {
       /*
       const accountSid = 'YOUR_TWILIO_ACCOUNT_SID';
@@ -104,11 +111,9 @@ app.post("/api/appointments", async (req, res) => {
       console.log('SMS sent successfully to:', phone);
       */
       
-      // Filhal testing ke liye console par message print ho raha hai:
       console.log(`[SMS Notification Mock] To ${phone}: Dear ${name}, your appointment is booked for ${date} at ${time}.`);
     } catch (smsError) {
       console.error("Failed to send SMS notification:", smsError);
-      // SMS fail hone par bhi booking save rahegi taake customer ka data zaya na ho
     }
 
     res.json({
@@ -118,7 +123,7 @@ app.post("/api/appointments", async (req, res) => {
     });
   } catch (error) {
     console.error("Error saving appointment:", error);
-    res.status(500).json({ success: false, error: "Internal Server Error" });
+    res.status(500).json({ success: false, error: error.message || "Internal Server Error" });
   }
 });
 

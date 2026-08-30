@@ -46,8 +46,8 @@ app.get("/api/doctors/:clinicId", (req, res) => {
   res.json(clinicDoctors);
 });
 
-// Create appointment (Safely handles directory and file creation)
-app.post("/api/appointments", (req, res) => {
+// Create appointment & trigger SMS notification
+app.post("/api/appointments", async (req, res) => {
   try {
     const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
 
@@ -88,9 +88,32 @@ app.post("/api/appointments", (req, res) => {
     appointments.push(newAppointment);
     fs.writeFileSync(dataPath, JSON.stringify(appointments, null, 2));
 
+    // --- SMS Notification Integration ---
+    // Jab aap Twilio account banayein, toh yahan apne credentials daal dein:
+    try {
+      /*
+      const accountSid = 'YOUR_TWILIO_ACCOUNT_SID';
+      const authToken = 'YOUR_TWILIO_AUTH_TOKEN';
+      const twilioClient = require('twilio')(accountSid, authToken);
+
+      await twilioClient.messages.create({
+        body: Dear ${name}, your appointment (ID: ${newAppointment.id}) at the clinic is successfully booked for ${date} at ${time}.,
+        from: 'YOUR_TWILIO_PHONE_NUMBER',
+        to: phone
+      });
+      console.log('SMS sent successfully to:', phone);
+      */
+      
+      // Filhal testing ke liye console par message print ho raha hai:
+      console.log(`[SMS Notification Mock] To ${phone}: Dear ${name}, your appointment is booked for ${date} at ${time}.`);
+    } catch (smsError) {
+      console.error("Failed to send SMS notification:", smsError);
+      // SMS fail hone par bhi booking save rahegi taake customer ka data zaya na ho
+    }
+
     res.json({
       success: true,
-      message: "Appointment booked successfully",
+      message: "Appointment booked successfully and notification processed",
       appointment: newAppointment
     });
   } catch (error) {
@@ -99,7 +122,7 @@ app.post("/api/appointments", (req, res) => {
   }
 });
 
-// Get all appointments
+// Get all appointments (Used by Admin Dashboard)
 app.get("/api/appointments", (req, res) => {
   const appointments = readJSON(appointmentsFile);
   res.json(appointments);

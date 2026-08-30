@@ -1,0 +1,25 @@
+async function loadAppointments() {
+  try {
+    const response = await fetch('/api/appointments');
+    const appointments = await response.json();
+    
+    const tableBody = document.getElementById('appointments-table-body');
+    tableBody.innerHTML = '';
+
+    appointments.forEach(app => {
+      tableBody.innerHTML += `
+        <tr>
+          <td>${app.name}</td>
+          <td>${app.phone}</td>
+          <td>${app.date} (${app.time})</td>
+          <td>${app.status}</td>
+        </tr>
+      `;
+    });
+  } catch (error) {
+    console.error('Error loading appointments:', error);
+  }
+}
+
+// Page load hone par call karein
+loadAppointments();

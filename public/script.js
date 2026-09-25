@@ -29,7 +29,7 @@ async function loadClinics() {
 
   } catch (error) {
     console.error("Error loading clinics:", error);
-    container.innerHTML = <p>Unable to load clinics. Please try again.</p>;
+    container.innerHTML = "<p>Unable to load clinics. Please try again.</p>";
   }
 }
 

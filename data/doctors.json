@@ -1,23 +1,9 @@
 [
   {
-    "id": "doc-1",
-    "clinicId": "city-care",
-    "name": "Dr. Ahmed Khan",
-    "specialization": "General Physician",
-    "timing": "09:00 AM - 02:00 PM"
-  },
-  {
-    "id": "doc-2",
-    "clinicId": "health-plus",
-    "name": "Dr. Sana Ali",
-    "specialization": "Gynecologist",
-    "timing": "03:00 PM - 08:00 PM"
-  },
-  {
-    "id": "doc-3",
-    "clinicId": "family-medical",
-    "name": "Dr. Usman Malik",
-    "specialization": "Cardiologist",
-    "timing": "10:00 AM - 05:00 PM"
+    "id": "doc-shakil",
+    "clinicId": "professorial-clinic",
+    "name": "Professor Dr. Shakil Jehangir Malik",
+    "specialization": "Psychiatrist & Clinical Professor",
+    "timing": "By Appointment"
   }
 ]

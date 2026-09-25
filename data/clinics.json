@@ -1,26 +1,10 @@
 [
   {
-    "id": "city-care",
-    "name": "City Care Clinic",
-    "address": "Rawalpindi",
-    "phone": "0300-1111111",
-    "logo": "🏥",
-    "timing": "09:00 AM - 05:00 PM"
-  },
-  {
-    "id": "health-plus",
-    "name": "Health Plus Clinic",
-    "address": "Islamabad",
-    "phone": "0300-2222222",
-    "logo": "🩺",
-    "timing": "10:00 AM - 08:00 PM"
-  },
-  {
-    "id": "family-medical",
-    "name": "Family Medical Center",
-    "address": "Rawalpindi",
-    "phone": "0300-3333333",
-    "logo": "👨‍⚕️",
-    "timing": "09:00 AM - 09:00 PM"
+    "id": "professorial-clinic",
+    "name": "Professorial Clinic - Psychological Medicine & Neuro Psychiatry",
+    "address": "House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi",
+    "phone": "051-5509294, 0330-5934059",
+    "logo": "🧠",
+    "timing": "By Appointment"
   }
 ]

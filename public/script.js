@@ -63,7 +63,7 @@ async function loadBookingPage() {
       clinicNameElement.textContent = "Booking at: " + selectedClinic.name;
     }
 
-    const doctorResponse = await fetch`(/api/doctors/${clinicId})`;
+    const doctorResponse = await fetch(`/api/doctors/${clinicId}`);
     const doctors = await doctorResponse.json();
 
     if (doctorSelect) {

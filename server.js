@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000;
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
@@ -14,6 +14,7 @@ const appointmentsFile = path.join(__dirname, "data", "appointments.json");
 
 function readJSON(file) {
   try {
+    if (!fs.existsSync(file)) return [];
     const data = fs.readFileSync(file, "utf8");
     if (!data.trim()) return [];
     return JSON.parse(data);
@@ -24,6 +25,10 @@ function readJSON(file) {
 
 function writeJSON(file, data) {
   try {
+    const dir = path.dirname(file);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
     fs.writeFileSync(file, JSON.stringify(data, null, 2));
   } catch (err) {
     console.log("File write error (Read-only storage mode active)");
@@ -32,14 +37,7 @@ function writeJSON(file, data) {
 
 app.get("/api/clinics", (req, res) => {
   try {
-    if (!fs.existsSync(clinicsFile)) {
-      return res.json([]);
-    }
-    const fileData = fs.readFileSync(clinicsFile, "utf8");
-    if (!fileData.trim()) {
-      return res.json([]);
-    }
-    const clinics = JSON.parse(fileData);
+    const clinics = readJSON(clinicsFile);
     res.json(clinics);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -47,11 +45,15 @@ app.get("/api/clinics", (req, res) => {
 });
 
 app.get("/api/doctors/:clinicId", (req, res) => {
-  const doctors = readJSON(doctorsFile);
-  const clinicDoctors = doctors.filter(
-    doctor => doctor.clinicId === req.params.clinicId
-  );
-  res.json(clinicDoctors);
+  try {
+    const doctors = readJSON(doctorsFile);
+    const clinicDoctors = doctors.filter(
+      doctor => doctor.clinicId === req.params.clinicId
+    );
+    res.json(clinicDoctors);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 app.post("/api/appointments", async (req, res) => {
@@ -65,22 +67,7 @@ app.post("/api/appointments", async (req, res) => {
       });
     }
 
-    const dataDir = path.join(__dirname, "data");
-    if (!fs.existsSync(dataDir)) {
-      fs.mkdirSync(dataDir, { recursive: true });
-    }
-
-    let appointments = [];
-    if (fs.existsSync(appointmentsFile)) {
-      try {
-        const fileData = fs.readFileSync(appointmentsFile, "utf8");
-        if (fileData.trim() !== "") {
-          appointments = JSON.parse(fileData);
-        }
-      } catch (parseError) {
-        appointments = [];
-      }
-    }
+    const appointments = readJSON(appointmentsFile);
 
     const newAppointment = {
       id: "APT-" + Date.now(),
@@ -98,8 +85,6 @@ app.post("/api/appointments", async (req, res) => {
 
     appointments.push(newAppointment);
     writeJSON(appointmentsFile, appointments);
-
-    console.log(`[Appointment Log] To ${phone}: Dear ${name}, your appointment is booked for ${date} at ${time}.`);
 
     res.json({
       success: true,
@@ -165,6 +150,10 @@ app.get("/api/booked-slots", (req, res) => {
   res.json(bookedSlots);
 });
 
-app.listen(PORT, () => {
-  console.log(`Clinic Booking App running on http://localhost:${PORT}`);
-});
+module.exports = app;
+
+if (process.env.NODE_ENV !== "production") {
+  app.listen(PORT, () => {
+    console.log(`Clinic Booking App running on http://localhost:${PORT}`);
+  });
+}

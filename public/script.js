@@ -245,7 +245,7 @@ async function loadAvailableSlots() {
   }
 
   try {
-    const response = await fetch`(/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date})`;
+    const response = await fetch(`/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date}`);
     const bookedSlots = await response.json();
 
     DR_SHAKIL_SLOTS.forEach(slotTime => {

@@ -17,7 +17,7 @@ async function loadClinics() {
         <h3>${clinic.name}</h3>
         <p>📍 ${clinic.address}</p>
         <p>📞 ${clinic.phone}</p>
-        <p>⏰ ${clinic.timing || 'Timings not available'}</p>
+        <p>🕒 ${clinic.timing || 'Timings not available'}</p>
 
         <a href="booking.html?clinic=${clinic.id}" class="book-btn">
           Book Appointment
@@ -47,7 +47,7 @@ async function loadBookingPage() {
   if (!clinicId) {
     if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic first.";
     if (doctorSelect) {
-      doctorSelect.innerHTML = <option value="">Select a clinic first</option>;
+      doctorSelect.innerHTML = '<option value="">Select a clinic first</option>';
     }
     return;
   }
@@ -63,7 +63,7 @@ async function loadBookingPage() {
       clinicNameElement.textContent = "Booking at: " + selectedClinic.name;
     }
 
-    const doctorResponse = await fetch(`/api/doctors/${clinicId}`);
+    const doctorResponse = await fetch`(/api/doctors/${clinicId})`;
     const doctors = await doctorResponse.json();
 
     if (doctorSelect) {
@@ -231,7 +231,7 @@ async function loadAvailableSlots() {
   selectedSlotElement = null;
 
   if (!doctorId || !date) {
-    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
+    slotContainer.innerHTML = '<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>';
     return;
   }
 
@@ -240,12 +240,12 @@ async function loadAvailableSlots() {
   const dayOfWeek = selectedDateObj.getDay(); // 0: Sun, 1: Mon, 2: Tue, ..., 6: Sat
   
   if (doctorId === "doc-shakil" && dayOfWeek !== 2 && dayOfWeek !== 6) {
-    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Dr. Shakil is only available on Tuesdays and Saturdays.</p>;
+    slotContainer.innerHTML = '<p style="color: red; font-size: 13px;">Dr. Shakil is only available on Tuesdays and Saturdays.</p>';
     return;
   }
 
   try {
-    const response = await fetch(`/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date}`);
+    const response = await fetch`(/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date})`;
     const bookedSlots = await response.json();
 
     DR_SHAKIL_SLOTS.forEach(slotTime => {
@@ -266,7 +266,7 @@ async function loadAvailableSlots() {
 
   } catch (error) {
     console.error("Error loading slots:", error);
-    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
+    slotContainer.innerHTML = '<p style="color: red; font-size: 13px;">Failed to load slots.</p>';
   }
 }
 

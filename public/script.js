@@ -17,7 +17,7 @@ async function loadClinics() {
         <h3>${clinic.name}</h3>
         <p>📍 ${clinic.address}</p>
         <p>📞 ${clinic.phone}</p>
-        <p>🕒 ${clinic.timing || 'Timings not available'}</p>
+        <p>⏰ ${clinic.timing || 'Timings not available'}</p>
 
         <a href="booking.html?clinic=${clinic.id}" class="book-btn">
           Book Appointment
@@ -29,7 +29,7 @@ async function loadClinics() {
 
   } catch (error) {
     console.error("Error loading clinics:", error);
-    container.innerHTML = `<p>Unable to load clinics. Please try again.</p>`;
+    container.innerHTML = <p>Unable to load clinics. Please try again.</p>;
   }
 }
 
@@ -47,7 +47,7 @@ async function loadBookingPage() {
   if (!clinicId) {
     if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic first.";
     if (doctorSelect) {
-      doctorSelect.innerHTML = `<option value="">Select a clinic first</option>`;
+      doctorSelect.innerHTML = <option value="">Select a clinic first</option>;
     }
     return;
   }
@@ -208,10 +208,11 @@ document.addEventListener("DOMContentLoaded", () => {
   if (dateInput) dateInput.addEventListener("change", loadAvailableSlots);
 });
 
-const STANDARD_SLOTS = [
-  "09:00 AM", "10:00 AM", "11:00 AM",
-  "12:00 PM", "01:00 PM", "02:00 PM",
-  "03:00 PM", "04:00 PM", "05:00 PM"
+// Dr. Shakil specific custom slots (Tuesday & Saturday: 11:00 AM - 12:30 PM & 01:00 PM - 06:00 PM, Break: 12:30 PM - 01:00 PM)
+const DR_SHAKIL_SLOTS = [
+  "11:00 AM", "11:15 AM", "11:30 AM", "11:45 AM", "12:00 PM", "12:15 PM",
+  "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", 
+  "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM"
 ];
 
 let selectedSlotElement = null;
@@ -230,7 +231,16 @@ async function loadAvailableSlots() {
   selectedSlotElement = null;
 
   if (!doctorId || !date) {
-    slotContainer.innerHTML = `<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>`;
+    slotContainer.innerHTML = <p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>;
+    return;
+  }
+
+  // Check if selected date is Tuesday (2) or Saturday (6) for Dr. Shakil
+  const selectedDateObj = new Date(date);
+  const dayOfWeek = selectedDateObj.getDay(); // 0: Sun, 1: Mon, 2: Tue, ..., 6: Sat
+  
+  if (doctorId === "doc-shakil" && dayOfWeek !== 2 && dayOfWeek !== 6) {
+    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Dr. Shakil is only available on Tuesdays and Saturdays.</p>;
     return;
   }
 
@@ -238,7 +248,7 @@ async function loadAvailableSlots() {
     const response = await fetch(`/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date}`);
     const bookedSlots = await response.json();
 
-    STANDARD_SLOTS.forEach(slotTime => {
+    DR_SHAKIL_SLOTS.forEach(slotTime => {
       const slotDiv = document.createElement("div");
       slotDiv.className = "slot";
       slotDiv.textContent = slotTime;
@@ -256,7 +266,7 @@ async function loadAvailableSlots() {
 
   } catch (error) {
     console.error("Error loading slots:", error);
-    slotContainer.innerHTML = `<p style="color: red; font-size: 13px;">Failed to load slots.</p>`;
+    slotContainer.innerHTML = <p style="color: red; font-size: 13px;">Failed to load slots.</p>;
   }
 }
 
@@ -273,5 +283,29 @@ function selectSlot(element, slotTime) {
   const timeField = document.getElementById("time");
   if (timeField) {
     timeField.value = slotTime;
+  }
+}
+
+// Function to handle appointment cancellation
+async function cancelAppointment(appointmentId) {
+  if (!confirm("Are you sure you want to cancel this appointment?")) return;
+
+  try {
+    const response = await fetch(`/api/appointments/${appointmentId}`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ status: "Cancelled" })
+    });
+
+    const result = await response.json();
+    if (response.ok && result.success) {
+      alert("Appointment cancelled successfully!");
+      location.reload();
+    } else {
+      alert(result.message || "Failed to cancel appointment.");
+    }
+  } catch (error) {
+    console.error("Cancellation error:", error);
+    alert("Something went wrong while cancelling.");
   }
 }

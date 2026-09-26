@@ -99,7 +99,7 @@ app.post("/api/appointments", async (req, res) => {
     // Send Email Notification to Clinic / Doctor
     const mailOptions = {
       from: process.env.EMAIL_USER || 'akashpolus123@gmail.com',
-      to: process.env.CLINIC_EMAIL || 'akashpolous@gmail.com', // Jis email par alert bhejna hai
+      to: process.env.CLINIC_EMAIL || 'akashpolus123@gmail.com', // Jis email par alert bhejna hai
       subject: `New Appointment Booking - ${newAppointment.id}`,
       text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nProblem: ${problem || 'N/A'}`
     };

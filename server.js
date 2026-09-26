@@ -1,6 +1,7 @@
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
+const nodemailer = require("nodemailer");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -11,6 +12,15 @@ app.use(express.static(path.join(__dirname, "public")));
 const clinicsFile = path.join(__dirname, "data", "clinics.json");
 const doctorsFile = path.join(__dirname, "data", "doctors.json");
 const appointmentsFile = path.join(__dirname, "data", "appointments.json");
+
+// Nodemailer Transporter Setup (Gmail)
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: process.env.EMAIL_USER || 'apka_email@gmail.com', // Apni email yahan likhein ya Vercel Environment Variables mein set karein
+    pass: process.env.EMAIL_PASS || 'apka_app_password'     // Apni email ka App Password yahan likhein
+  }
+});
 
 function readJSON(file) {
   try {
@@ -58,7 +68,7 @@ app.get("/api/doctors/:clinicId", (req, res) => {
 
 app.post("/api/appointments", async (req, res) => {
   try {
-    const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
+    const { clinicId, doctorId, NAME, PHONE, AGE, date, time, problem } = req.body;
 
     if (!clinicId || !doctorId || !name || !phone || !date || !time) {
       return res.status(400).json({
@@ -69,7 +79,7 @@ app.post("/api/appointments", async (req, res) => {
 
     const appointments = readJSON(appointmentsFile);
 
-    const newAppointment = {
+    const NewAppointment = {
       id: "APT-" + Date.now(),
       clinicId,
       doctorId,
@@ -85,6 +95,22 @@ app.post("/api/appointments", async (req, res) => {
 
     appointments.push(newAppointment);
     writeJSON(appointmentsFile, appointments);
+
+    // Send Email Notification to Clinic / Doctor
+    const mailOptions = {
+      from: process.env.EMAIL_USER || 'apka_email@gmail.com',
+      to: process.env.CLINIC_EMAIL || 'clinic_manager@gmail.com', // Jis email par alert bhejna hai
+      subject: `New Appointment Booking - ${newAppointment.id}`,
+      text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nProblem: ${problem || 'N/A'}`
+    };
+
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        console.log("Email send error:", error);
+      } else {
+        console.log("Email sent: " + info.response);
+      }
+    });
 
     res.json({
       success: true,

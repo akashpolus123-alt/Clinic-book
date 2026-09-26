@@ -17,8 +17,8 @@ const appointmentsFile = path.join(__dirname, "data", "appointments.json");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'apka_email@gmail.com', // Apni email yahan likhein ya Vercel Environment Variables mein set karein
-    pass: process.env.EMAIL_PASS || 'apka_app_password'     // Apni email ka App Password yahan likhein
+    user: process.env.EMAIL_USER || 'akashpolus123@gmail.com', // Apni email yahan likhein ya Vercel Environment Variables mein set karein
+    pass: process.env.EMAIL_PASS || 'Akash@123'     // Apni email ka App Password yahan likhein
   }
 });
 
@@ -98,8 +98,8 @@ app.post("/api/appointments", async (req, res) => {
 
     // Send Email Notification to Clinic / Doctor
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'apka_email@gmail.com',
-      to: process.env.CLINIC_EMAIL || 'clinic_manager@gmail.com', // Jis email par alert bhejna hai
+      from: process.env.EMAIL_USER || 'akashpolus123@gmail.com',
+      to: process.env.CLINIC_EMAIL || 'akashpolous@gmail.com', // Jis email par alert bhejna hai
       subject: `New Appointment Booking - ${newAppointment.id}`,
       text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nProblem: ${problem || 'N/A'}`
     };

@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
     user: process.env.EMAIL_USER || 'akashpolus123@gmail.com', // Apni email yahan likhein ya Vercel Environment Variables mein set karein
-    pass: process.env.EMAIL_PASS || 'iwuf sbga uvcf hwsy'     // Apni email ka App Password yahan likhein
+    pass: process.env.EMAIL_PASS || 'iwufsbgauvcfhwsy'     // Apni email ka App Password yahan likhein
   }
 });
 
@@ -79,7 +79,7 @@ app.post("/api/appointments", async (req, res) => {
 
     const appointments = readJSON(appointmentsFile);
 
-    const NewAppointment = {
+    const newAppointment = {
       id: "APT-" + Date.now(),
       clinicId,
       doctorId,

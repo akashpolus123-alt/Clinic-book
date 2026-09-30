@@ -27,6 +27,20 @@
             <p id="errorMsg" style="color: red; margin-top: 10px;"></p>
         </div>
 
+        <!-- Summary Cards Section -->
+        <div id="statsSection" style="display: none; margin-bottom: 20px;">
+            <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Appointments</h4>
+                    <p id="totalCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                    <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Today's Appointments</h4>
+                    <p id="todayCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                </div>
+            </div>
+        </div>
+
         <!-- Dashboard Section (Hidden by default) -->
         <div id="dashboardSection" style="display: none; margin-top: 20px;">
             <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -54,6 +68,7 @@
         const loginForm = document.getElementById('loginForm');
         const loginSection = document.getElementById('loginSection');
         const dashboardSection = document.getElementById('dashboardSection');
+        const statsSection = document.getElementById('statsSection');
         const errorMsg = document.getElementById('errorMsg');
         const clinicTitle = document.getElementById('clinicTitle');
         const appointmentsTableBody = document.getElementById('appointmentsTableBody');
@@ -86,6 +101,7 @@
         function showDashboard(clinicId, clinicName) {
             loginSection.style.display = 'none';
             dashboardSection.style.display = 'block';
+            statsSection.style.display = 'block';
             clinicTitle.textContent = `Welcome, ${clinicName}`;
             loadAppointments(clinicId);
         }
@@ -95,9 +111,15 @@
                 const response = await fetch(`/api/clinic-appointments?clinicId=${clinicId}`);
                 const appointments = await response.json();
 
+                // Update summary count stats
+                document.getElementById('totalCount').textContent = appointments.length;
+                const todayStr = new Date().toISOString().split('T')[0];
+                const todayAppointments = appointments.filter(app => app.date === todayStr);
+                document.getElementById('todayCount').textContent = todayAppointments.length;
+
                 appointmentsTableBody.innerHTML = '';
                 if (appointments.length === 0) {
-                    appointmentsTableBody.innerHTML = `<tr><td colspan="4" style="padding: 10px; text-align: center;">No appointments found.</td></tr>`;
+                    appointmentsTableBody.innerHTML = <tr><td colspan="4" style="padding: 10px; text-align: center;">No appointments found.</td></tr>;
                     return;
                 }
 
@@ -118,6 +140,7 @@
         function logout() {
             localStorage.clear();
             dashboardSection.style.display = 'none';
+            statsSection.style.display = 'none';
             loginSection.style.display = 'block';
             loginForm.reset();
         }

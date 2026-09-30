@@ -79,7 +79,7 @@ app.post("/api/appointments", async (req, res) => {
 
     const appointments = readJSON(appointmentsFile);
 
-    `const newAppointment` = {
+    const newAppointment = {
       id: "APT-" + Date.now(),
       clinicId,
       doctorId,

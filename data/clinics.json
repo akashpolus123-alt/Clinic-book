@@ -5,11 +5,7 @@
     "address": "House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi",
     "phone": "051-5509294, 0330-5934059",
     "logo": "🧠",
-    "timing": "By Appointment"
-  },
-  {
-    "id": "clinic-1",
-    "name": "Professorial Clinic",
+    "timing": "By Appointment",
     "username": "profclinic",
     "password": "securepassword123"
   }

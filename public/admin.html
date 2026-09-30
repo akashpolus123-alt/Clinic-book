@@ -1,25 +1,135 @@
-async function loadAppointments() {
-  try {
-    const response = await fetch('/api/appointments');
-    const appointments = await response.json();
-    
-    const tableBody = document.getElementById('appointments-table-body');
-    tableBody.innerHTML = '';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container" style="max-width: 800px; margin-top: 50px;">
+        <h2>Clinic Admin Portal</h2>
+        
+        <!-- Login Form -->
+        <div id="loginSection" style="margin-top: 20px;">
+            <h3>Clinic Login</h3>
+            <form id="loginForm">
+                <div style="margin-bottom: 15px;">
+                    <label>Username:</label><br>
+                    <input type="text" id="username" required style="width: 100%; padding: 8px;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label>Password:</label><br>
+                    <input type="password" id="password" required style="width: 100%; padding: 8px;">
+                </div>
+                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer;">Login</button>
+            </form>
+            <p id="errorMsg" style="color: red; margin-top: 10px;"></p>
+        </div>
 
-    appointments.forEach(app => {
-      tableBody.innerHTML += `
-        <tr>
-          <td>${app.name}</td>
-          <td>${app.phone}</td>
-          <td>${app.date} (${app.time})</td>
-          <td>${app.status}</td>
-        </tr>
-      `;
-    });
-  } catch (error) {
-    console.error('Error loading appointments:', error);
-  }
-}
+        <!-- Dashboard Section (Hidden by default) -->
+        <div id="dashboardSection" style="display: none; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 id="clinicTitle">Welcome</h3>
+                <button onclick="logout()" style="padding: 5px 10px; background: #dc3545; color: white; border: none; cursor: pointer;">Logout</button>
+            </div>
+            <h4>Your Appointments</h4>
+            <table border="1" style="width: 100%; margin-top: 15px; border-collapse: collapse; text-align: left;">
+                <thead>
+                    <tr style="background: #f2f2f2;">
+                        <th style="padding: 8px;">Patient Name</th>
+                        <th style="padding: 8px;">Phone</th>
+                        <th style="padding: 8px;">Age</th>
+                        <th style="padding: 8px;">Date</th>
+                    </tr>
+                </thead>
+                <tbody id="appointmentsTableBody">
+                    <!-- Appointments yahan load hongi -->
+                </tbody>
+            </table>
+        </div>
+    </div>
 
-// Page load hone par call karein
-loadAppointments();
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const errorMsg = document.getElementById('errorMsg');
+        const clinicTitle = document.getElementById('clinicTitle');
+        const appointmentsTableBody = document.getElementById('appointmentsTableBody');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
+
+                if (data.success) {
+                    localStorage.setItem('clinicId', data.clinicId);
+                    localStorage.setItem('clinicName', data.clinicName);
+                    showDashboard(data.clinicId, data.clinicName);
+                } else {
+                    errorMsg.textContent = data.message || 'Invalid Credentials';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Server connection error!';
+            }
+        });
+
+        function showDashboard(clinicId, clinicName) {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            clinicTitle.textContent = `Welcome, ${clinicName}`;
+            loadAppointments(clinicId);
+        }
+
+        async function loadAppointments(clinicId) {
+            try {
+                const response = await fetch(`/api/clinic-appointments?clinicId=${clinicId}`);
+                const appointments = await response.json();
+
+                appointmentsTableBody.innerHTML = '';
+                if (appointments.length === 0) {
+                    appointmentsTableBody.innerHTML = <tr><td colspan="4" style="padding: 10px; text-align: center;">No appointments found.</td></tr>;
+                    return;
+                }
+
+                appointments.forEach(app => {
+                    const row = `<tr>
+                        <td style="padding: 8px;">${app.name}</td>
+                        <td style="padding: 8px;">${app.phone}</td>
+                        <td style="padding: 8px;">${app.age || '-'}</td>
+                        <td style="padding: 8px;">${app.date || 'N/A'}</td>
+                    </tr>`;
+                    appointmentsTableBody.innerHTML += row;
+                });
+            } catch (err) {
+                console.error('Error loading appointments:', err);
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            dashboardSection.style.display = 'none';
+            loginSection.style.display = 'block';
+            loginForm.reset();
+        }
+
+        // Auto login check if already logged in
+        window.onload = () => {
+            const savedClinicId = localStorage.getItem('clinicId');
+            const savedClinicName = localStorage.getItem('clinicName');
+            if (savedClinicId) {
+                showDashboard(savedClinicId, savedClinicName);
+            }
+        };
+    </script>
+</body>
+</html>

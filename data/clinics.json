@@ -6,5 +6,11 @@
     "phone": "051-5509294, 0330-5934059",
     "logo": "🧠",
     "timing": "By Appointment"
+  },
+  {
+    "id": "clinic-1",
+    "name": "Professorial Clinic",
+    "username": "profclinic",
+    "password": "securepassword123"
   }
 ]

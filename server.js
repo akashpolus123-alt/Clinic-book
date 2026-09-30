@@ -17,8 +17,8 @@ const appointmentsFile = path.join(__dirname, "data", "appointments.json");
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
-    user: process.env.EMAIL_USER || 'akashpolus123@gmail.com', // Apni email yahan likhein ya Vercel Environment Variables mein set karein
-    pass: process.env.EMAIL_PASS || 'iwufsbgauvcfhwsy'     // Apni email ka App Password yahan likhein
+    user: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
+    pass: process.env.EMAIL_PASS || 'iwufsbgauvcfhwsy'
   }
 });
 
@@ -68,7 +68,7 @@ app.get("/api/doctors/:clinicId", (req, res) => {
 
 app.post("/api/appointments", async (req, res) => {
   try {
-    const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
+   `const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body`;
 
     if (!clinicId || !doctorId || !name || !phone || !date || !time) {
       return res.status(400).json({
@@ -79,7 +79,7 @@ app.post("/api/appointments", async (req, res) => {
 
     const appointments = readJSON(appointmentsFile);
 
-    const newAppointment = {
+    `const newAppointment` = {
       id: "APT-" + Date.now(),
       clinicId,
       doctorId,
@@ -98,8 +98,8 @@ app.post("/api/appointments", async (req, res) => {
 
     // Send Email Notification to Clinic / Doctor
     const mailOptions = {
-      from: process.env.EMAIL_USER || 'akashpolus123@gmail.com',
-      to: process.env.CLINIC_EMAIL || 'akashpolus123@gmail.com', // Jis email par alert bhejna hai
+      from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
+      to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
       subject: `New Appointment Booking - ${newAppointment.id}`,
       text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nProblem: ${problem || 'N/A'}`
     };
@@ -125,6 +125,41 @@ app.post("/api/appointments", async (req, res) => {
 app.get("/api/appointments", (req, res) => {
   const appointments = readJSON(appointmentsFile);
   res.json(appointments);
+});
+
+// ==========================================
+// NEW: Clinic Admin Login Route
+// ==========================================
+app.post("/api/login", (req, res) => {
+  try {
+    const { username, password } = req.body;
+    const clinics = readJSON(clinicsFile);
+    
+    const clinic = clinics.find(c => c.username === username && c.password === password);
+    
+    if (clinic) {
+      res.json({ success: true, clinicId: clinic.id, clinicName: clinic.name });
+    } else {
+      res.status(401).json({ success: false, message: 'Invalid username or password' });
+    }
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ==========================================
+// NEW: Specific Clinic Appointments Route
+// ==========================================
+app.get("/api/clinic-appointments", (req, res) => {
+  try {
+    const { clinicId } = req.query;
+    const appointments = readJSON(appointmentsFile);
+    
+    const clinicAppointments = appointments.filter(app => app.clinicId === clinicId);
+    res.json(clinicAppointments);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
 app.put("/api/appointments/:id", (req, res) => {

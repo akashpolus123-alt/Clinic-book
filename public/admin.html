@@ -119,7 +119,7 @@
         tableBody.innerHTML = "";
 
         if (!appointments || appointments.length === 0) {
-          tableBody.innerHTML = <tr><td colspan="9" class="empty-state">Koi appointment mojood nahi hai.</td></tr>;
+          tableBody.innerHTML = `<tr><td colspan="9" class="empty-state">Koi appointment mojood nahi hai.</td></tr>`;
           return;
         }
 

@@ -11,6 +11,7 @@
       --card-bg: #ffffff;
       --text-main: #1e293b;
       --border-color: #e2e8f0;
+      --danger: #ef4444;
     }
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
     body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; height: 100vh; }
@@ -18,64 +19,59 @@
     h2 { color: var(--primary); margin-bottom: 24px; text-align: center; }
     .form-group { margin-bottom: 16px; }
     label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
-    select, input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
-    select:focus, input:focus { border-color: var(--primary); }
+    input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+    input:focus { border-color: var(--primary); }
     .login-btn { width: 100%; background-color: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
     .login-btn:hover { background-color: #1d4ed8; }
+    .error-msg { color: var(--danger); font-size: 13px; text-align: center; margin-top: 10px; }
   </style>
 </head>
 <body>
 
   <div class="login-card">
-    <h2>🏥 Clinic Login</h2>
+    <h2>🏥 Clinic Secure Login</h2>
     <form id="loginForm" onsubmit="handleLogin(event)">
       <div class="form-group">
-        <label for="clinicSelect">Select Clinic</label>
-        <select id="clinicSelect" required>
-          <option value="">Loading clinics...</option>
-        </select>
+        <label for="username">Username</label>
+        <input type="text" id="username" placeholder="Enter clinic username" required>
       </div>
-      <button type="submit" class="login-btn">Login to Dashboard</button>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Enter password" required>
+      </div>
+      <button type="submit" class="login-btn">Login</button>
+      <div id="errorMsg" class="error-msg"></div>
     </form>
   </div>
 
   <script>
-    async function loadClinicsForLogin() {
+    async function handleLogin(e) {
+      e.preventDefault();
+      const usernameInput = document.getElementById("username").value.trim();
+      const passwordInput = document.getElementById("password").value.trim();
+      const errorMsg = document.getElementById("errorMsg");
+
+      errorMsg.textContent = "Verifying...";
+
       try {
         const response = await fetch("/api/clinics");
         const clinics = await response.json();
-        const select = document.getElementById("clinicSelect");
-        
-        select.innerHTML = '<option value="">Choose your clinic</option>';
-        clinics.forEach(clinic => {
-          const option = document.createElement("option");
-          option.value = clinic.id;
-          option.textContent = clinic.name;
-          option.dataset.name = clinic.name;
-          select.appendChild(option);
-        });
+
+        // Check karein ke kaun sa clinic is username aur password se match karta hai
+        const matchedClinic = clinics.find(c => c.username === usernameInput && c.password === passwordInput);
+
+        if (matchedClinic) {
+          localStorage.setItem("adminClinicId", matchedClinic.id);
+          localStorage.setItem("adminClinicName", matchedClinic.name);
+          window.location.href = "admin.html";
+        } else {
+          errorMsg.textContent = "Invalid username or password!";
+        }
       } catch (error) {
-        console.error("Error loading clinics:", error);
+        console.error("Login error:", error);
+        errorMsg.textContent = "Something went wrong. Try again.";
       }
     }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      const select = document.getElementById("clinicSelect");
-      const selectedOption = select.options[select.selectedIndex];
-      
-      if (!select.value) {
-        alert("Please select a clinic");
-        return;
-      }
-
-      localStorage.setItem("adminClinicId", select.value);
-      localStorage.setItem("adminClinicName", selectedOption.dataset.name);
-      
-      window.location.href = "admin.html";
-    }
-
-    loadClinicsForLogin();
   </script>
 </body>
 </html>

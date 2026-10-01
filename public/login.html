@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinic Login - ClinicBook</title>
+  <style>
+    :root {
+      --primary: #2563eb;
+      --bg-color: #f8fafc;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --border-color: #e2e8f0;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+    body { background-color: var(--bg-color); color: var(--text-main); display: flex; justify-content: center; align-items: center; height: 100vh; }
+    .login-card { background: var(--card-bg); padding: 32px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); border: 1px solid var(--border-color); width: 100%; max-width: 400px; }
+    h2 { color: var(--primary); margin-bottom: 24px; text-align: center; }
+    .form-group { margin-bottom: 16px; }
+    label { display: block; margin-bottom: 6px; font-size: 14px; font-weight: 600; }
+    select, input { width: 100%; padding: 10px 14px; border: 1px solid var(--border-color); border-radius: 8px; font-size: 14px; outline: none; }
+    select:focus, input:focus { border-color: var(--primary); }
+    .login-btn { width: 100%; background-color: var(--primary); color: white; border: none; padding: 12px; border-radius: 8px; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 8px; }
+    .login-btn:hover { background-color: #1d4ed8; }
+  </style>
+</head>
+<body>
+
+  <div class="login-card">
+    <h2>🏥 Clinic Login</h2>
+    <form id="loginForm" onsubmit="handleLogin(event)">
+      <div class="form-group">
+        <label for="clinicSelect">Select Clinic</label>
+        <select id="clinicSelect" required>
+          <option value="">Loading clinics...</option>
+        </select>
+      </div>
+      <button type="submit" class="login-btn">Login to Dashboard</button>
+    </form>
+  </div>
+
+  <script>
+    async function loadClinicsForLogin() {
+      try {
+        const response = await fetch("/api/clinics");
+        const clinics = await response.json();
+        const select = document.getElementById("clinicSelect");
+        
+        select.innerHTML = '<option value="">Choose your clinic</option>';
+        clinics.forEach(clinic => {
+          const option = document.createElement("option");
+          option.value = clinic.id;
+          option.textContent = clinic.name;
+          option.dataset.name = clinic.name;
+          select.appendChild(option);
+        });
+      } catch (error) {
+        console.error("Error loading clinics:", error);
+      }
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const select = document.getElementById("clinicSelect");
+      const selectedOption = select.options[select.selectedIndex];
+      
+      if (!select.value) {
+        alert("Please select a clinic");
+        return;
+      }
+
+      localStorage.setItem("adminClinicId", select.value);
+      localStorage.setItem("adminClinicName", selectedOption.dataset.name);
+      
+      window.location.href = "admin.html";
+    }
+
+    loadClinicsForLogin();
+  </script>
+</body>
+</html>

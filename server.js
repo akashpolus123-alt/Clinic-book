@@ -45,6 +45,7 @@ function writeJSON(file, data) {
   }
 }
 
+// 1. Clinics API Route
 app.get("/api/clinics", (req, res) => {
   try {
     const clinics = readJSON(clinicsFile);
@@ -54,6 +55,7 @@ app.get("/api/clinics", (req, res) => {
   }
 });
 
+// 2. Doctors by Clinic API Route
 app.get("/api/doctors/:clinicId", (req, res) => {
   try {
     const doctors = readJSON(doctorsFile);
@@ -66,9 +68,10 @@ app.get("/api/doctors/:clinicId", (req, res) => {
   }
 });
 
+// 3. Create Appointment API Route
 app.post("/api/appointments", async (req, res) => {
   try {
-   const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
+    const { clinicId, doctorId, name, phone, age, date, time, problem, type, fee } = req.body;
 
     if (!clinicId || !doctorId || !name || !phone || !date || !time) {
       return res.status(400).json({
@@ -88,6 +91,8 @@ app.post("/api/appointments", async (req, res) => {
       age: age || "",
       date,
       time,
+      type: type || "Initial",
+      fee: fee || 12000,
       problem: problem || "",
       status: "Pending",
       createdAt: new Date().toISOString()
@@ -101,7 +106,7 @@ app.post("/api/appointments", async (req, res) => {
       from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
       to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
       subject: `New Appointment Booking - ${newAppointment.id}`,
-      text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nProblem: ${problem || 'N/A'}`
+      text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nType: ${newAppointment.type}\nFee: ${newAppointment.fee} PKR\nProblem: ${problem || 'N/A'}`
     };
 
     transporter.sendMail(mailOptions, (error, info) => {
@@ -122,14 +127,13 @@ app.post("/api/appointments", async (req, res) => {
   }
 });
 
+// 4. Get All Appointments
 app.get("/api/appointments", (req, res) => {
   const appointments = readJSON(appointmentsFile);
   res.json(appointments);
 });
 
-// ==========================================
-// NEW: Clinic Admin Login Route
-// ==========================================
+// 5. Clinic Admin Login Route
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
@@ -147,9 +151,7 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// ==========================================
-// NEW: Specific Clinic Appointments Route
-// ==========================================
+// 6. Specific Clinic Appointments Route
 app.get("/api/clinic-appointments", (req, res) => {
   try {
     const { clinicId } = req.query;
@@ -162,6 +164,7 @@ app.get("/api/clinic-appointments", (req, res) => {
   }
 });
 
+// 7. Update Appointment Status
 app.put("/api/appointments/:id", (req, res) => {
   const { status } = req.body;
   const appointments = readJSON(appointmentsFile);
@@ -183,6 +186,7 @@ app.put("/api/appointments/:id", (req, res) => {
   });
 });
 
+// 8. Delete Appointment
 app.delete("/api/appointments/:id", (req, res) => {
   const appointments = readJSON(appointmentsFile);
   const updatedAppointments = appointments.filter(item => item.id !== req.params.id);
@@ -194,6 +198,7 @@ app.delete("/api/appointments/:id", (req, res) => {
   });
 });
 
+// 9. Get Booked Slots
 app.get("/api/booked-slots", (req, res) => {
   const { clinicId, doctorId, date } = req.query;
   const appointments = readJSON(appointmentsFile);

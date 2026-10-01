@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container" style="max-width: 900px; margin-top: 30px; font-family: Arial, sans-serif;">
+    <div class="container" style="max-width: 950px; margin-top: 30px; font-family: Arial, sans-serif;">
         <h2>Clinic Admin Portal</h2>
         
         <!-- Login Form -->
@@ -63,7 +63,8 @@
                             <th style="padding: 10px;">Patient Name</th>
                             <th style="padding: 10px;">Phone</th>
                             <th style="padding: 10px;">Age</th>
-                            <th style="padding: 10px;">Date</th>
+                            <th style="padding: 10px;">Type & Fee</th>
+                            <th style="padding: 10px;">Date & Time</th>
                             <th style="padding: 10px;">Status</th>
                         </tr>
                     </thead>
@@ -136,7 +137,7 @@
 
             appointmentsTableBody.innerHTML = '';
             if (appointments.length === 0) {
-                appointmentsTableBody.innerHTML = `<tr><td colspan="5" style="padding: 15px; text-align: center; color: #666;">No appointments found.</td></tr>`;
+                appointmentsTableBody.innerHTML = <tr><td colspan="6" style="padding: 15px; text-align: center; color: #666;">No appointments found.</td></tr>;
                 return;
             }
 
@@ -146,11 +147,15 @@
                 if (currentStatus === 'Confirmed') badgeColor = '#17a2b8'; // Blue
                 if (currentStatus === 'Completed') badgeColor = '#28a745'; // Green
 
+                const appType = app.type || 'Initial';
+                const appFee = appType === 'Follow-up' ? '8,000 PKR (30m)' : '12,000 PKR (1h)';
+
                 const row = `<tr>
                     <td style="padding: 10px;">${app.name}</td>
                     <td style="padding: 10px;">${app.phone}</td>
                     <td style="padding: 10px;">${app.age || '-'}</td>
-                    <td style="padding: 10px;">${app.date || 'N/A'}</td>
+                    <td style="padding: 10px;"><b>${appType}</b><br><span style="color: #666; font-size: 12px;">${appFee}</span></td>
+                    <td style="padding: 10px;">${app.date || 'N/A'}<br><small>${app.time || ''}</small></td>
                     <td style="padding: 10px;">
                         <span style="padding: 4px 8px; border-radius: 4px; background: ${badgeColor}; color: white; font-size: 12px; margin-right: 5px; display: inline-block;">${currentStatus}</span>
                         <select onchange="updateStatus(${index}, this.value)" style="padding: 4px; border-radius: 4px; border: 1px solid #ccc;">
@@ -187,7 +192,6 @@
         function updateStatus(index, newStatus) {
             allAppointments[index].status = newStatus;
             displayAppointments(allAppointments);
-            // Note: Yahan aap backend API call bhi laga sakte hain agar status database mein save karwana ho.
         }
 
         function logout() {

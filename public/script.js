@@ -17,7 +17,7 @@ async function loadClinics() {
         <h3>${clinic.name}</h3>
         <p>📍 ${clinic.address}</p>
         <p>📞 ${clinic.phone}</p>
-        <p>🕒 ${clinic.timing || 'Timings not available'}</p>
+        <p>⏰ ${clinic.timing || 'Timings not available'}</p>
 
         <a href="booking.html?clinic=${clinic.id}" class="book-btn">
           Book Appointment
@@ -104,6 +104,8 @@ function handleAppointmentForm() {
     }
 
     const nameInput = document.getElementById("name") || document.getElementById("patientName");
+    const appType = document.getElementById("appointmentType")?.value || "Initial";
+    const fee = appType === "Follow-up" ? 8000 : 12000;
 
     const appointmentData = {
       clinicId: document.getElementById("clinicId")?.value,
@@ -113,6 +115,8 @@ function handleAppointmentForm() {
       age: document.getElementById("age")?.value,
       date: document.getElementById("date")?.value,
       time: time,
+      type: appType,
+      fee: fee,
       problem: document.getElementById("problem")?.value.trim()
     };
 
@@ -208,14 +212,13 @@ document.addEventListener("DOMContentLoaded", () => {
   if (dateInput) dateInput.addEventListener("change", loadAvailableSlots);
 });
 
-// Dr. Shakil specific custom slots (Tuesday & Saturday: 11:00 AM - 12:30 PM & 01:00 PM - 06:00 PM, Break: 12:30 PM - 01:00 PM)
 const DR_SHAKIL_SLOTS = [
   "11:00 AM", "11:30 AM", "12:00 PM",
   "01:00 PM", "01:30 PM", "02:00 PM", "02:30 PM", "03:00 PM", "03:30 PM", 
   "04:00 PM", "04:30 PM", "05:00 PM", "05:30 PM"
 ];
 
-let selectedSlotElement = null;
+let selectedSlotElements = [];
 
 async function loadAvailableSlots() {
   const clinicId = document.getElementById("clinicId")?.value;
@@ -228,16 +231,15 @@ async function loadAvailableSlots() {
 
   slotContainer.innerHTML = "";
   if (timeInput) timeInput.value = "";
-  selectedSlotElement = null;
+  selectedSlotElements = [];
 
   if (!doctorId || !date) {
     slotContainer.innerHTML = '<p style="color: #666; font-size: 13px;">Please select a doctor and date first.</p>';
     return;
   }
 
-  // Check if selected date is Tuesday (2) or Saturday (6) for Dr. Shakil
   const selectedDateObj = new Date(date);
-  const dayOfWeek = selectedDateObj.getDay(); // 0: Sun, 1: Mon, 2: Tue, ..., 6: Sat
+  const dayOfWeek = selectedDateObj.getDay();
   
   if (doctorId === "doc-shakil" && dayOfWeek !== 2 && dayOfWeek !== 6) {
     slotContainer.innerHTML = '<p style="color: red; font-size: 13px;">Dr. Shakil is only available on Tuesdays and Saturdays.</p>';
@@ -248,17 +250,19 @@ async function loadAvailableSlots() {
     const response = await fetch(`/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date}`);
     const bookedSlots = await response.json();
 
-    DR_SHAKIL_SLOTS.forEach(slotTime => {
+    DR_SHAKIL_SLOTS.forEach((slotTime, index) => {
       const slotDiv = document.createElement("div");
       slotDiv.className = "slot";
       slotDiv.textContent = slotTime;
+      slotDiv.dataset.index = index;
+      slotDiv.dataset.time = slotTime;
 
       if (bookedSlots.includes(slotTime)) {
         slotDiv.classList.add("booked");
         slotDiv.textContent += " (Booked)";
       } else {
         slotDiv.classList.add("available");
-        slotDiv.onclick = () => selectSlot(slotDiv, slotTime);
+        slotDiv.onclick = () => selectSlot(slotDiv, index, slotTime, bookedSlots);
       }
 
       slotContainer.appendChild(slotDiv);
@@ -270,23 +274,63 @@ async function loadAvailableSlots() {
   }
 }
 
-function selectSlot(element, slotTime) {
-  if (selectedSlotElement) {
-    selectedSlotElement.classList.remove("selected");
-    selectedSlotElement.classList.add("available");
-  }
-
-  element.classList.remove("available");
-  element.classList.add("selected");
-  selectedSlotElement = element;
-
+function handleTypeChange() {
+  // Jab appointment type change ho, toh selected slots reset kar dein taake dobara calculation theek ho
   const timeField = document.getElementById("time");
-  if (timeField) {
-    timeField.value = slotTime;
+  if (timeField) timeField.value = "";
+  selectedSlotElements.forEach(el => {
+    el.classList.remove("selected");
+    el.classList.add("available");
+  });
+  selectedSlotElements = [];
+}
+
+function selectSlot(element, index, slotTime, bookedSlots) {
+  const appType = document.getElementById("appointmentType")?.value || "Initial";
+  
+  // Clear previous selection
+  selectedSlotElements.forEach(el => {
+    el.classList.remove("selected");
+    el.classList.add("available");
+  });
+  selectedSlotElements = [];
+
+  if (appType === "Initial") {
+    // 1 Hour requires 2 consecutive slots
+    const nextSlotDiv = document.querySelector(`.slot[data-index="${index + 1}"]`);
+    
+    if (!nextSlotDiv || nextSlotDiv.classList.contains("booked")) {
+      alert("Initial consultation requires 1 full hour (2 consecutive slots). The next slot is either booked or not available!");
+      return;
+    }
+
+    // Select current and next slot
+    element.classList.remove("available");
+    element.classList.add("selected");
+    nextSlotDiv.classList.remove("available");
+    nextSlotDiv.classList.add("selected");
+
+    selectedSlotElements = [element, nextSlotDiv];
+
+    const nextSlotTime = nextSlotDiv.dataset.time;
+    const timeField = document.getElementById("time");
+    if (timeField) {
+      timeField.value = `${slotTime} - ${nextSlotTime} (1 Hour)`;
+    }
+
+  } else {
+    // Follow-up requires 30 mins (1 slot)
+    element.classList.remove("available");
+    element.classList.add("selected");
+    selectedSlotElements = [element];
+
+    const timeField = document.getElementById("time");
+    if (timeField) {
+      timeField.value = `${slotTime} (30 Mins)`;
+    }
   }
 }
 
-// Function to handle appointment cancellation
 async function cancelAppointment(appointmentId) {
   if (!confirm("Are you sure you want to cancel this appointment?")) return;
 

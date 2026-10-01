@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Book Appointment - ClinicBook</title>
-
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -12,7 +11,6 @@
 
   <header>
     <div class="logo">🏥 ClinicBook</div>
-
     <nav>
       <a href="index.html">Home</a>
       <a href="booking.html">Book Appointment</a>
@@ -21,16 +19,12 @@
   </header>
 
   <main>
-
     <section class="booking-section">
-
       <div class="booking-card">
-
         <h1>Book an Appointment</h1>
         <p id="selectedClinicName">Loading clinic...</p>
 
         <form id="appointmentForm">
-
           <input type="hidden" id="clinicId">
 
           <div class="form-group">
@@ -41,41 +35,31 @@
           </div>
 
           <div class="form-group">
+            <label>Appointment Type *</label>
+            <select id="appointmentType" required onchange="handleTypeChange()">
+              <option value="Initial">Initial Consultation (12,000 PKR - 1 Hour / 2 Slots)</option>
+              <option value="Follow-up">Follow-up Consultation (8,000 PKR - 30 Mins / 1 Slot)</option>
+            </select>
+          </div>
+
+          <div class="form-group">
             <label>Patient Name *</label>
-            <input
-              type="text"
-              id="name"
-              placeholder="Enter your full name"
-              required
-            >
+            <input type="text" id="name" placeholder="Enter your full name" required>
           </div>
 
           <div class="form-group">
             <label>Phone Number *</label>
-            <input
-              type="tel"
-              id="phone"
-              placeholder="03XXXXXXXXX"
-              required
-            >
+            <input type="tel" id="phone" placeholder="03XXXXXXXXX" required>
           </div>
 
           <div class="form-group">
             <label>Age</label>
-            <input
-              type="number"
-              id="age"
-              placeholder="Enter your age"
-            >
+            <input type="number" id="age" placeholder="Enter your age">
           </div>
 
           <div class="form-group">
             <label>Select Date *</label>
-            <input
-              type="date"
-              id="date"
-              required
-            >
+            <input type="date" id="date" required>
           </div>
 
           <div class="form-group">
@@ -83,31 +67,20 @@
             <div id="slotContainer" class="slot-container">
               <p style="color: #666; font-size: 13px;">Please select a doctor and date first to view slots.</p>
             </div>
-            <!-- Hidden input to store selected time slot -->
             <input type="hidden" id="time" required>
           </div>
 
           <div class="form-group">
             <label>Problem / Note</label>
-            <textarea
-              id="problem"
-              rows="4"
-              placeholder="Write your problem (optional)"
-            ></textarea>
+            <textarea id="problem" rows="4" placeholder="Write your problem (optional)"></textarea>
           </div>
 
-          <button type="submit" class="submit-btn">
-            Book Appointment
-          </button>
-
+          <button type="submit" class="submit-btn">Book Appointment</button>
         </form>
 
         <div id="bookingMessage"></div>
-
       </div>
-
     </section>
-
   </main>
 
   <footer>
@@ -115,6 +88,5 @@
   </footer>
 
   <script src="script.js"></script>
-
 </body>
 </html>

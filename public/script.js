@@ -108,12 +108,31 @@ function handleAppointmentForm() {
       return;
     }
 
+    let clinicId = document.getElementById("clinicId")?.value;
+    if (!clinicId) {
+      clinicId = localStorage.getItem("selectedClinicId");
+    }
+    if (!clinicId) {
+      const params = new URLSearchParams(window.location.search);
+      clinicId = params.get("clinic");
+    }
+
+    if (!clinicId) {
+      if (bookingMessage) {
+        bookingMessage.textContent = "clinicId is not defined. Please select a clinic first.";
+        bookingMessage.className = "error-message";
+      } else {
+        alert("clinicId is not defined. Please select a clinic first.");
+      }
+      return;
+    }
+
     const nameInput = document.getElementById("name") || document.getElementById("patientName");
     const appType = document.getElementById("appointmentType")?.value || "Initial";
     const fee = appType === "Follow-up" ? 8000 : 12000;
 
     const appointmentData = {
-      clinicId: document.getElementById("clinicId")?.value,
+      clinicId: clinicId,
       doctorId: document.getElementById("doctorId")?.value,
       name: nameInput ? nameInput.value.trim() : "",
       phone: document.getElementById("phone")?.value.trim(),
@@ -148,10 +167,7 @@ function handleAppointmentForm() {
         }
 
         form.reset();
-        const clinicIdField = document.getElementById("clinicId");
-        if (clinicIdField) {
-          clinicIdField.value = appointmentData.clinicId;
-        }
+        localStorage.removeItem("selectedClinicId");
 
         setTimeout(() => {
           window.location.href = "index.html";
@@ -226,7 +242,7 @@ const DR_SHAKIL_SLOTS = [
 let selectedSlotElements = [];
 
 async function loadAvailableSlots() {
-  const clinicId = document.getElementById("clinicId")?.value;
+  const clinicId = document.getElementById("clinicId")?.value || localStorage.getItem("selectedClinicId");
   const doctorId = document.getElementById("doctorId")?.value;
   const date = document.getElementById("date")?.value;
   const slotContainer = document.getElementById("slotContainer");

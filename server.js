@@ -68,7 +68,7 @@ app.get("/api/doctors/:clinicId", (req, res) => {
 
 app.post("/api/appointments", async (req, res) => {
   try {
-   `const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body`;
+   const { clinicId, doctorId, name, phone, age, date, time, problem } = req.body;
 
     if (!clinicId || !doctorId || !name || !phone || !date || !time) {
       return res.status(400).json({

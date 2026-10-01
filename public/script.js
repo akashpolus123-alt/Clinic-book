@@ -38,20 +38,25 @@ async function loadBookingPage() {
   if (!form) return;
 
   const params = new URLSearchParams(window.location.search);
-  const clinicId = params.get("clinic");
+  let clinicId = params.get("clinic");
+
+  if (!clinicId) {
+    clinicId = localStorage.getItem("selectedClinicId");
+  }
 
   const clinicIdInput = document.getElementById("clinicId");
   const clinicNameElement = document.getElementById("selectedClinicName");
   const doctorSelect = document.getElementById("doctorId");
 
   if (!clinicId) {
-    if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic first.";
+    if (clinicNameElement) clinicNameElement.textContent = "Please select a clinic from the home page first.";
     if (doctorSelect) {
       doctorSelect.innerHTML = '<option value="">Select a clinic first</option>';
     }
     return;
   }
 
+  localStorage.setItem("selectedClinicId", clinicId);
   if (clinicIdInput) clinicIdInput.value = clinicId;
 
   try {
@@ -275,7 +280,6 @@ async function loadAvailableSlots() {
 }
 
 function handleTypeChange() {
-  // Jab appointment type change ho, toh selected slots reset kar dein taake dobara calculation theek ho
   const timeField = document.getElementById("time");
   if (timeField) timeField.value = "";
   selectedSlotElements.forEach(el => {
@@ -288,7 +292,6 @@ function handleTypeChange() {
 function selectSlot(element, index, slotTime, bookedSlots) {
   const appType = document.getElementById("appointmentType")?.value || "Initial";
   
-  // Clear previous selection
   selectedSlotElements.forEach(el => {
     el.classList.remove("selected");
     el.classList.add("available");
@@ -296,7 +299,6 @@ function selectSlot(element, index, slotTime, bookedSlots) {
   selectedSlotElements = [];
 
   if (appType === "Initial") {
-    // 1 Hour requires 2 consecutive slots
     const nextSlotDiv = document.querySelector(`.slot[data-index="${index + 1}"]`);
     
     if (!nextSlotDiv || nextSlotDiv.classList.contains("booked")) {
@@ -304,7 +306,6 @@ function selectSlot(element, index, slotTime, bookedSlots) {
       return;
     }
 
-    // Select current and next slot
     element.classList.remove("available");
     element.classList.add("selected");
     nextSlotDiv.classList.remove("available");
@@ -319,7 +320,6 @@ function selectSlot(element, index, slotTime, bookedSlots) {
     }
 
   } else {
-    // Follow-up requires 30 mins (1 slot)
     element.classList.remove("available");
     element.classList.add("selected");
     selectedSlotElements = [element];

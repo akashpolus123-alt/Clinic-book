@@ -25,22 +25,35 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function loadClinics() {
-    if (!clinicSelect) return;
+    const clinicsContainer = document.getElementById('clinicsContainer');
+    if (!clinicsContainer) return;
+    
     try {
         const response = await fetch('/api/clinics');
         const clinics = await response.json();
         
-        clinicSelect.innerHTML = '<option value="">Select Clinic</option>';
-        if (Array.isArray(clinics)) {
+        clinicsContainer.innerHTML = '';
+        if (Array.isArray(clinics) && clinics.length > 0) {
             clinics.forEach(clinic => {
-                const option = document.createElement('option');
-                option.value = clinic._id || clinic.id;
-                option.textContent = clinic.name || clinic.title;
-                clinicSelect.appendChild(option);
+                const clinicCard = document.createElement('div');
+                clinicCard.className = 'clinic-card';
+                clinicCard.style.cssText = "background: #fff; padding: 20px; margin-bottom: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);";
+                
+                const clinicId = clinic._id || clinic.id;
+                clinicCard.innerHTML = `
+                    <h3>${clinic.name || clinic.title}</h3>
+                    <p><strong>Address:</strong> ${clinic.address || 'N/A'}</p>
+                    <p><strong>Timing:</strong> ${clinic.timing || 'By Appointment'}</p>
+                    <a href="book.html?clinicId=${clinicId}" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 5px;">Book Appointment</a>
+                `;
+                clinicsContainer.appendChild(clinicCard);
             });
+        } else {
+            clinicsContainer.innerHTML = '<p>Koi clinic mojood nahi hai.</p>';
         }
     } catch (err) {
         console.error('Error loading clinics:', err);
+        clinicsContainer.innerHTML = '<p>Clinics load karne mein error aa gaya hai.</p>';
     }
 }
 

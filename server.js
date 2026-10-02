@@ -236,11 +236,8 @@ app.get("/api/booked-slots", async (req, res) => {
   }
 });
 
-// Server Listen Setup
-if (require.main === module) {
-  app.listen(PORT, () => {
-    console.log(`Clinic Booking App running on http://localhost:${PORT}`);
-  });
-}
+app.listen(PORT, () => {
+  console.log(`Clinic Booking App running on http://localhost:${PORT}`);
+});
 
 module.exports = app;

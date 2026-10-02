@@ -1,199 +1,213 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Dashboard - ClinicBook</title>
-  <style>
-    :root {
-      --primary: #2563eb;
-      --bg-color: #f8fafc;
-      --card-bg: #ffffff;
-      --text-main: #1e293b;
-      --border-color: #e2e8f0;
-      --success: #10b981;
-      --danger: #ef4444;
-      --warning: #f59e0b;
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-    body { background-color: var(--bg-color); color: var(--text-main); display: flex; flex-direction: column; min-height: 100vh; }
-    
-    /* Header */
-    header { background: var(--card-bg); border-bottom: 1px solid var(--border-color); padding: 16px 32px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-    header h1 { font-size: 20px; color: var(--primary); }
-    .header-right { display: flex; align-items: center; gap: 16px; }
-    #clinicNameDisplay { font-weight: 600; font-size: 15px; color: #475569; }
-    .logout-btn { background-color: var(--danger); color: white; border: none; padding: 8px 14px; border-radius: 6px; cursor: pointer; font-size: 14px; font-weight: 600; }
-    .logout-btn:hover { background-color: #dc2626; }
-
-    /* Main Container */
-    .container { max-width: 1200px; width: 100%; margin: 32px auto; padding: 0 16px; flex: 1; }
-    .card { background: var(--card-bg); border-radius: 12px; border: 1px solid var(--border-color); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05); overflow: hidden; }
-    .card-header { padding: 20px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center; }
-    .card-header h3 { font-size: 18px; font-weight: 600; }
-    
-    /* Table Styling */
-    .table-responsive { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; }
-    th, td { padding: 14px 20px; border-bottom: 1px solid var(--border-color); }
-    th { background-color: #f1f5f9; font-weight: 600; color: #475569; }
-    tr:hover { background-color: #f8fafc; }
-    
-    /* Badges & Buttons */
-    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; display: inline-block; }
-    .badge-initial { background: #dbeafe; color: #1e40af; }
-    .badge-followup { background: #fef3c7; color: #92400e; }
-    .badge-status { background: #e2e8f0; color: #334155; }
-    .badge-approved { background: #d1fae5; color: #065f46; }
-    
-    .action-btn { padding: 6px 12px; border: none; border-radius: 6px; cursor: pointer; font-size: 13px; font-weight: 600; margin-right: 6px; }
-    .btn-approve { background-color: var(--success); color: white; }
-    .btn-approve:hover { background-color: #059669; }
-    .btn-delete { background-color: var(--danger); color: white; }
-    .btn-delete:hover { background-color: #dc2626; }
-    
-    .empty-state { text-align: center; padding: 40px; color: #64748b; font-size: 15px; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinic Admin Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
+    <div class="container" style="max-width: 900px; margin-top: 30px; font-family: Arial, sans-serif;">
+        <h2>Clinic Admin Portal</h2>
+        
+        <!-- Login Form -->
+        <div id="loginSection" style="margin-top: 20px;">
+            <h3>Clinic Login</h3>
+            <form id="loginForm">
+                <div style="margin-bottom: 15px;">
+                    <label>Username:</label><br>
+                    <input type="text" id="username" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+                </div>
+                <div style="margin-bottom: 15px;">
+                    <label>Password:</label><br>
+                    <input type="password" id="password" required style="width: 100%; padding: 8px; box-sizing: border-box;">
+                </div>
+                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px;">Login</button>
+            </form>
+            <p id="errorMsg" style="color: red; margin-top: 10px;"></p>
+        </div>
 
-  <header>
-    <h1>🏥 ClinicBook Admin Portal</h1>
-    <div class="header-right">
-      <span id="clinicNameDisplay">Loading Clinic...</span>
-      <button class="logout-btn" onclick="logout()">Logout</button>
+        <!-- Dashboard Section -->
+        <div id="dashboardSection" style="display: none; margin-top: 20px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h3 id="clinicTitle" style="margin: 0;">Welcome</h3>
+                <button onclick="logout()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px;">Logout</button>
+            </div>
+
+            <!-- Summary Cards Section -->
+            <div id="statsSection" style="margin-bottom: 20px;">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Appointments</h4>
+                        <p id="totalCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Today's Appointments</h4>
+                        <p id="todayCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Search and Filter Controls -->
+            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                <input type="text" id="searchInput" placeholder="Search by name or phone..." onkeyup="filterAppointments()" style="flex: 2; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <input type="date" id="dateFilter" onchange="filterAppointments()" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                <button onclick="resetFilters()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; cursor: pointer; border-radius: 4px;">Reset</button>
+            </div>
+
+            <h4>Your Appointments</h4>
+            <div style="overflow-x: auto;">
+                <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; background: white;">
+                    <thead>
+                        <tr style="background: #f2f2f2;">
+                            <th style="padding: 10px;">Patient Name</th>
+                            <th style="padding: 10px;">Phone</th>
+                            <th style="padding: 10px;">Age</th>
+                            <th style="padding: 10px;">Date</th>
+                            <th style="padding: 10px;">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <!-- Appointments yahan load hongi -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
-  </header>
 
-  <div class="container">
-    <div class="card">
-      <div class="card-header">
-        <h3>Patient Appointments</h3>
-        <button onclick="loadAppointments()" style="background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 6px; cursor: pointer; font-size: 13px;">Refresh</button>
-      </div>
-      <div class="table-responsive">
-        <table>
-          <thead>
-            <tr>
-              <th>Sr. No.</th>
-              <th>Patient Name</th>
-              <th>Phone</th>
-              <th>Age</th>
-              <th>Date & Time</th>
-              <th>Type</th>
-              <th>Problem</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody id="appointmentsTableBody">
-            <tr>
-              <td colspan="9" class="empty-state">Loading appointments...</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-    </div>
-  </div>
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const loginSection = document.getElementById('loginSection');
+        const dashboardSection = document.getElementById('dashboardSection');
+        const errorMsg = document.getElementById('errorMsg');
+        const clinicTitle = document.getElementById('clinicTitle');
+        const appointmentsTableBody = document.getElementById('appointmentsTableBody');
 
-  <script>
-    // Check Authentication and Load Clinic Name
-    const clinicId = localStorage.getItem("adminClinicId");
-    const clinicName = localStorage.getItem("adminClinicName");
+        let allAppointments = [];
 
-    if (!clinicId) {
-      window.location.href = "login.html";
-    } else {
-      document.getElementById("clinicNameDisplay").textContent = clinicName || "Clinic Dashboard";
-    }
+        loginForm.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
 
-    async function loadAppointments() {
-      try {
-        const response = await fetch(`/api/clinic-appointments?clinicId=${clinicId}`);
-        const appointments = await response.json();
+            try {
+                const response = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ username, password })
+                });
+                const data = await response.json();
 
-        // Reverse-chronological sorting (Latest appointments first)
-        appointments.sort((a, b) => new Date(b.createdAt || 0) - new Date(a.createdAt || 0));
-
-        const tableBody = document.getElementById("appointmentsTableBody");
-        tableBody.innerHTML = "";
-
-        if (!appointments || appointments.length === 0) {
-          tableBody.innerHTML = `<tr><td colspan="9" class="empty-state">Koi appointment mojood nahi hai.</td></tr>`;
-          return;
-        }
-
-        appointments.forEach((apt, index) => {
-          const typeClass = apt.type === 'Follow-up' ? 'badge-followup' : 'badge-initial';
-          const statusClass = apt.status === 'Approved' ? 'badge-approved' : 'badge-status';
-
-          tableBody.innerHTML += `
-            <tr>
-              <td><strong>${index + 1}</strong></td>
-              <td>${apt.name}</td>
-              <td>${apt.phone}</td>
-              <td>${apt.age || 'N/A'}</td>
-              <td>${apt.date} (${apt.time})</td>
-              <td><span class="badge ${typeClass}">${apt.type || 'Initial'}</span></td>
-              <td>${apt.problem || 'N/A'}</td>
-              <td><span class="badge ${statusClass}">${apt.status || 'Pending'}</span></td>
-              <td>
-                <button class="action-btn btn-approve" onclick="updateStatus('${apt.id}', 'Approved')">Approve</button>
-                <button class="action-btn btn-delete" onclick="deleteAppointment('${apt.id}')">Delete</button>
-              </td>
-            </tr>
-          `;
+                if (data.success) {
+                    localStorage.setItem('clinicId', data.clinicId);
+                    localStorage.setItem('clinicName', data.clinicName);
+                    showDashboard(data.clinicId, data.clinicName);
+                } else {
+                    errorMsg.textContent = data.message || 'Invalid Credentials';
+                }
+            } catch (err) {
+                errorMsg.textContent = 'Server connection error!';
+            }
         });
-      } catch (error) {
-        console.error("Error loading appointments:", error);
-      }
-    }
 
-    async function updateStatus(id, status) {
-      try {
-        const res = await fetch(`/api/appointments/${id}`, {
-          method: "PUT",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status })
-        });
-        const data = await res.json();
-        if (data.success) {
-          loadAppointments();
-        } else {
-          alert("Update fail ho gaya!");
+        function showDashboard(clinicId, clinicName) {
+            loginSection.style.display = 'none';
+            dashboardSection.style.display = 'block';
+            clinicTitle.textContent = 'Welcome, ' + clinicName;
+            loadAppointments(clinicId);
         }
-      } catch (err) {
-        console.error("Error updating status:", err);
-      }
-    }
 
-    async function deleteAppointment(id) {
-      if (confirm("Kya aap waqai is appointment ko delete karna chahte hain?")) {
-        try {
-          const res = await fetch(`/api/appointments/${id}, { method: "DELETE" }`);
-          const data = await res.json();
-          if (data.success) {
-            loadAppointments();
-          } else {
-            alert("Delete fail ho gaya!");
-          }
-        } catch (err) {
-          console.error("Error deleting appointment:", err);
+        async function loadAppointments(clinicId) {
+            try {
+                const response = await fetch('/api/clinic-appointments?clinicId=' + clinicId);
+                const data = await response.json();
+                
+                allAppointments = Array.isArray(data) ? data : [];
+                displayAppointments(allAppointments);
+            } catch (err) {
+                console.error('Error loading appointments:', err);
+                allAppointments = [];
+                displayAppointments([]);
+            }
         }
-      }
-    }
 
-    function logout() {
-      localStorage.removeItem("adminClinicId");
-      localStorage.removeItem("adminClinicName");
-      window.location.href = "login.html";
-    }
+        function displayAppointments(appointments) {
+            document.getElementById('totalCount').textContent = allAppointments.length;
+            const todayStr = new Date().toISOString().split('T')[0];
+            const todayAppointments = allAppointments.filter(function(app) {
+                return app.date === todayStr;
+            });
+            document.getElementById('todayCount').textContent = todayAppointments.length;
 
-    // Initial Load & Auto-refresh every 5 seconds
-    document.addEventListener("DOMContentLoaded", () => {
-      loadAppointments();
-      setInterval(loadAppointments, 5000);
-    });
-  </script>
+            appointmentsTableBody.innerHTML = '';
+            if (!appointments || appointments.length === 0) {
+                appointmentsTableBody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center; color: #666;">No appointments found.</td></tr>';
+                return;
+            }
+
+            appointments.forEach(function(app, index) {
+                const currentStatus = app.status || 'Pending';
+                let badgeColor = '#ffc107'; 
+                if (currentStatus === 'Confirmed') badgeColor = '#17a2b8'; 
+                if (currentStatus === 'Completed') badgeColor = '#28a745'; 
+
+                const row = '<tr>' +
+                    '<td style="padding: 10px;">' + app.name + '</td>' +
+                    '<td style="padding: 10px;">' + app.phone + '</td>' +
+                    '<td style="padding: 10px;">' + (app.age || '-') + '</td>' +
+                    '<td style="padding: 10px;">' + (app.date || 'N/A') + '</td>' +
+                    '<td style="padding: 10px;">' +
+                        '<span style="padding: 4px 8px; border-radius: 4px; background: ' + badgeColor + '; color: white; font-size: 12px; margin-right: 5px; display: inline-block;">' + currentStatus + '</span>' +
+                        '<select onchange="updateStatus(' + index + ', this.value)" style="padding: 4px; border-radius: 4px; border: 1px solid #ccc;">' +
+                            '<option value="Pending" ' + (currentStatus === 'Pending' ? 'selected' : '') + '>Pending</>'+
+                            '<option value="Confirmed" ' + (currentStatus === 'Confirmed' ? 'selected' : '') + '>Confirmed</option>' +
+                            '<option value="Completed" ' + (currentStatus === 'Completed' ? 'selected' : '') + '>Completed</option>' +
+                        '</select>' +
+                    '</td>' +
+                '</tr>';
+                appointmentsTableBody.innerHTML += row;
+            });
+        }
+
+        function filterAppointments() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const selectedDate = document.getElementById('dateFilter').value;
+
+            const filtered = allAppointments.filter(function(app) {
+                const matchesSearch = (app.name && app.name.toLowerCase().includes(searchText)) || 
+                                      (app.phone && app.phone.includes(searchText));
+                const matchesDate = selectedDate ? app.date === selectedDate : true;
+                return matchesSearch && matchesDate;
+            });
+
+            displayAppointments(filtered);
+        }
+
+        function resetFilters() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('dateFilter').value = '';
+            displayAppointments(allAppointments);
+        }
+
+        function updateStatus(index, newStatus) {
+            allAppointments[index].status = newStatus;
+            displayAppointments(allAppointments);
+        }
+
+        function logout() {
+            localStorage.clear();
+            dashboardSection.style.display = 'none';
+            loginSection.style.display = 'block';
+            loginForm.reset();
+        }
+
+        window.onload = function() {
+            const savedClinicId = localStorage.getItem('clinicId');
+            const savedClinicName = localStorage.getItem('clinicName');
+            if (savedClinicId) {
+                showDashboard(savedClinicId, savedClinicName);
+            }
+        };
+    </script>
 </body>
 </html>

@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const path = require("path");
 const nodemailer = require("nodemailer");
+const fs = require("fs");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -9,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// MongoDB Connection (Vercel environment variable MONGODB_URI use hogi)
+// MongoDB Connection (Railway environment variable MONGODB_URI use hogi)
 const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/clinicbook";
 
 mongoose.connect(MONGO_URI)
@@ -35,7 +36,7 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 
-// Nodemailer Transporter Setup (Gmail)[span_1](start_span)[span_1](end_span)
+// Nodemailer Transporter Setup (Gmail)
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -44,7 +45,6 @@ const transporter = nodemailer.createTransport({
   }
 });
 
-const fs = require("fs");
 const clinicsFile = path.join(__dirname, "data", "clinics.json");
 const doctorsFile = path.join(__dirname, "data", "doctors.json");
 
@@ -59,7 +59,7 @@ function readJSON(file) {
   }
 }
 
-// 1. Clinics API Route[span_2](start_span)[span_2](end_span)
+// 1. Clinics API Route
 app.get("/api/clinics", (req, res) => {
   try {
     const clinics = readJSON(clinicsFile);
@@ -69,7 +69,7 @@ app.get("/api/clinics", (req, res) => {
   }
 });
 
-// 2. Doctors by Clinic API Route[span_3](start_span)[span_3](end_span)
+// 2. Doctors by Clinic API Route
 app.get("/api/doctors/:clinicId", (req, res) => {
   try {
     const doctors = readJSON(doctorsFile);
@@ -111,7 +111,7 @@ app.post("/api/appointments", async (req, res) => {
 
     await newAppointment.save();
 
-    // Send Email Notification to Clinic / Doctor[span_4](start_span)[span_4](end_span)
+    // Send Email Notification to Clinic / Doctor
     const mailOptions = {
       from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
       to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
@@ -147,7 +147,7 @@ app.get("/api/appointments", async (req, res) => {
   }
 });
 
-// 5. Clinic Admin Login Route[span_5](start_span)[span_5](end_span)
+// 5. Clinic Admin Login Route
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
@@ -218,17 +218,14 @@ app.delete("/api/appointments/:id", async (req, res) => {
   }
 });
 
-// 9. Get Booked Slots (MongoDB)
+// 9. Get Booked Slots (MongoDB) - Updated & Safe Query
 app.get("/api/booked-slots", async (req, res) => {
   try {
     const { clinicId, doctorId, date } = req.query;
-    const appointments = await Appointment.find({
-      clinicId,
-      doctorId,
-      date,
-      status: { $ne: "Cancelled" }
-    });
+    const query = { clinicId, date, status: { $ne: "Cancelled" } };
+    if (doctorId) query.doctorId = doctorId;
 
+    const appointments = await Appointment.find(query);
     const bookedSlots = appointments.map(item => item.time);
     res.json(bookedSlots);
   } catch (error) {

@@ -16,14 +16,25 @@ let selectedSlotTime = null;
 let selectedSlotElement = null;
 
 const slotContainer = document.getElementById('slotContainer');
-const clinicSelect = document.getElementById('clinicSelect');
-const dateInput = document.getElementById('dateInput');
+const clinicIdInput = document.getElementById('clinicId');
+const selectedClinicName = document.getElementById('selectedClinicName');
+const doctorSelect = document.getElementById('doctorId');
+const dateInput = document.getElementById('date');
 
-// Automatically Load Clinics when the page opens
+// Automatically Load Data on Page Load
 document.addEventListener('DOMContentLoaded', async () => {
-    await loadClinics();
+    const clinicsContainer = document.getElementById('clinicsContainer');
+    if (clinicsContainer) {
+        await loadClinics();
+    }
+
+    const appointmentForm = document.getElementById('appointmentForm');
+    if (appointmentForm) {
+        await initBookingPage();
+    }
 });
 
+// Load Clinics on Home Page
 async function loadClinics() {
     const clinicsContainer = document.getElementById('clinicsContainer');
     if (!clinicsContainer) return;
@@ -57,20 +68,50 @@ async function loadClinics() {
     }
 }
 
-// Event Listeners for Dynamic Slot Loading
-if (clinicSelect && dateInput) {
-    clinicSelect.addEventListener('change', loadAvailableSlots);
+// Initialize Booking Page details from URL parameters
+async function initBookingPage() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const clinicId = urlParams.get('clinicId');
+
+    if (clinicIdInput && clinicId) {
+        clinicIdInput.value = clinicId;
+    }
+
+    try {
+        const response = await fetch('/api/clinics');
+        const clinics = await response.json();
+        
+        if (Array.isArray(clinics)) {
+            const currentClinic = clinics.find(c => (c._id === clinicId || c.id === clinicId));
+            if (currentClinic && selectedClinicName) {
+                selectedClinicName.textContent = currentClinic.name || currentClinic.title;
+            } else if (selectedClinicName) {
+                selectedClinicName.textContent = "Professorial Clinic - Psychological Medicine & Neuro Psychiatry";
+            }
+        }
+    } catch (err) {
+        console.error('Error fetching clinic details:', err);
+    }
+
+    // Load Doctors dropdown
+    if (doctorSelect) {
+        doctorSelect.innerHTML = '<option value="professorial-clinic">Prof. Dr. Shakil Jehangir Malik</option>';
+    }
+}
+
+// Event Listeners for Date change to load slots
+if (dateInput) {
     dateInput.addEventListener('change', loadAvailableSlots);
 }
 
 async function loadAvailableSlots() {
-    if (!slotContainer || !clinicSelect || !dateInput) return;
+    if (!slotContainer || !dateInput) return;
     
     slotContainer.innerHTML = '';
-    const clinicId = clinicSelect.value;
+    const clinicId = clinicIdInput ? clinicIdInput.value : 'professorial-clinic';
     const selectedDate = dateInput.value;
 
-    if (!clinicId || !selectedDate) {
+    if (!selectedDate) {
         return;
     }
 
@@ -112,16 +153,16 @@ function selectSlot(element, index, time) {
     selectedSlotElement.classList.add("selected");
     selectedSlotTime = time;
 
-    const timeInput = document.getElementById('selectedTimeInput');
+    const timeInput = document.getElementById('time');
     if (timeInput) {
         timeInput.value = time;
     }
 }
 
 // Appointment Booking Form Submission Handler
-const bookingForm = document.getElementById('bookingForm');
-if (bookingForm) {
-    bookingForm.addEventListener('submit', async function(e) {
+const appointmentForm = document.getElementById('appointmentForm');
+if (appointmentForm) {
+    appointmentForm.addEventListener('submit', async function(e) {
         e.preventDefault();
 
         if (!selectedSlotTime) {
@@ -129,24 +170,26 @@ if (bookingForm) {
             return;
         }
 
-        const clinicId = clinicSelect ? clinicSelect.value : '';
+        const clinicId = clinicIdInput ? clinicIdInput.value : 'professorial-clinic';
+        const doctorId = doctorSelect ? doctorSelect.value : 'professorial-clinic';
         const date = dateInput ? dateInput.value : '';
-        const name = document.getElementById('patientName') ? document.getElementById('patientName').value : '';
-        const phone = document.getElementById('patientPhone') ? document.getElementById('patientPhone').value : '';
-        const age = document.getElementById('patientAge') ? document.getElementById('patientAge').value : '';
-        const problem = document.getElementById('patientProblem') ? document.getElementById('patientProblem').value : '';
+        const name = document.getElementById('name') ? document.getElementById('name').value : '';
+        const phone = document.getElementById('phone') ? document.getElementById('phone').value : '';
+        const age = document.getElementById('age') ? document.getElementById('age').value : '';
+        const problem = document.getElementById('problem') ? document.getElementById('problem').value : '';
         const type = document.getElementById('appointmentType') ? document.getElementById('appointmentType').value : 'Initial';
+        const fee = type === 'Follow-up' ? 8000 : 12000;
 
         const appointmentData = {
             clinicId: clinicId,
-            doctorId: 'professorial-clinic',
+            doctorId: doctorId,
             name: name,
             phone: phone,
             age: age,
             date: date,
             time: selectedSlotTime,
             type: type,
-            fee: 12000,
+            fee: fee,
             problem: problem
         };
 
@@ -158,7 +201,7 @@ if (bookingForm) {
             });
             const result = await response.json();
 
-            if (result.success) {
+            if (result.success || response.ok) {
                 alert('Appointment booked successfully!');
                 window.location.reload();
             } else {

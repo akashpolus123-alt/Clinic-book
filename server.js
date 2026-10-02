@@ -241,4 +241,3 @@ module.exports = app;
   app.listen(PORT, () => {
     console.log(`Clinic Booking App running on http://localhost:${PORT}`);
   });
-}

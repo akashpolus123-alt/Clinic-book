@@ -19,6 +19,31 @@ const slotContainer = document.getElementById('slotContainer');
 const clinicSelect = document.getElementById('clinicSelect');
 const dateInput = document.getElementById('dateInput');
 
+// Automatically Load Clinics when the page opens
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadClinics();
+});
+
+async function loadClinics() {
+    if (!clinicSelect) return;
+    try {
+        const response = await fetch('/api/clinics');
+        const clinics = await response.json();
+        
+        clinicSelect.innerHTML = '<option value="">Select Clinic</option>';
+        if (Array.isArray(clinics)) {
+            clinics.forEach(clinic => {
+                const option = document.createElement('option');
+                option.value = clinic._id || clinic.id;
+                option.textContent = clinic.name || clinic.title;
+                clinicSelect.appendChild(option);
+            });
+        }
+    } catch (err) {
+        console.error('Error loading clinics:', err);
+    }
+}
+
 // Event Listeners for Dynamic Slot Loading
 if (clinicSelect && dateInput) {
     clinicSelect.addEventListener('change', loadAvailableSlots);
@@ -40,7 +65,6 @@ async function loadAvailableSlots() {
         const response = await fetch('/api/booked-slots?clinicId=' + clinicId + '&date=' + selectedDate);
         const bookedSlotsData = await response.json();
         
-        // Ensure bookedSlotsArray is always a valid array to prevent .includes errors
         const bookedSlotsArray = Array.isArray(bookedSlotsData) ? bookedSlotsData : [];
 
         DR_SHAKIL_SLOTS.forEach((slotTime, index) => {

@@ -270,6 +270,7 @@ async function loadAvailableSlots() {
   try {
     const response = await fetch(`/api/booked-slots?clinicId=${clinicId}&doctorId=${doctorId}&date=${date}`);
     const bookedSlots = await response.json();
+const bookedArray = Array.isArray(bookedSlots) ? bookedSlots : [];
 
     DR_SHAKIL_SLOTS.forEach((slotTime, index) => {
       const slotDiv = document.createElement("div");
@@ -278,13 +279,13 @@ async function loadAvailableSlots() {
       slotDiv.dataset.index = index;
       slotDiv.dataset.time = slotTime;
 
-      if (bookedSlots.includes(slotTime)) {
-        slotDiv.classList.add("booked");
-        slotDiv.textContent += " (Booked)";
-      } else {
-        slotDiv.classList.add("available");
-        slotDiv.onclick = () => selectSlot(slotDiv, index, slotTime, bookedSlots);
-      }
+     if (bookedArray.includes(slotTime)) {
+    slotDiv.classList.add("booked");
+    slotDiv.textContent += " (Booked)";
+} else {
+    slotDiv.classList.add("available");
+    slotDiv.onclick = () => selectSlot(slotDiv, index, slotTime);
+}
 
       slotContainer.appendChild(slotDiv);
     });

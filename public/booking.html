@@ -1,92 +1,202 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Book Appointment - ClinicBook</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment - Clinic</title>
+    <style>
+        body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
+        .container { max-width: 600px; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
+        h2 { text-align: center; color: #333; }
+        .form-group { margin-bottom: 20px; }
+        label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
+        select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
+        .slots-container { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 10px; }
+        .slot-btn { padding: 10px 15px; border: 1px solid #007bff; background: #fff; color: #007bff; border-radius: 5px; cursor: pointer; font-size: 14px; transition: all 0.2s; }
+        .slot-btn:hover { background: #007bff; color: #fff; }
+        .slot-btn.selected { background: #28a745; color: #fff; border-color: #28a745; }
+        .error-msg { color: red; font-weight: bold; margin-top: 5px; font-size: 14px; }
+        .submit-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 5px; cursor: pointer; }
+        .submit-btn:hover { background: #218838; }
+    </style>
 </head>
-
 <body>
 
-  <header>
-    <div class="logo">🏥 ClinicBook</div>
-    <nav>
-      <a href="index.html">Home</a>
-      <a href="booking.html">Book Appointment</a>
-      <a href="admin.html">Admin</a>
-    </nav>
-  </header>
-
-  <main>
-    <section class="booking-section">
-      <div class="booking-card">
-        <h1>Book an Appointment</h1>
-        <p id="selectedClinicName">Loading clinic...</p>
-
-        <form id="appointmentForm">
-          <input type="hidden" id="clinicId">
-
-          <div class="form-group">
+<div class="container">
+    <h2>Book Appointment</h2>
+    <form id="bookingForm" onsubmit="submitAppointment(event)">
+        
+        <div class="form-group">
             <label>Select Doctor *</label>
-            <select id="doctorId" required>
-              <option value="">Loading doctors...</option>
+            <select id="doctorSelect" required>
+                <option value="Prof. Dr. Shakil Jehangir Malik">Prof. Dr. Shakil Jehangir Malik</option>
             </select>
-          </div>
+        </div>
 
-          <div class="form-group">
+        <div class="form-group">
             <label>Appointment Type *</label>
-            <select id="appointmentType" required onchange="handleTypeChange()">
-              <option value="Initial">Initial Consultation (12,000 PKR - 1 Hour / 2 Slots)</option>
-              <option value="Follow-up">Follow-up Consultation (8,000 PKR - 30 Mins / 1 Slot)</option>
+            <select id="appointmentType" onchange="handleTypeChange()" required>
+                <option value="Initial Consultation">Initial Consultation (1 Hour / 60 Mins)</option>
+                <option value="Follow-up Consultation">Follow-up Consultation (30 Mins)</option>
             </select>
-          </div>
+        </div>
 
-          <div class="form-group">
+        <div class="form-group">
             <label>Patient Name *</label>
-            <input type="text" id="name" placeholder="Enter your full name" required>
-          </div>
+            <input type="text" id="patientName" required placeholder="Enter full name">
+        </div>
 
-          <div class="form-group">
+        <div class="form-group">
             <label>Phone Number *</label>
-            <input type="tel" id="phone" placeholder="03XXXXXXXXX" required>
-          </div>
+            <input type="text" id="phoneNumber" required placeholder="03XXXXXXXXX">
+        </div>
 
-          <div class="form-group">
-            <label>Age</label>
-            <input type="number" id="age" placeholder="Enter your age">
-          </div>
+        <div class="form-group">
+            <label>Age *</label>
+            <input type="number" id="age" required placeholder="Enter age">
+        </div>
 
-          <div class="form-group">
-            <label>Select Date *</label>
-            <input type="date" id="date" required>
-          </div>
+        <div class="form-group">
+            <label>Select Date * (Only Tuesday & Saturday)</label>
+            <input type="date" id="selectDate" onchange="handleDateChange()" required>
+            <div id="availabilityMessage" class="error-msg"></div>
+        </div>
 
-          <div class="form-group">
+        <div class="form-group">
             <label>Select Time Slot *</label>
-            <div id="slotContainer" class="slot-container">
-              <p style="color: #666; font-size: 13px;">Please select a doctor and date first to view slots.</p>
-            </div>
-            <input type="hidden" id="time" required>
-          </div>
+            <div id="timeSlotsContainer" class="slots-container"></div>
+            <input type="hidden" id="selectedSlotInput" required>
+        </div>
 
-          <div class="form-group">
-            <label>Problem / Note</label>
-            <textarea id="problem" rows="4" placeholder="Write your problem (optional)"></textarea>
-          </div>
+        <button type="submit" class="submit-btn">Book Appointment</button>
+    </form>
+</div>
 
-          <button type="submit" class="submit-btn">Book Appointment</button>
-        </form>
+<script>
+    function handleTypeChange() {
+        generateTimeSlots();
+    }
 
-        <div id="bookingMessage"></div>
-      </div>
-    </section>
-  </main>
+    function handleDateChange() {
+        const dateInput = document.getElementById('selectDate');
+        const msgElement = document.getElementById('availabilityMessage');
+        const slotsContainer = document.getElementById('timeSlotsContainer');
+        
+        if (!dateInput || !dateInput.value) return;
+        
+        const selectedDate = new Date(dateInput.value);
+        const dayOfWeek = selectedDate.getDay(); // 2 = Tuesday, 6 = Saturday
+        
+        // Agar Tuesday (2) ya Saturday (6) ke ilawa koi aur din ho
+        if (dayOfWeek !== 2 && dayOfWeek !== 6) {
+            msgElement.innerText = "Doctor sirf Tuesday aur Saturday ko available hain.";
+            if (slotsContainer) slotsContainer.innerHTML = ''; 
+            return;
+        }
+        
+        msgElement.innerText = "";
+        generateTimeSlots();
+    }
 
-  <footer>
-    <p>© 2026 ClinicBook. All rights reserved.</p>
-  </footer>
+    function generateTimeSlots() {
+        const dateInput = document.getElementById('selectDate');
+        if (!dateInput || !dateInput.value) return;
+        
+        const selectedDate = new Date(dateInput.value);
+        const dayOfWeek = selectedDate.getDay();
+        if (dayOfWeek !== 2 && dayOfWeek !== 6) return;
 
-  <script src="script.js"></script>
+        const appointmentTypeSelect = document.getElementById('appointmentType');
+        const isInitial = appointmentTypeSelect && appointmentTypeSelect.value.includes('Initial');
+        const slotDuration = isInitial ? 60 : 30; // Initial = 60 mins, Follow-up = 30 mins
+        
+        // Timing: 11:00 AM (11 * 60 = 660 mins) se 6:00 PM (18 * 60 = 1080 mins)
+        const startHour = 11;
+        const endHour = 18; 
+        
+        let currentTime = startHour * 60;
+        const endTime = endHour * 60;
+        
+        const slotsContainer = document.getElementById('timeSlotsContainer');
+        if (!slotsContainer) return;
+        slotsContainer.innerHTML = ''; 
+        
+        while (currentTime < endTime) {
+            // Break time check: 12:30 PM (750 mins) se 1:00 PM (780 mins)
+            if (currentTime >= 750 && currentTime < 780) {
+                currentTime = 780;
+                continue;
+            }
+
+            let nextTime = currentTime + slotDuration;
+
+            // Agar 1 ghante ka slot 12:00 par shuru ho toh break se takrata hai, usay handle karein
+            if (slotDuration === 60 && currentTime === 720) { // 12:00 PM = 720 mins
+                nextTime = 750; // 12:30 tak karein ya skip karein
+            }
+
+            let slotStartHour = Math.floor(currentTime / 60);
+            let slotStartMin = currentTime % 60;
+            let slotEndHour = Math.floor(nextTime / 60);
+            let slotEndMin = nextTime % 60;
+            
+            let startTimeFormatted = formatTimeToAMPM(slotStartHour, slotStartMin);
+            let endTimeFormatted = formatTimeToAMPM(slotEndHour, slotEndMin);
+            
+            let slotButton = document.createElement('button');
+            slotButton.type = 'button';
+            slotButton.className = 'slot-btn';
+            slotButton.innerText = `${startTimeFormatted} - ${endTimeFormatted}`;
+            
+            slotButton.onclick = function() {
+                document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+                slotButton.classList.add('selected');
+                document.getElementById('selectedSlotInput').value = slotButton.innerText;
+            };
+            
+            slotsContainer.appendChild(slotButton);
+            currentTime = nextTime;
+        }
+    }
+
+    function formatTimeToAMPM(hour, min) {
+        let ampm = hour >= 12 ? 'PM' : 'AM';
+        let formattedHour = hour % 12;
+        formattedHour = formattedHour ? formattedHour : 12;
+        let formattedMin = min < 10 ? '0' + min : min;
+        return `${formattedHour}:${formattedMin} ${ampm}`;
+    }
+
+    function submitAppointment(event) {
+        event.preventDefault();
+        
+        const bookingData = {
+            doctor: document.getElementById('doctorSelect').value,
+            type: document.getElementById('appointmentType').value,
+            patientName: document.getElementById('patientName').value,
+            phone: document.getElementById('phoneNumber').value,
+            age: document.getElementById('age').value,
+            date: document.getElementById('selectDate').value,
+            timeSlot: document.getElementById('selectedSlotInput').value
+        };
+
+        // Backend API par data bhejne ke liye fetch request
+        fetch('/api/appointments', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(bookingData)
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert('Appointment successfully book ho gayi aur dashboard par save ho gayi hai!');
+            window.location.reload();
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            alert('Appointment book karne mein masla aaya hai. Baraye meharbani dobara koshish karein.');
+        });
+    }
+</script>
+
 </body>
 </html>

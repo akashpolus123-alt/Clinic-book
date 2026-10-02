@@ -238,7 +238,6 @@ app.get("/api/booked-slots", async (req, res) => {
 
 module.exports = app;
 
-if (process.env.NODE_ENV !== "production") {
   app.listen(PORT, () => {
     console.log(`Clinic Booking App running on http://localhost:${PORT}`);
   });

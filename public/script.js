@@ -44,7 +44,7 @@ async function loadClinics() {
                     <h3>${clinic.name || clinic.title}</h3>
                     <p><strong>Address:</strong> ${clinic.address || 'N/A'}</p>
                     <p><strong>Timing:</strong> ${clinic.timing || 'By Appointment'}</p>
-                    <a href="book.html?clinicId=${clinicId}" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 5px;">Book Appointment</a>
+                    <a href="booking.html?clinicId=${clinicId}" style="display: inline-block; margin-top: 10px; padding: 8px 15px; background: #2563eb; color: #fff; text-decoration: none; border-radius: 5px;">Book Appointment</a>
                 `;
                 clinicsContainer.appendChild(clinicCard);
             });

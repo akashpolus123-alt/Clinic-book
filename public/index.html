@@ -1,50 +1,132 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ClinicBook - Find & Book Clinics</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
+    <link rel="stylesheet" href="style.css">
 </head>
+<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f6f9;">
 
-<body>
+    <!-- Header -->
+    <header style="background: #ffffff; padding: 15px 8%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
+        <div style="font-size: 24px; font-weight: bold; color: #007bff;">NSF</div>
+        <nav style="display: flex; gap: 20px;">
+            <a href="index.html" style="text-decoration: none; color: #333; font-weight: bold;">Home</a>
+            <a href="track-booking.html" style="text-decoration: none; color: #666;">My Appointments</a>
+            <a href="admin.html" style="text-decoration: none; color: #666;">Admin Dashboard</a>
+        </nav>
+    </header>
 
- <header>
-  <div class="logo">
-    <a href="index.html">🏥 ClinicBook</a>
-  </div>
-  <nav>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="track-booking.html">My Appointments</a></li>
-      <li><a href="admin.html" class="admin-btn">Admin Dashboard</a></li>
-    </ul>
-  </nav>
-</header>
-
-  <main>
-    <section class="hero">
-      <h1>Find the Right Clinic</h1>
-      <p>Choose a clinic and book your appointment easily.</p>
+    <!-- Hero Section -->
+    <section style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 40px 8%; text-align: center;">
+        <h1 style="margin: 0; font-size: 32px;">NSF Clinic</h1>
+        <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Psychological Medicine & Neuro Psychiatry</p>
+        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Prof. Dr. Shakil Jehangir Malik</p>
     </section>
 
-    <section class="clinics-section">
-      <h2>Available Clinics</h2>
+    <!-- Main Content & Direct Booking Form -->
+    <main style="max-width: 800px; margin: 30px auto; padding: 0 20px;">
+        
+        <!-- Clinic Info Box -->
+        <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;">
+            <h3 style="margin-top: 0; color: #333;">Clinic Information</h3>
+            <p style="margin: 8px 0; color: #555;"><strong>Address:</strong> House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi</p>
+            <p style="margin: 8px 0; color: #555;"><strong>Specialist:</strong> Prof. Dr. Shakil Jehangir Malik</p>
+            <p style="margin: 8px 0; color: #28a745; font-size: 14px;"><strong>Payment Policy:</strong> 20% online advance payment required for confirmation (100 PKR platform fee).</p>
+        </div>
 
-      <div class="search-container" style="margin: 15px 0; padding: 0 15px;">
-        <input type="text" id="clinicSearch" placeholder="🔍 Search clinic by name or location..." style="width: 100%; padding: 12px 15px; font-size: 14px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; background: #f8fafc;">
-      </div>
+        <!-- Booking Form Card -->
+        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
+            <h2 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">Book Your Appointment</h2>
+            
+            <form id="bookingForm">
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Full Name:</label>
+                    <input type="text" id="patientName" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
 
-      <div id="clinicsContainer" class="clinics-grid">
-        <p>Loading clinics...</p>
-      </div>
-    </section>
-  </main>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone Number:</label>
+                    <input type="tel" id="patientPhone" required placeholder="03XXXXXXXXX" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                </div>
 
-  <footer>
-    <p>© 2026 ClinicBook. All rights reserved.</p>
-  </footer>
+                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Age:</label>
+                        <input type="number" id="patientAge" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                    <div style="flex: 1;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Appointment Date:</label>
+                        <input type="date" id="appointmentDate" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    </div>
+                </div>
 
-  <script src="script.js"></script>
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Time Slot:</label>
+                    <select id="appointmentTime" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
+                        <option value="">Select Time</option>
+                        <option value="10:00 AM">10:00 AM</option>
+                        <option value="11:00 AM">11:00 AM</option>
+                        <option value="12:00 PM">12:00 PM</option>
+                        <option value="05:00 PM">05:00 PM</option>
+                        <option value="06:00 PM">06:00 PM</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Problem / Symptoms:</label>
+                    <textarea id="patientProblem" rows="3" placeholder="Briefly describe your issue..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></textarea>
+                </div>
+
+                <button type="submit" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Confirm Booking</button>
+            </form>
+            <p id="responseMsg" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
+        </div>
+
+    </main>
+
+    <!-- Script to handle direct booking submission -->
+    <script>
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const bookingData = {
+                clinicId: 'professorial-clinic', // Dedicated clinic ID for NSF
+                doctorId: 'doc-shakil',          // Dr. Shakil Jehangir Malik
+                name: document.getElementById('patientName').value,
+                phone: document.getElementById('patientPhone').value,
+                age: document.getElementById('patientAge').value,
+                date: document.getElementById('appointmentDate').value,
+                time: document.getElementById('appointmentTime').value,
+                problem: document.getElementById('patientProblem').value
+            };
+
+            const msgBox = document.getElementById('responseMsg');
+            msgBox.style.color = '#333';
+            msgBox.textContent = 'Submitting appointment...';
+
+            try {
+                const response = await fetch('/api/appointments', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(bookingData)
+                });
+                const result = await response.json();
+
+                if (result.success || response.ok) {
+                    msgBox.style.color = '#28a745';
+                    msgBox.textContent = 'Appointment booked successfully for NSF Clinic!';
+                    document.getElementById('bookingForm').reset();
+                } else {
+                    msgBox.style.color = '#dc3545';
+                    msgBox.textContent = result.message || 'Failed to book appointment.';
+                }
+            } catch (err) {
+                msgBox.style.color = '#dc3545';
+                msgBox.textContent = 'Server connection error!';
+            }
+        });
+    </script>
 </body>
 </html>

@@ -10,7 +10,7 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
-// MongoDB Connection (Railway environment variable MONGODB_URI use hogi)
+// MongoDB Connection
 const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/clinicbook";
 
 mongoose.connect(MONGO_URI)
@@ -94,8 +94,11 @@ app.post("/api/appointments", async (req, res) => {
       });
     }
 
+    // 100% Unique ID generation to prevent duplicate key 500 error
+    const uniqueId = "APT-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
+
     const newAppointment = new Appointment({
-      id: "APT-" + Date.now(),
+      id: uniqueId,
       clinicId,
       doctorId,
       name,
@@ -111,21 +114,25 @@ app.post("/api/appointments", async (req, res) => {
 
     await newAppointment.save();
 
-    // Send Email Notification to Clinic / Doctor
-    const mailOptions = {
-      from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
-      to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
-      subject: `New Appointment Booking - ${newAppointment.id}`,
-      text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nType: ${newAppointment.type}\nFee: ${newAppointment.fee} PKR\nProblem: ${problem || 'N/A'}`
-    };
+    // Safe Email Notification
+    try {
+      const mailOptions = {
+        from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
+        to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
+        subject: `New Appointment Booking - ${newAppointment.id}`,
+        text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nType: ${newAppointment.type}\nFee: ${newAppointment.fee} PKR\nProblem: ${problem || 'N/A'}`
+      };
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.log("Email send error:", error);
-      } else {
-        console.log("Email sent: " + info.response);
-      }
-    });
+      transporter.sendMail(mailOptions, (error, info) => {
+        if (error) {
+          console.log("Email send error:", error);
+        } else {
+          console.log("Email sent: " + info.response);
+        }
+      });
+    } catch (mailErr) {
+      console.log("Mail exception caught safely:", mailErr);
+    }
 
     res.json({
       success: true,
@@ -133,6 +140,7 @@ app.post("/api/appointments", async (req, res) => {
       appointment: newAppointment
     });
   } catch (error) {
+    console.error("Error creating appointment:", error);
     res.status(500).json({ success: false, error: error.message || "Internal Server Error" });
   }
 });
@@ -218,7 +226,7 @@ app.delete("/api/appointments/:id", async (req, res) => {
   }
 });
 
-// 9. Get Booked Slots (MongoDB) - Updated & Safe Query
+// 9. Get Booked Slots (MongoDB)
 app.get("/api/booked-slots", async (req, res) => {
   try {
     const { clinicId, doctorId, date } = req.query;

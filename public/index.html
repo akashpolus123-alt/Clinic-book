@@ -30,10 +30,10 @@
         
         <!-- Clinic Info Box -->
         <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;">
-            <h3 style="margin-top: 0; color: #333;">Clinic Information</h3>
+            <h3 style="margin-top: 0; color: #333;">Clinic Information & Fees</h3>
             <p style="margin: 8px 0; color: #555;"><strong>Address:</strong> House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi</p>
-            <p style="margin: 8px 0; color: #555;"><strong>Specialist:</strong> Prof. Dr. Shakil Jehangir Malik</p>
-            <p style="margin: 8px 0; color: #28a745; font-size: 14px;"><strong>Payment Policy:</strong> 20% online advance payment required for confirmation (100 PKR platform fee).</p>
+            <p style="margin: 8px 0; color: #555;"><strong>Initial Consultation:</strong> PKR 12,000 (20% Advance: PKR 2,400)</p>
+            <p style="margin: 8px 0; color: #555;"><strong>Follow-up Consultation:</strong> PKR 8,000 (20% Advance: PKR 1,600)</p>
         </div>
 
         <!-- Booking Form Card -->
@@ -63,6 +63,22 @@
                 </div>
 
                 <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Consultation Type & Fee:</label>
+                    <select id="consultationType" onchange="updateFeeInfo()" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
+                        <option value="initial">Initial Consultation - PKR 12,000 (Pay 20% Advance: PKR 2,400)</option>
+                        <option value="followup">Follow-up Consultation - PKR 8,000 (Pay 20% Advance: PKR 1,600)</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
+                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Payment Method for 20% Advance:</label>
+                    <select id="paymentMethod" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
+                        <option value="Easypaisa">Easypaisa</option>
+                        <option value="JazzCash">JazzCash</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom: 15px;">
                     <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Time Slot:</label>
                     <select id="appointmentTime" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
                         <option value="">Select Time</option>
@@ -86,19 +102,30 @@
 
     </main>
 
-    <!-- Script to handle direct booking submission -->
     <script>
+        function updateFeeInfo() {
+            // Dynamic fee calculation logic if needed
+        }
+
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            const consultationType = document.getElementById('consultationType').value;
+            const fee = consultationType === 'initial' ? 12000 : 8000;
+            const advanceFee = consultationType === 'initial' ? 2400 : 1600;
+
             const bookingData = {
-                clinicId: 'professorial-clinic', // Dedicated clinic ID for NSF
-                doctorId: 'doc-shakil',          // Dr. Shakil Jehangir Malik
+                clinicId: 'professorial-clinic',
+                doctorId: 'doc-shakil',
                 name: document.getElementById('patientName').value,
                 phone: document.getElementById('patientPhone').value,
                 age: document.getElementById('patientAge').value,
                 date: document.getElementById('appointmentDate').value,
                 time: document.getElementById('appointmentTime').value,
+                consultationType: consultationType,
+                totalFee: fee,
+                advanceFee: advanceFee,
+                paymentMethod: document.getElementById('paymentMethod').value,
                 problem: document.getElementById('patientProblem').value
             };
 
@@ -116,7 +143,7 @@
 
                 if (result.success || response.ok) {
                     msgBox.style.color = '#28a745';
-                    msgBox.textContent = 'Appointment booked successfully for NSF Clinic!';
+                    msgBox.textContent = 'Appointment booked successfully! Please send 20% advance via ' + bookingData.paymentMethod + '.';
                     document.getElementById('bookingForm').reset();
                 } else {
                     msgBox.style.color = '#dc3545';

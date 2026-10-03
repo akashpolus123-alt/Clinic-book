@@ -34,44 +34,88 @@
                 <button onclick="logout()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px;">Logout</button>
             </div>
 
-            <!-- Summary Cards Section -->
-            <div id="statsSection" style="margin-bottom: 20px;">
-                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Appointments</h4>
-                        <p id="totalCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+            <!-- Admin Navigation Tabs -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
+                <button onclick="switchAdminTab('appointments')" id="tabBtnAppointments" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Appointments</button>
+                <button onclick="switchAdminTab('hr')" id="tabBtnHr" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">HR & Staff</button>
+                <button onclick="switchAdminTab('finance')" id="tabBtnFinance" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Finance & Billing</button>
+            </div>
+
+            <!-- TAB 1: Appointments -->
+            <div id="adminTabAppointments">
+                <!-- Summary Cards Section -->
+                <div id="statsSection" style="margin-bottom: 20px;">
+                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Appointments</h4>
+                            <p id="totalCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                        </div>
+                        <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Today's Appointments</h4>
+                            <p id="todayCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                        </div>
                     </div>
-                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Today's Appointments</h4>
-                        <p id="todayCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
+                </div>
+
+                <!-- Search and Filter Controls -->
+                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
+                    <input type="text" id="searchInput" placeholder="Search by name or phone..." onkeyup="filterAppointments()" style="flex: 2; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <input type="date" id="dateFilter" onchange="filterAppointments()" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                    <button onclick="resetFilters()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; cursor: pointer; border-radius: 4px;">Reset</button>
+                </div>
+
+                <h4>Your Appointments</h4>
+                <div style="overflow-x: auto;">
+                    <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; background: white;">
+                        <thead>
+                            <tr style="background: #f2f2f2;">
+                                <th style="padding: 10px;">Patient Name</th>
+                                <th style="padding: 10px;">Phone</th>
+                                <th style="padding: 10px;">Age</th>
+                                <th style="padding: 10px;">Date & Time</th>
+                                <th style="padding: 10px;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="appointmentsTableBody">
+                            <!-- Appointments yahan load hongi -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 2: HR & Staff -->
+            <div id="adminTabHr" style="display: none;">
+                <h4>HR & Staff Management</h4>
+                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px;">
+                    <p style="color: #555; margin-bottom: 15px;">Clinic doctors aur staff ki details yahan manage ki jati hain:</p>
+                    <ul style="list-style-type: none; padding: 0;">
+                        <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+                            <span><strong>Dr. Shakil Jehangir Malik</strong> (Specialist)</span>
+                            <span style="color: #28a745; font-weight: bold;">Active | Salary: PKR 150,000</span>
+                        </li>
+                        <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
+                            <span><strong>Front Desk / Receptionist</strong> (Staff)</span>
+                            <span style="color: #28a745; font-weight: bold;">Active | Salary: PKR 45,000</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- TAB 3: Finance -->
+            <div id="adminTabFinance" style="display: none;">
+                <h4>Finance & Revenue Reports</h4>
+                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
+                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; border: 1px solid #ddd;">
+                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Revenue</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #333;">PKR 75,000</p>
+                    </div>
+                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; border: 1px solid #ddd;">
+                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Monthly Expenses</h4>
+                        <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #333;">PKR 195,000</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Search and Filter Controls -->
-            <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                <input type="text" id="searchInput" placeholder="Search by name or phone..." onkeyup="filterAppointments()" style="flex: 2; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                <input type="date" id="dateFilter" onchange="filterAppointments()" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                <button onclick="resetFilters()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; cursor: pointer; border-radius: 4px;">Reset</button>
-            </div>
-
-            <h4>Your Appointments</h4>
-            <div style="overflow-x: auto;">
-                <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; background: white;">
-                    <thead>
-                        <tr style="background: #f2f2f2;">
-                            <th style="padding: 10px;">Patient Name</th>
-                            <th style="padding: 10px;">Phone</th>
-                            <th style="padding: 10px;">Age</th>
-                            <th style="padding: 10px;">Date & Time</th>
-                            <th style="padding: 10px;">Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="appointmentsTableBody">
-                        <!-- Appointments yahan load hongi -->
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 
@@ -84,6 +128,33 @@
         const appointmentsTableBody = document.getElementById('appointmentsTableBody');
 
         let allAppointments = [];
+
+        function switchAdminTab(tabName) {
+            document.getElementById('adminTabAppointments').style.display = 'none';
+            document.getElementById('adminTabHr').style.display = 'none';
+            document.getElementById('adminTabFinance').style.display = 'none';
+
+            document.getElementById('tabBtnAppointments').style.background = '#e0e0e0';
+            document.getElementById('tabBtnAppointments').style.color = '#333';
+            document.getElementById('tabBtnHr').style.background = '#e0e0e0';
+            document.getElementById('tabBtnHr').style.color = '#333';
+            document.getElementById('tabBtnFinance').style.background = '#e0e0e0';
+            document.getElementById('tabBtnFinance').style.color = '#333';
+
+            if (tabName === 'appointments') {
+                document.getElementById('adminTabAppointments').style.display = 'block';
+                document.getElementById('tabBtnAppointments').style.background = '#007bff';
+                document.getElementById('tabBtnAppointments').style.color = 'white';
+            } else if (tabName === 'hr') {
+                document.getElementById('adminTabHr').style.display = 'block';
+                document.getElementById('tabBtnHr').style.background = '#007bff';
+                document.getElementById('tabBtnHr').style.color = 'white';
+            } else if (tabName === 'finance') {
+                document.getElementById('adminTabFinance').style.display = 'block';
+                document.getElementById('tabBtnFinance').style.background = '#007bff';
+                document.getElementById('tabBtnFinance').style.color = 'white';
+            }
+        }
 
         loginForm.addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -119,7 +190,6 @@
 
         async function loadAppointments(clinicId) {
             try {
-                // Server se specific clinic ki appointments fetch karne ke liye sahi endpoint
                 const response = await fetch('/api/clinic-appointments?clinicId=' + clinicId);
                 const data = await response.json();
                 
@@ -180,7 +250,7 @@
                 const result = await response.json();
                 if (result.success) {
                     const clinicId = localStorage.getItem('clinicId');
-                    loadAppointments(clinicId); // Reload updated data
+                    loadAppointments(clinicId);
                 } else {
                     alert('Status update karne mein masla aaya hai.');
                 }

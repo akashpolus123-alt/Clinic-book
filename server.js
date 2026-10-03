@@ -11,17 +11,17 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 // MongoDB Connection
-const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/clinicbook";
+const MONGO_URI = process.env.MONGODB_URI || "mongodb://localhost:27017/nsf_clinic";
 
 mongoose.connect(MONGO_URI)
-  .then(() => console.log("Connected to MongoDB successfully"))
+  .then(() => console.log("Connected to NSF Clinic MongoDB successfully"))
   .catch(err => console.error("MongoDB connection error:", err));
 
-// Define Appointment Schema
+// Define Appointment Schema with Advanced Finance & Commission Tracking
 const appointmentSchema = new mongoose.Schema({
   id: { type: String, required: true, unique: true },
-  clinicId: { type: String, required: true },
-  doctorId: { type: String, required: true },
+  clinicId: { type: String, default: "professorial-clinic" },
+  doctorId: { type: String, default: "doc-shakil" },
   name: { type: String, required: true },
   phone: { type: String, required: true },
   age: String,
@@ -29,6 +29,10 @@ const appointmentSchema = new mongoose.Schema({
   time: { type: String, required: true },
   type: { type: String, default: "Initial" },
   fee: { type: Number, default: 12000 },
+  advancePaid: { type: Number, default: 0 }, // 20% Advance via EasyPaisa/JazzCash
+  platformCommission: { type: Number, default: 100 }, // Fixed 100 PKR Commission for you
+  clinicShare: { type: Number, default: 0 },
+  paymentMethod: { type: String, default: "EasyPaisa/JazzCash" },
   problem: String,
   status: { type: String, default: "Pending" },
   createdAt: { type: Date, default: Date.now }
@@ -36,7 +40,17 @@ const appointmentSchema = new mongoose.Schema({
 
 const Appointment = mongoose.model("Appointment", appointmentSchema);
 
-// Nodemailer Transporter Setup (Gmail)
+// HR Schema for Staff/Management Data
+const hrSchema = new mongoose.Schema({
+  staffId: { type: String, required: true, unique: true },
+  name: { type: String, required: true },
+  role: { type: String, required: true },
+  phone: { type: String, required: true },
+  salary: { type: Number, default: 0 }
+});
+const Staff = mongoose.model("Staff", hrSchema);
+
+// Nodemailer Transporter Setup
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -59,7 +73,7 @@ function readJSON(file) {
   }
 }
 
-// 1. Clinics API Route
+// 1. Clinic Info API Route
 app.get("/api/clinics", (req, res) => {
   try {
     const clinics = readJSON(clinicsFile);
@@ -69,98 +83,82 @@ app.get("/api/clinics", (req, res) => {
   }
 });
 
-// 2. Doctors by Clinic API Route
+// 2. Doctor Info API Route
 app.get("/api/doctors/:clinicId", (req, res) => {
   try {
     const doctors = readJSON(doctorsFile);
-    const clinicDoctors = doctors.filter(
-      doctor => doctor.clinicId === req.params.clinicId
-    );
-    res.json(clinicDoctors);
+    res.json(doctors);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 3. Create Appointment API Route (MongoDB)
+// 3. Create Appointment & Calculate 20% Advance + 100 PKR Commission
 app.post("/api/appointments", async (req, res) => {
   try {
-    const { clinicId, doctorId, name, phone, age, date, time, problem, type, fee } = req.body;
+    const { name, phone, age, date, time, problem, type, fee, paymentMethod } = req.body;
 
-    if (!clinicId || !doctorId || !name || !phone || !date || !time) {
+    if (!name || !phone || !date || !time) {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields"
       });
     }
 
-    // 100% Unique ID generation to prevent duplicate key 500 error
+    const consultFee = fee || (type === 'Follow-up' ? 8000 : 12000);
+    const advancePaid = consultFee * 0.20; // 20% Advance Online Payment via EasyPaisa/JazzCash
+    const platformCommission = 100; // Fixed 100 PKR Commission goes to your account instantly
+    const clinicShare = advancePaid - platformCommission;
+
     const uniqueId = "APT-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
 
     const newAppointment = new Appointment({
       id: uniqueId,
-      clinicId,
-      doctorId,
+      clinicId: "professorial-clinic",
+      doctorId: "doc-shakil",
       name,
       phone,
       age: age || "",
       date,
       time,
       type: type || "Initial",
-      fee: fee || 12000,
+      fee: consultFee,
+      advancePaid,
+      platformCommission,
+      clinicShare,
+      paymentMethod: paymentMethod || "EasyPaisa/JazzCash",
       problem: problem || "",
       status: "Pending"
     });
 
     await newAppointment.save();
 
-    // Safe Email Notification
+    // Email Notification
     try {
       const mailOptions = {
         from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
         to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
-        subject: `New Appointment Booking - ${newAppointment.id}`,
-        text: `Nayi appointment book ho gayi hai!\n\nPatient Name: ${name}\nPhone: ${phone}\nAge: ${age || 'N/A'}\nDate: ${date}\nTime: ${time}\nType: ${newAppointment.type}\nFee: ${newAppointment.fee} PKR\nProblem: ${problem || 'N/A'}`
+        subject: `New NSF Clinic Appointment - ${newAppointment.id}`,
+        text: `Nayi appointment book hui hai!\n\nPatient: ${name}\nPhone: ${phone}\nDate: ${date} (${time})\nFee: ${consultFee} PKR\n20% Advance Paid via EasyPaisa/JazzCash: ${advancePaid} PKR\nYour Commission: ${platformCommission} PKR`
       };
-
-      transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-          console.log("Email send error:", error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
-    } catch (mailErr) {
-      console.log("Mail exception caught safely:", mailErr);
-    }
+      transporter.sendMail(mailOptions, () => {});
+    } catch (mailErr) {}
 
     res.json({
       success: true,
-      message: "Appointment booked successfully!",
+      message: "Appointment booked successfully with 20% advance!",
       appointment: newAppointment
     });
-  } catch (error) {
-    console.error("Error creating appointment:", error);
-    res.status(500).json({ success: false, error: error.message || "Internal Server Error" });
-  }
-});
-
-// 4. Get All Appointments (MongoDB)
-app.get("/api/appointments", async (req, res) => {
-  try {
-    const appointments = await Appointment.find();
-    res.json(appointments);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 5. Clinic Admin Login Route
+// 4. Admin Login Route for NSF Clinic
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
     const clinics = readJSON(clinicsFile);
-    
     const clinic = clinics.find(c => c.username === username && c.password === password);
     
     if (clinic) {
@@ -173,76 +171,73 @@ app.post("/api/login", (req, res) => {
   }
 });
 
-// 6. Specific Clinic Appointments Route (MongoDB)
+// 5. Get Clinic Appointments
 app.get("/api/clinic-appointments", async (req, res) => {
   try {
-    const { clinicId } = req.query;
-    const appointments = await Appointment.find({ clinicId });
+    const appointments = await Appointment.find({ clinicId: "professorial-clinic" });
     res.json(appointments);
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
-// 7. Update Appointment Status (MongoDB)
+// 6. Finance Analytics Route (Total Revenue, Total Commission, Advance Collections)
+app.get("/api/finance-summary", async (req, res) => {
+  try {
+    const appointments = await Appointment.find({ clinicId: "professorial-clinic" });
+    
+    let totalConsultationsRevenue = 0;
+    let totalAdvanceCollected = 0;
+    let totalYourCommission = 0;
+
+    appointments.forEach(app => {
+      totalConsultationsRevenue += (app.fee || 0);
+      totalAdvanceCollected += (app.advancePaid || 0);
+      totalYourCommission += (app.platformCommission || 100);
+    });
+
+    res.json({
+      success: true,
+      totalConsultationsRevenue,
+      totalAdvanceCollected,
+      totalYourCommission,
+      totalBookings: appointments.length
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 7. HR Data Route
+app.get("/api/hr-staff", async (req, res) => {
+  try {
+    let staffList = await Staff.find();
+    if (staffList.length === 0) {
+      // Default initial staff if empty
+      staffList = [
+        { staffId: "STF-01", name: "Receptionist Desk", role: "Front Desk", phone: "0330-5934059", salary: 35000 },
+        { staffId: "STF-02", name: "Clinic Assistant", role: "Medical Assistant", phone: "0300-1234567", salary: 40000 }
+      ];
+    }
+    res.json(staffList);
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 8. Update Appointment Status
 app.put("/api/appointments/:id", async (req, res) => {
   try {
     const { status } = req.body;
-    const updatedAppointment = await Appointment.findOneAndUpdate(
-      { id: req.params.id },
-      { status },
-      { new: true }
-    );
-
-    if (!updatedAppointment) {
-      return res.status(404).json({
-        success: false,
-        message: "Appointment not found"
-      });
-    }
-
-    res.json({
-      success: true,
-      message: "Appointment updated successfully"
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// 8. Delete Appointment (MongoDB)
-app.delete("/api/appointments/:id", async (req, res) => {
-  try {
-    const deleted = await Appointment.findOneAndDelete({ id: req.params.id });
-    if (!deleted) {
-      return res.status(404).json({ success: false, message: "Appointment not found" });
-    }
-    res.json({
-      success: true,
-      message: "Appointment deleted successfully"
-    });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
-
-// 9. Get Booked Slots (MongoDB)
-app.get("/api/booked-slots", async (req, res) => {
-  try {
-    const { clinicId, doctorId, date } = req.query;
-    const query = { clinicId, date, status: { $ne: "Cancelled" } };
-    if (doctorId) query.doctorId = doctorId;
-
-    const appointments = await Appointment.find(query);
-    const bookedSlots = appointments.map(item => item.time);
-    res.json(bookedSlots);
+    await Appointment.findOneAndUpdate({ id: req.params.id }, { status });
+    res.json({ success: true, message: "Status updated successfully" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
 });
 
 app.listen(PORT, () => {
-  console.log(`Clinic Booking App running on http://localhost:${PORT}`);
+  console.log(`NSF Clinic App running on http://localhost:${PORT}`);
 });
 
 module.exports = app;

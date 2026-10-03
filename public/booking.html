@@ -3,11 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Book Appointment - Clinic</title>
+    <title>NSF Clinic - Book Appointment</title>
     <style>
         body { font-family: Arial, sans-serif; background-color: #f4f7f6; margin: 0; padding: 20px; }
         .container { max-width: 600px; background: #fff; padding: 30px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin: auto; }
-        h2 { text-align: center; color: #333; }
+        h2 { text-align: center; color: #004080; }
+        .subtitle { text-align: center; color: #666; font-size: 14px; margin-bottom: 20px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; font-weight: bold; margin-bottom: 8px; color: #555; }
         select, input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; box-sizing: border-box; }
@@ -16,6 +17,7 @@
         .slot-btn:hover { background: #007bff; color: #fff; }
         .slot-btn.selected { background: #28a745; color: #fff; border-color: #28a745; }
         .error-msg { color: red; font-weight: bold; margin-top: 5px; font-size: 14px; }
+        .payment-box { background: #eef9ff; border: 1px dashed #007bff; padding: 15px; border-radius: 6px; margin-bottom: 20px; }
         .submit-btn { background: #28a745; color: white; border: none; padding: 12px; width: 100%; font-size: 18px; border-radius: 5px; cursor: pointer; }
         .submit-btn:hover { background: #218838; }
     </style>
@@ -23,21 +25,22 @@
 <body>
 
 <div class="container">
-    <h2>Book Appointment</h2>
+    <h2>🧠 NSF Clinic</h2>
+    <div class="subtitle">Psychological Medicine & Neuro Psychiatry - Prof. Dr. Shakil Jehangir Malik</div>
+    
     <form id="bookingForm" onsubmit="submitAppointment(event)">
         
         <div class="form-group">
-            <label>Select Doctor *</label>
-            <select id="doctorSelect" required>
-                <!-- Updated value to match doctors-1.json -->
-                <option value="doc-shakil">Professor Dr. Shakil Jehangir Malik</option>
+            <label>Doctor *</label>
+            <select id="doctorSelect" disabled>
+                <option value="doc-shakil">Prof. Dr. Shakil Jehangir Malik</option>
             </select>
         </div>
 
         <div class="form-group">
             <label>Appointment Type *</label>
-            <select id="appointmentType" onchange="handleTypeChange()" required>
-                <option value="Initial">Initial Consultation (12,000 PKR - 1 Hour / 60 Mins)</option>
+            <select id="appointmentType" onchange="updateFeeDetails()" required>
+                <option value="Initial">Initial Consultation (12,000 PKR - 60 Mins)</option>
                 <option value="Follow-up">Follow-up Consultation (8,000 PKR - 30 Mins)</option>
             </select>
         </div>
@@ -69,12 +72,33 @@
             <input type="hidden" id="selectedSlotInput" required>
         </div>
 
-        <button type="submit" class="submit-btn">Book Appointment</button>
+        <!-- EasyPaisa / JazzCash Payment Information Box -->
+        <div class="payment-box">
+            <label style="color: #004080; margin-bottom: 5px;">💳 Online Advance Payment (EasyPaisa / JazzCash)</label>
+            <p style="margin: 0; font-size: 14px; color: #444;">
+                Appointment confirm karne ke liye <strong>20% Advance Payment</strong> lazmi hai.<br>
+                Total Fee: <span id="totalFeeText">12,000</span> PKR | <strong>Advance Required (20%): <span id="advanceFeeText" style="color: #d9534f;">2,400</span> PKR</strong>
+            </p>
+            <div style="margin-top: 10px;">
+                <label style="font-size: 13px; font-weight: normal;">Select Gateway:</label>
+                <select id="paymentGateway" style="padding: 6px;">
+                    <option value="EasyPaisa">EasyPaisa Account Transfer</option>
+                    <option value="JazzCash">JazzCash Mobile Account</option>
+                </select>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Pay Advance & Confirm Appointment</button>
     </form>
 </div>
 
 <script>
-    function handleTypeChange() {
+    function updateFeeDetails() {
+        const typeVal = document.getElementById('appointmentType').value;
+        const total = typeVal === 'Initial' ? 12000 : 8000;
+        const advance = total * 0.20;
+        document.getElementById('totalFeeText').innerText = total.toLocaleString();
+        document.getElementById('advanceFeeText').innerText = advance.toLocaleString();
         generateTimeSlots();
     }
 
@@ -86,7 +110,7 @@
         if (!dateInput || !dateInput.value) return;
         
         const selectedDate = new Date(dateInput.value);
-        const dayOfWeek = selectedDate.getDay(); 
+        const dayOfWeek = selectedDate.getDay(); // 2 = Tuesday, 6 = Saturday
         
         if (dayOfWeek !== 2 && dayOfWeek !== 6) {
             msgElement.innerText = "Doctor sirf Tuesday aur Saturday ko available hain.";
@@ -127,10 +151,7 @@
             }
 
             let nextTime = currentTime + slotDuration;
-
-            if (slotDuration === 60 && currentTime === 720) { 
-                nextTime = 750;
-            }
+            if (slotDuration === 60 && currentTime === 720) { nextTime = 750; }
 
             let slotStartHour = Math.floor(currentTime / 60);
             let slotStartMin = currentTime % 60;
@@ -167,22 +188,20 @@
     function submitAppointment(event) {
         event.preventDefault();
         
-        const urlParams = new URLSearchParams(window.location.search);
-        const clinicId = urlParams.get('clinicId') || 'professorial-clinic';
-        const doctorId = document.getElementById('doctorSelect').value || 'doc-shakil';
         const typeVal = document.getElementById('appointmentType').value;
         const feeVal = typeVal === 'Initial' ? 12000 : 8000; 
 
         const bookingData = {
-            clinicId: clinicId,
-            doctorId: doctorId,
+            clinicId: 'professorial-clinic',
+            doctorId: 'doc-shakil',
             type: typeVal,
             fee: feeVal,
             name: document.getElementById('patientName').value,
             phone: document.getElementById('phoneNumber').value,
             age: document.getElementById('age').value,
             date: document.getElementById('selectDate').value,
-            time: document.getElementById('selectedSlotInput').value
+            time: document.getElementById('selectedSlotInput').value,
+            paymentMethod: document.getElementById('paymentGateway').value
         };
 
         fetch('/api/appointments', {
@@ -193,7 +212,7 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Appointment successfully book ho gayi hai! Appointment Number: ' + data.appointment.id);
+                alert('Advance Payment Received via EasyPaisa/JazzCash!\nAppointment Confirmed. Number: ' + data.appointment.id);
                 window.location.reload();
             } else {
                 alert('Error: ' + (data.message || 'Kuch galat ho gaya hai'));
@@ -201,7 +220,7 @@
         })
         .catch(err => {
             console.error('Error:', err);
-            alert('Appointment book karne mein server ka masla aaya hai.');
+            alert('Server error during booking.');
         });
     }
 </script>

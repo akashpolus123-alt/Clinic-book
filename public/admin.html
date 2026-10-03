@@ -63,7 +63,7 @@
                             <th style="padding: 10px;">Patient Name</th>
                             <th style="padding: 10px;">Phone</th>
                             <th style="padding: 10px;">Age</th>
-                            <th style="padding: 10px;">Date</th>
+                            <th style="padding: 10px;">Date & Time</th>
                             <th style="padding: 10px;">Status</th>
                         </tr>
                     </thead>
@@ -119,6 +119,7 @@
 
         async function loadAppointments(clinicId) {
             try {
+                // Server se specific clinic ki appointments fetch karne ke liye sahi endpoint
                 const response = await fetch('/api/clinic-appointments?clinicId=' + clinicId);
                 const data = await response.json();
                 
@@ -145,7 +146,7 @@
                 return;
             }
 
-            appointments.forEach(function(app, index) {
+            appointments.forEach(function(app) {
                 const currentStatus = app.status || 'Pending';
                 let badgeColor = '#ffc107'; 
                 if (currentStatus === 'Confirmed') badgeColor = '#17a2b8'; 
@@ -155,11 +156,11 @@
                     '<td style="padding: 10px;">' + app.name + '</td>' +
                     '<td style="padding: 10px;">' + app.phone + '</td>' +
                     '<td style="padding: 10px;">' + (app.age || '-') + '</td>' +
-                    '<td style="padding: 10px;">' + (app.date || 'N/A') + '</td>' +
+                    '<td style="padding: 10px;">' + (app.date || 'N/A') + '<br><small><b>' + (app.time || '') + '</b></small></td>' +
                     '<td style="padding: 10px;">' +
                         '<span style="padding: 4px 8px; border-radius: 4px; background: ' + badgeColor + '; color: white; font-size: 12px; margin-right: 5px; display: inline-block;">' + currentStatus + '</span>' +
-                        '<select onchange="updateStatus(' + index + ', this.value)" style="padding: 4px; border-radius: 4px; border: 1px solid #ccc;">' +
-                            '<option value="Pending" ' + (currentStatus === 'Pending' ? 'selected' : '') + '>Pending</>'+
+                        '<select onchange="updateStatus(\'' + app.id + '\', this.value)" style="padding: 4px; border-radius: 4px; border: 1px solid #ccc;">' +
+                            '<option value="Pending" ' + (currentStatus === 'Pending' ? 'selected' : '') + '>Pending</option>' +
                             '<option value="Confirmed" ' + (currentStatus === 'Confirmed' ? 'selected' : '') + '>Confirmed</option>' +
                             '<option value="Completed" ' + (currentStatus === 'Completed' ? 'selected' : '') + '>Completed</option>' +
                         '</select>' +
@@ -167,6 +168,25 @@
                 '</tr>';
                 appointmentsTableBody.innerHTML += row;
             });
+        }
+
+        async function updateStatus(appId, newStatus) {
+            try {
+                const response = await fetch('/api/appointments/' + appId, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ status: newStatus })
+                });
+                const result = await response.json();
+                if (result.success) {
+                    const clinicId = localStorage.getItem('clinicId');
+                    loadAppointments(clinicId); // Reload updated data
+                } else {
+                    alert('Status update karne mein masla aaya hai.');
+                }
+            } catch (err) {
+                console.error('Error updating status:', err);
+            }
         }
 
         function filterAppointments() {
@@ -186,11 +206,6 @@
         function resetFilters() {
             document.getElementById('searchInput').value = '';
             document.getElementById('dateFilter').value = '';
-            displayAppointments(allAppointments);
-        }
-
-        function updateStatus(index, newStatus) {
-            allAppointments[index].status = newStatus;
             displayAppointments(allAppointments);
         }
 

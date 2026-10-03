@@ -144,7 +144,7 @@
             let slotButton = document.createElement('button');
             slotButton.type = 'button';
             slotButton.className = 'slot-btn';
-            slotButton.innerText = ${startTimeFormatted} - ${endTimeFormatted};
+            slotButton.innerText = `${startTimeFormatted} - ${endTimeFormatted}`;
             
             slotButton.onclick = function() {
                 document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
@@ -162,7 +162,7 @@
         let formattedHour = hour % 12;
         formattedHour = formattedHour ? formattedHour : 12;
         let formattedMin = min < 10 ? '0' + min : min;
-        return ${formattedHour}:${formattedMin} ${ampm};
+        return `${formattedHour}:${formattedMin} ${ampm}`;
     }
 
     function submitAppointment(event) {

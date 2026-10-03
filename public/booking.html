@@ -29,7 +29,8 @@
         <div class="form-group">
             <label>Select Doctor *</label>
             <select id="doctorSelect" required>
-                <option value="doc-1">Prof. Dr. Shakil Jehangir Malik</option>
+                <!-- Updated value to match doctors-1.json -->
+                <option value="doc-shakil">Professor Dr. Shakil Jehangir Malik</option>
             </select>
         </div>
 
@@ -85,7 +86,7 @@
         if (!dateInput || !dateInput.value) return;
         
         const selectedDate = new Date(dateInput.value);
-        const dayOfWeek = selectedDate.getDay(); // 2 = Tuesday, 6 = Saturday
+        const dayOfWeek = selectedDate.getDay(); 
         
         if (dayOfWeek !== 2 && dayOfWeek !== 6) {
             msgElement.innerText = "Doctor sirf Tuesday aur Saturday ko available hain.";
@@ -107,9 +108,8 @@
 
         const appointmentTypeSelect = document.getElementById('appointmentType');
         const isInitial = appointmentTypeSelect && appointmentTypeSelect.value === 'Initial';
-        const slotDuration = isInitial ? 60 : 30; // Initial = 60 mins, Follow-up = 30 mins
+        const slotDuration = isInitial ? 60 : 30; 
         
-        // Timing: 11:00 AM (660 mins) se 6:00 PM (1080 mins)
         const startHour = 11;
         const endHour = 18; 
         
@@ -121,7 +121,6 @@
         slotsContainer.innerHTML = ''; 
         
         while (currentTime < endTime) {
-            // Break time check: 12:30 PM (750 mins) se 1:00 PM (780 mins)
             if (currentTime >= 750 && currentTime < 780) {
                 currentTime = 780;
                 continue;
@@ -129,7 +128,7 @@
 
             let nextTime = currentTime + slotDuration;
 
-            if (slotDuration === 60 && currentTime === 720) { // 12:00 PM
+            if (slotDuration === 60 && currentTime === 720) { 
                 nextTime = 750;
             }
 
@@ -170,9 +169,9 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const clinicId = urlParams.get('clinicId') || 'professorial-clinic';
-        const doctorId = document.getElementById('doctorSelect').value || 'doc-1';
+        const doctorId = document.getElementById('doctorSelect').value || 'doc-shakil';
         const typeVal = document.getElementById('appointmentType').value;
-        const feeVal = typeVal === 'Initial' ? 12000 : 8000; // Fee setting
+        const feeVal = typeVal === 'Initial' ? 12000 : 8000; 
 
         const bookingData = {
             clinicId: clinicId,

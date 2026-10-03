@@ -29,15 +29,15 @@
         <div class="form-group">
             <label>Select Doctor *</label>
             <select id="doctorSelect" required>
-                <option value="Prof. Dr. Shakil Jehangir Malik">Prof. Dr. Shakil Jehangir Malik</option>
+                <option value="doc-1">Prof. Dr. Shakil Jehangir Malik</option>
             </select>
         </div>
 
         <div class="form-group">
             <label>Appointment Type *</label>
             <select id="appointmentType" onchange="handleTypeChange()" required>
-                <option value="Initial Consultation">Initial Consultation (1 Hour / 60 Mins)</option>
-                <option value="Follow-up Consultation">Follow-up Consultation (30 Mins)</option>
+                <option value="Initial">Initial Consultation (12,000 PKR - 1 Hour / 60 Mins)</option>
+                <option value="Follow-up">Follow-up Consultation (8,000 PKR - 30 Mins)</option>
             </select>
         </div>
 
@@ -87,7 +87,6 @@
         const selectedDate = new Date(dateInput.value);
         const dayOfWeek = selectedDate.getDay(); // 2 = Tuesday, 6 = Saturday
         
-        // Agar Tuesday (2) ya Saturday (6) ke ilawa koi aur din ho
         if (dayOfWeek !== 2 && dayOfWeek !== 6) {
             msgElement.innerText = "Doctor sirf Tuesday aur Saturday ko available hain.";
             if (slotsContainer) slotsContainer.innerHTML = ''; 
@@ -107,10 +106,10 @@
         if (dayOfWeek !== 2 && dayOfWeek !== 6) return;
 
         const appointmentTypeSelect = document.getElementById('appointmentType');
-        const isInitial = appointmentTypeSelect && appointmentTypeSelect.value.includes('Initial');
+        const isInitial = appointmentTypeSelect && appointmentTypeSelect.value === 'Initial';
         const slotDuration = isInitial ? 60 : 30; // Initial = 60 mins, Follow-up = 30 mins
         
-        // Timing: 11:00 AM (11 * 60 = 660 mins) se 6:00 PM (18 * 60 = 1080 mins)
+        // Timing: 11:00 AM (660 mins) se 6:00 PM (1080 mins)
         const startHour = 11;
         const endHour = 18; 
         
@@ -130,9 +129,8 @@
 
             let nextTime = currentTime + slotDuration;
 
-            // Agar 1 ghante ka slot 12:00 par shuru ho toh break se takrata hai, usay handle karein
-            if (slotDuration === 60 && currentTime === 720) { // 12:00 PM = 720 mins
-                nextTime = 750; // 12:30 tak karein ya skip karein
+            if (slotDuration === 60 && currentTime === 720) { // 12:00 PM
+                nextTime = 750;
             }
 
             let slotStartHour = Math.floor(currentTime / 60);
@@ -170,17 +168,23 @@
     function submitAppointment(event) {
         event.preventDefault();
         
+        const urlParams = new URLSearchParams(window.location.search);
+        const clinicId = urlParams.get('clinicId') || 'professorial-clinic';
+        const typeVal = document.getElementById('appointmentType').value;
+        const feeVal = typeVal === 'Initial' ? 12000 : 8000; // Fee setting based on type[span_5](start_span)[span_5](end_span)
+
         const bookingData = {
-            doctor: document.getElementById('doctorSelect').value,
-            type: document.getElementById('appointmentType').value,
-            patientName: document.getElementById('patientName').value,
+            clinicId: clinicId,
+            doctorId: document.getElementById('doctorSelect').value,
+            type: typeVal,
+            fee: feeVal,
+            name: document.getElementById('patientName').value,
             phone: document.getElementById('phoneNumber').value,
             age: document.getElementById('age').value,
             date: document.getElementById('selectDate').value,
-            timeSlot: document.getElementById('selectedSlotInput').value
+            time: document.getElementById('selectedSlotInput').value
         };
 
-        // Backend API par data bhejne ke liye fetch request
         fetch('/api/appointments', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -188,12 +192,16 @@
         })
         .then(res => res.json())
         .then(data => {
-            alert('Appointment successfully book ho gayi aur dashboard par save ho gayi hai!');
-            window.location.reload();
+            if (data.success) {
+                alert('Appointment successfully book ho gayi hai! Appointment Number: ' + data.appointment.id);
+                window.location.reload();
+            } else {
+                alert('Error: ' + data.message);
+            }
         })
         .catch(err => {
             console.error('Error:', err);
-            alert('Appointment book karne mein masla aaya hai. Baraye meharbani dobara koshish karein.');
+            alert('Appointment book karne mein masla aaya hai.');
         });
     }
 </script>

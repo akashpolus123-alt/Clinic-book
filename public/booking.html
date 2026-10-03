@@ -144,7 +144,7 @@
             let slotButton = document.createElement('button');
             slotButton.type = 'button';
             slotButton.className = 'slot-btn';
-            slotButton.innerText = `${startTimeFormatted} - ${endTimeFormatted}`;
+            slotButton.innerText = ${startTimeFormatted} - ${endTimeFormatted};
             
             slotButton.onclick = function() {
                 document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
@@ -162,7 +162,7 @@
         let formattedHour = hour % 12;
         formattedHour = formattedHour ? formattedHour : 12;
         let formattedMin = min < 10 ? '0' + min : min;
-        return `${formattedHour}:${formattedMin} ${ampm}`;
+        return ${formattedHour}:${formattedMin} ${ampm};
     }
 
     function submitAppointment(event) {
@@ -170,12 +170,13 @@
         
         const urlParams = new URLSearchParams(window.location.search);
         const clinicId = urlParams.get('clinicId') || 'professorial-clinic';
+        const doctorId = document.getElementById('doctorSelect').value || 'doc-1';
         const typeVal = document.getElementById('appointmentType').value;
-        const feeVal = typeVal === 'Initial' ? 12000 : 8000; // Fee setting based on type[span_5](start_span)[span_5](end_span)
+        const feeVal = typeVal === 'Initial' ? 12000 : 8000; // Fee setting
 
         const bookingData = {
             clinicId: clinicId,
-            doctorId: document.getElementById('doctorSelect').value,
+            doctorId: doctorId,
             type: typeVal,
             fee: feeVal,
             name: document.getElementById('patientName').value,
@@ -196,12 +197,12 @@
                 alert('Appointment successfully book ho gayi hai! Appointment Number: ' + data.appointment.id);
                 window.location.reload();
             } else {
-                alert('Error: ' + data.message);
+                alert('Error: ' + (data.message || 'Kuch galat ho gaya hai'));
             }
         })
         .catch(err => {
             console.error('Error:', err);
-            alert('Appointment book karne mein masla aaya hai.');
+            alert('Appointment book karne mein server ka masla aaya hai.');
         });
     }
 </script>

@@ -6,82 +6,96 @@
     <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body style="font-family: Arial, sans-serif; margin: 0; padding: 0; background: #f4f6f9;">
+<body>
 
     <!-- Header -->
-    <header style="background: #ffffff; padding: 15px 8%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05);">
-        <div style="font-size: 24px; font-weight: bold; color: #007bff;">NSF</div>
-        <nav style="display: flex; gap: 20px;">
-            <a href="index.html" style="text-decoration: none; color: #333; font-weight: bold;">Home</a>
-            <a href="track-booking.html" style="text-decoration: none; color: #666;">My Appointments</a>
-            <a href="admin.html" style="text-decoration: none; color: #666;">Admin Dashboard</a>
+    <header>
+        <div class="logo">NSF</div>
+        <nav>
+            <a href="index.html" class="active">Home</a>
+            <a href="track-booking.html">My Appointments</a>
+            <a href="admin.html">Admin Dashboard</a>
         </nav>
     </header>
 
     <!-- Hero Section -->
-    <section style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 40px 8%; text-align: center;">
-        <h1 style="margin: 0; font-size: 32px;">NSF Clinic</h1>
-        <p style="margin: 10px 0 0 0; font-size: 18px; opacity: 0.9;">Psychological Medicine & Neuro Psychiatry</p>
-        <p style="margin: 5px 0 0 0; font-size: 14px; opacity: 0.8;">Prof. Dr. Shakil Jehangir Malik</p>
+    <section class="hero">
+        <h1>NSF Clinic</h1>
+        <p class="subtitle">Psychological Medicine & Neuro Psychiatry</p>
+        <p class="doctor">Prof. Dr. Shakil Jehangir Malik</p>
     </section>
 
     <!-- Main Content & Direct Booking Form -->
-    <main style="max-width: 800px; margin: 30px auto; padding: 0 20px;">
+    <main>
         
         <!-- Clinic Info Box -->
-        <div style="background: white; padding: 25px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 25px;">
-            <h3 style="margin-top: 0; color: #333;">Clinic Information & Fees</h3>
-            <p style="margin: 8px 0; color: #555;"><strong>Address:</strong> House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi</p>
-            <p style="margin: 8px 0; color: #555;"><strong>Initial Consultation:</strong> PKR 12,000 (20% Advance: PKR 2,400)</p>
-            <p style="margin: 8px 0; color: #555;"><strong>Follow-up Consultation:</strong> PKR 8,000 (20% Advance: PKR 1,600)</p>
+        <div class="info-card">
+            <h3>Clinic Information & Fee Structure</h3>
+            <div class="info-item">
+                <span><strong>Address:</strong></span>
+                <span>House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi</span>
+            </div>
+            <div class="info-item">
+                <span><strong>Initial Consultation:</strong></span>
+                <span>PKR 12,000 (Advance 20%: <strong>PKR 2,400</strong>)</span>
+            </div>
+            <div class="info-item">
+                <span><strong>Follow-up Consultation:</strong></span>
+                <span>PKR 8,000 (Advance 20%: <strong>PKR 1,600</strong>)</span>
+            </div>
         </div>
 
         <!-- Booking Form Card -->
-        <div style="background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05);">
-            <h2 style="margin-top: 0; color: #333; text-align: center; margin-bottom: 20px;">Book Your Appointment</h2>
+        <div class="form-card">
+            <h2>Book Your Appointment</h2>
             
             <form id="bookingForm">
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Full Name:</label>
-                    <input type="text" id="patientName" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="patientName" required placeholder="Enter your full name">
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Phone Number:</label>
-                    <input type="tel" id="patientPhone" required placeholder="03XXXXXXXXX" style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="patientPhone" required placeholder="03XXXXXXXXX">
                 </div>
 
-                <div style="display: flex; gap: 15px; margin-bottom: 15px;">
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Age:</label>
-                        <input type="number" id="patientAge" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                <div class="form-row">
+                    <div class="form-col form-group">
+                        <label>Age</label>
+                        <input type="number" id="patientAge" required placeholder="Age">
                     </div>
-                    <div style="flex: 1;">
-                        <label style="display: block; margin-bottom: 5px; font-weight: bold;">Appointment Date:</label>
-                        <input type="date" id="appointmentDate" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;">
+                    <div class="form-col form-group">
+                        <label>Appointment Date</label>
+                        <input type="date" id="appointmentDate" required>
                     </div>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Consultation Type & Fee:</label>
-                    <select id="consultationType" onchange="updateFeeInfo()" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
-                        <option value="initial">Initial Consultation - PKR 12,000 (Pay 20% Advance: PKR 2,400)</option>
-                        <option value="followup">Follow-up Consultation - PKR 8,000 (Pay 20% Advance: PKR 1,600)</option>
+                <div class="form-group">
+                    <label>Consultation Type & Fee</label>
+                    <select id="consultationType" required>
+                        <option value="initial">Initial Consultation - PKR 12,000 (Advance: PKR 2,400)</option>
+                        <option value="followup">Follow-up Consultation - PKR 8,000 (Advance: PKR 1,600)</option>
                     </select>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Payment Method for 20% Advance:</label>
-                    <select id="paymentMethod" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
-                        <option value="Easypaisa">Easypaisa</option>
-                        <option value="JazzCash">JazzCash</option>
+                <div class="form-group">
+                    <label>Select Payment Method for 20% Advance</label>
+                    <select id="paymentMethod" required>
+                        <option value="Easypaisa">Easypaisa (Clinic Account)</option>
+                        <option value="JazzCash">JazzCash (Clinic Account)</option>
                     </select>
                 </div>
 
-                <div style="margin-bottom: 15px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Select Time Slot:</label>
-                    <select id="appointmentTime" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box; background: white;">
-                        <option value="">Select Time</option>
+                <div class="form-group">
+                    <label>Transaction ID (Tid) / Payment Proof</label>
+                    <input type="text" id="transactionId" required placeholder="Enter Easypaisa/JazzCash TID">
+                </div>
+
+                <div class="form-group">
+                    <label>Select Time Slot</label>
+                    <select id="appointmentTime" required>
+                        <option value="">Select Time Slot</option>
                         <option value="10:00 AM">10:00 AM</option>
                         <option value="11:00 AM">11:00 AM</option>
                         <option value="12:00 PM">12:00 PM</option>
@@ -90,23 +104,19 @@
                     </select>
                 </div>
 
-                <div style="margin-bottom: 20px;">
-                    <label style="display: block; margin-bottom: 5px; font-weight: bold;">Problem / Symptoms:</label>
-                    <textarea id="patientProblem" rows="3" placeholder="Briefly describe your issue..." style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; box-sizing: border-box;"></textarea>
+                <div class="form-group">
+                    <label>Problem / Symptoms (Brief)</label>
+                    <textarea id="patientProblem" rows="3" placeholder="Describe your issue briefly..."></textarea>
                 </div>
 
-                <button type="submit" style="width: 100%; padding: 12px; background: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; font-weight: bold; cursor: pointer;">Confirm Booking</button>
+                <button type="submit">Confirm Appointment Booking</button>
             </form>
-            <p id="responseMsg" style="text-align: center; margin-top: 15px; font-weight: bold;"></p>
+            <p id="responseMsg"></p>
         </div>
 
     </main>
 
     <script>
-        function updateFeeInfo() {
-            // Dynamic fee calculation logic if needed
-        }
-
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
@@ -126,11 +136,12 @@
                 totalFee: fee,
                 advanceFee: advanceFee,
                 paymentMethod: document.getElementById('paymentMethod').value,
+                transactionId: document.getElementById('transactionId').value,
                 problem: document.getElementById('patientProblem').value
             };
 
             const msgBox = document.getElementById('responseMsg');
-            msgBox.style.color = '#333';
+            msgBox.style.color = '#0369a1';
             msgBox.textContent = 'Submitting appointment...';
 
             try {
@@ -142,15 +153,15 @@
                 const result = await response.json();
 
                 if (result.success || response.ok) {
-                    msgBox.style.color = '#28a745';
-                    msgBox.textContent = 'Appointment booked successfully! Please send 20% advance via ' + bookingData.paymentMethod + '.';
+                    msgBox.style.color = '#16a34a';
+                    msgBox.textContent = 'Appointment booked successfully! Payment TID verified.';
                     document.getElementById('bookingForm').reset();
                 } else {
-                    msgBox.style.color = '#dc3545';
+                    msgBox.style.color = '#dc2626';
                     msgBox.textContent = result.message || 'Failed to book appointment.';
                 }
             } catch (err) {
-                msgBox.style.color = '#dc3545';
+                msgBox.style.color = '#dc2626';
                 msgBox.textContent = 'Server connection error!';
             }
         });

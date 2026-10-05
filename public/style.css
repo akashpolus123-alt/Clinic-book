@@ -1,294 +1,221 @@
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: Arial, sans-serif;
+:root {
+    --primary: #0284c7;
+    --primary-dark: #0369a1;
+    --accent: #0ea5e9;
+    --bg-color: #f8fafc;
+    --card-bg: #ffffff;
+    --text-main: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
 }
 
 body {
-  background: #f4f7fb;
-  color: #222;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    background: var(--bg-color);
+    color: var(--text-main);
 }
 
-/* Header */
+/* Header / Navbar */
 header {
-  background: #ffffff;
-  padding: 15px 8%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    padding: 16px 8%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
 }
 
 .logo {
-  font-size: 24px;
-  font-weight: bold;
-  color: #1677ff;
+    font-size: 26px;
+    font-weight: 800;
+    color: var(--primary);
+    letter-spacing: 1px;
 }
 
 nav {
-  display: flex;
-  gap: 20px;
+    display: flex;
+    gap: 25px;
 }
 
 nav a {
-  text-decoration: none;
-  color: #333;
-  font-weight: 600;
+    text-decoration: none;
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: 15px;
+    transition: color 0.2s ease;
 }
 
-nav a:hover {
-  color: #1677ff;
+nav a:hover, nav a.active {
+    color: var(--primary);
 }
 
-/* Main */
-main {
-  flex: 1;
-}
-
-/* Hero */
+/* Hero Section */
 .hero {
-  text-align: center;
-  padding: 60px 20px;
-  background: linear-gradient(135deg, #1677ff, #69a9ff);
-  color: white;
+    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    color: white;
+    padding: 50px 8%;
+    text-align: center;
+    box-shadow: inset 0 -10px 20px rgba(0,0,0,0.05);
 }
 
 .hero h1 {
-  font-size: 38px;
-  margin-bottom: 15px;
+    margin: 0;
+    font-size: 36px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
 }
 
-.hero p {
-  font-size: 18px;
+.hero p.subtitle {
+    margin: 10px 0 5px 0;
+    font-size: 20px;
+    font-weight: 500;
+    opacity: 0.95;
 }
 
-/* Clinics */
-.clinics-section {
-  padding: 50px 8%;
+.hero p.doctor {
+    margin: 5px 0 0 0;
+    font-size: 15px;
+    opacity: 0.85;
+    letter-spacing: 0.5px;
 }
 
-.clinics-section h2 {
-  text-align: center;
-  margin-bottom: 35px;
-  font-size: 30px;
+/* Main Container */
+main {
+    max-width: 750px;
+    margin: -30px auto 40px auto;
+    padding: 0 20px;
+    position: relative;
+    z-index: 10;
 }
 
-.clinics-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 25px;
+/* Info Card */
+.info-card {
+    background: var(--card-bg);
+    padding: 25px 30px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 25px;
+    border: 1px solid var(--border-color);
 }
 
-.clinic-card {
-  background: white;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-  transition: 0.3s;
+.info-card h3 {
+    margin-top: 0;
+    color: var(--text-main);
+    font-size: 18px;
+    border-bottom: 2px solid #f1f5f9;
+    padding-bottom: 10px;
 }
 
-.clinic-card:hover {
-  transform: translateY(-5px);
+.info-item {
+    margin: 10px 0;
+    font-size: 14px;
+    color: var(--text-muted);
+    display: flex;
+    justify-content: space-between;
 }
 
-.clinic-card h3 {
-  font-size: 22px;
-  margin-bottom: 12px;
+.info-item strong {
+    color: var(--text-main);
 }
 
-.clinic-card p {
-  margin: 8px 0;
-  color: #666;
+/* Booking Form Card */
+.form-card {
+    background: var(--card-bg);
+    padding: 35px;
+    border-radius: 14px;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--border-color);
 }
 
-.book-btn {
-  display: inline-block;
-  margin-top: 15px;
-  background: #1677ff;
-  color: white;
-  padding: 10px 18px;
-  border-radius: 8px;
-  text-decoration: none;
-  font-weight: bold;
-}
-
-.book-btn:hover {
-  background: #005fd1;
-}
-
-/* Footer */
-footer {
-  text-align: center;
-  padding: 20px;
-  background: #ffffff;
-  margin-top: auto;
-  color: #666;
-}
-
-/* Booking Page */
-.booking-section {
-  padding: 50px 20px;
-  display: flex;
-  justify-content: center;
-}
-
-.booking-card {
-  width: 100%;
-  max-width: 600px;
-  background: white;
-  padding: 35px;
-  border-radius: 15px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
-}
-
-.booking-card h1 {
-  text-align: center;
-  margin-bottom: 10px;
-  color: #1677ff;
-}
-
-#selectedClinicName {
-  text-align: center;
-  margin-bottom: 30px;
-  color: #666;
-  font-size: 17px;
+.form-card h2 {
+    margin-top: 0;
+    text-align: center;
+    font-size: 24px;
+    color: var(--text-main);
+    margin-bottom: 25px;
 }
 
 .form-group {
-  margin-bottom: 18px;
+    margin-bottom: 20px;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 7px;
-  font-weight: 600;
+.form-row {
+    display: flex;
+    gap: 20px;
 }
 
-.form-group input,
-.form-group select,
-.form-group textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  font-size: 15px;
-  outline: none;
+.form-col {
+    flex: 1;
 }
 
-.form-group input:focus,
-.form-group select:focus,
-.form-group textarea:focus {
-  border-color: #1677ff;
+label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--text-main);
 }
 
-.form-group textarea {
-  resize: vertical;
+input, select, textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    box-sizing: border-box;
+    font-size: 14px;
+    background: #f8fafc;
+    color: var(--text-main);
+    transition: all 0.2s ease;
 }
 
-.submit-btn {
-  width: 100%;
-  padding: 14px;
-  border: none;
-  border-radius: 8px;
-  background: #28a745;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  cursor: pointer;
+input:focus, select:focus, textarea:focus {
+    outline: none;
+    border-color: var(--primary);
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15);
 }
 
-.submit-btn:hover {
-  background: #218838;
+button[type="submit"] {
+    width: 100%;
+    padding: 14px;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.1s ease;
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.25);
 }
 
-#bookingMessage {
-  margin-top: 20px;
-  text-align: center;
-  font-weight: bold;
+button[type="submit"]:hover {
+    background: var(--primary-dark);
 }
 
-.success-message {
-  color: green;
+button[type="submit"]:active {
+    transform: scale(0.99);
 }
 
-.error-message {
-  color: red;
+#responseMsg {
+    text-align: center;
+    margin-top: 15px;
+    font-weight: 600;
+    font-size: 14px;
 }
 
-/* Slots Grid Styling */
-.slot-container {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 10px;
-  margin-top: 5px;
-}
-
-.slot {
-  padding: 10px;
-  text-align: center;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: bold;
-  border: 1px solid #ccc;
-  transition: 0.2s;
-}
-
-.slot.available {
-  background-color: #e8f5e9;
-  color: #2e7d32;
-  border-color: #a5d6a7;
-}
-
-.slot.available:hover {
-  background-color: #c8e6c9;
-}
-
-.slot.selected {
-  background-color: #4caf50;
-  color: white;
-  border-color: #388e3c;
-}
-
-.slot.booked {
-  background-color: #ffebee;
-  color: #c62828;
-  border-color: #ef9a9a;
-  cursor: not-allowed;
-  text-decoration: line-through;
-}
-
-/* Mobile Responsive */
 @media (max-width: 600px) {
-  header {
-    padding: 15px 20px;
-    flex-direction: column;
-    gap: 15px;
-  }
-
-  nav {
-    gap: 15px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-
-  .hero h1 {
-    font-size: 30px;
-  }
-
-  .clinics-section {
-    padding: 35px 20px;
-  }
-
-  .booking-section {
-    padding: 30px 15px;
-  }
-
-  .booking-card {
-    padding: 25px 20px;
-  }
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    .hero {
+        padding: 40px 5px;
+    }
 }

@@ -13,8 +13,8 @@
         <div class="logo">NSF</div>
         <nav>
             <a href="index.html" class="active">Home</a>
-            <a href="track-booking.html">Track Appointment</a>
-            <a href="admin.html">Admin Dashboard</a>
+            <a href="track-booking.html">Track Appt</a>
+            <a href="admin.html">Admin</a>
         </nav>
     </header>
 
@@ -25,10 +25,10 @@
         <p class="doctor">Prof. Dr. Shakil Jehangir Malik</p>
     </section>
 
-    <!-- Main Content & Direct Booking Form -->
+    <!-- Main Content & Booking Form -->
     <main>
         
-        <!-- Clinic Info Box (Without Fee repetition) -->
+        <!-- Clinic Info Box -->
         <div class="info-card">
             <h3>Clinic Information</h3>
             <div class="info-item">
@@ -38,10 +38,6 @@
             <div class="info-item">
                 <span><strong>Timings:</strong></span>
                 <span>Mon - Sat (Evening Slots Available)</span>
-            </div>
-            <div class="info-item">
-                <span><strong>Contact Support:</strong></span>
-                <span>Available via Admin / WhatsApp</span>
             </div>
         </div>
 
@@ -73,31 +69,35 @@
 
                 <div class="form-group">
                     <label>Consultation Type & Fee</label>
-                    <select id="consultationType" required>
-                        <option value="initial">Initial Consultation - PKR 12,000 (Advance: PKR 2,400)</option>
-                        <option value="followup">Follow-up Consultation - PKR 8,000 (Advance: PKR 1,600)</option>
+                    <select id="consultationType" required onchange="updateFeeDisplay()">
+                        <option value="initial">Initial Consultation - PKR 12,000 (Advance 20%: PKR 2,400)</option>
+                        <option value="followup">Follow-up Consultation - PKR 8,000 (Advance 20%: PKR 1,600)</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label>Select Payment Method for 20% Advance</label>
+                    <label>Select Payment Method for Advance</label>
                     <select id="paymentMethod" required onchange="updatePaymentDetails()">
                         <option value="Easypaisa">Easypaisa (Clinic Account)</option>
                         <option value="JazzCash">JazzCash (Clinic Account)</option>
                     </select>
                 </div>
 
-                <!-- Dynamic Payment Account Info Box -->
-                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; color: #166534; line-height: 1.5;">
-                    <strong>Easypaisa Account Details:</strong><br>
+                <!-- Professional Payment Box with Direct App Launcher & Copy Option -->
+                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; color: #166534; line-height: 1.6;">
+                    <strong>Easypaisa Secure Payment:</strong><br>
+                    Amount to Send: <strong id="payableAmount" style="color: #dc2626; font-size: 15px;">PKR 2,400</strong><br>
                     Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
-                    Account Number: <strong>0312-3456789</strong><br>
-                    <a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 Easypaisa App Kholein</a>
+                    Account Number: <strong id="accNum">0312-3456789</strong>
+                    <div style="margin-top: 10px; display: flex; gap: 10px;">
+                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button>
+                        <a id="walletAppLink" href="https://easypaisa.com.pk" target="_blank" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">📱 Open Easypaisa</a>
+                    </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Transaction ID (Tid) / Payment Proof</label>
-                    <input type="text" id="transactionId" required placeholder="Enter Easypaisa/JazzCash TID">
+                    <label>Transaction ID (Tid) from Payment SMS</label>
+                    <input type="text" id="transactionId" required placeholder="Enter 11-digit TID received in SMS">
                 </div>
 
                 <div class="form-group">
@@ -117,7 +117,7 @@
                     <textarea id="patientProblem" rows="3" placeholder="Describe your issue briefly..."></textarea>
                 </div>
 
-                <button type="submit">Confirm Appointment Booking</button>
+                <button type="submit">Confirm & Submit Appointment</button>
             </form>
             <p id="responseMsg"></p>
         </div>
@@ -125,14 +125,29 @@
     </main>
 
     <script>
+        function updateFeeDisplay() {
+            const type = document.getElementById('consultationType').value;
+            const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
+            document.getElementById('payableAmount').innerText = amountStr;
+        }
+
         function updatePaymentDetails() {
             const method = document.getElementById('paymentMethod').value;
             const box = document.getElementById('accountDetailsBox');
+            const type = document.getElementById('consultationType').value;
+            const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
+
             if (method === 'Easypaisa') {
-                box.innerHTML = `<strong>Easypaisa Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0312-3456789</strong><br><a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 Easypaisa App Kholein</a>`;
+                box.innerHTML = `<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="https://easypaisa.com.pk" target="_blank" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">📱 Open Easypaisa</a></div>`;
             } else {
-                box.innerHTML = `<strong>JazzCash Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0300-1234567</strong><br><a href="jazzcash://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 JazzCash App Kholein</a>`;
+                box.innerHTML = `<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="https://www.jazzcash.com.pk" target="_blank" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">📱 Open JazzCash</a></div>`;
             }
+        }
+
+        function copyAccountNo() {
+            const num = document.getElementById('accNum').innerText;
+            navigator.clipboard.writeText(num);
+            alert('Account number copied: ' + num);
         }
 
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
@@ -160,7 +175,7 @@
 
             const msgBox = document.getElementById('responseMsg');
             msgBox.style.color = '#0369a1';
-            msgBox.textContent = 'Submitting appointment...';
+            msgBox.textContent = 'Submitting your appointment and verifying TID...';
 
             try {
                 const response = await fetch('/api/appointments', {
@@ -172,11 +187,11 @@
 
                 if (result.success || response.ok) {
                     msgBox.style.color = '#16a34a';
-                    msgBox.textContent = 'Appointment booked successfully! Payment TID verified.';
+                    msgBox.textContent = 'Booking submitted successfully! Clinic will verify your payment and confirm your slot shortly.';
                     document.getElementById('bookingForm').reset();
                 } else {
                     msgBox.style.color = '#dc2626';
-                    msgBox.textContent = result.message || 'Failed to book appointment.';
+                    msgBox.textContent = result.message || 'Failed to submit appointment.';
                 }
             } catch (err) {
                 msgBox.style.color = '#dc2626';

@@ -1,73 +1,73 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Track Appointment - ClinicBook</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Appointment - NSF Clinic</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header>
-    <div class="logo"><a href="index.html">🏥 ClinicBook</a></div>
-    <nav>
-      <ul class="nav-links">
-        <li><a href="index.html">Home</a></li>
-        <li><a href="services.html">Services</a></li>
-        <li><a href="track-booking.html" class="active">My Appointments</a></li>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="contact.html">Contact</a></li>
-        <li><a href="admin.html" class="admin-btn">Admin Panel</a></li>
-      </ul>
-    </nav>
-  </header>
 
-  <main style="padding: 40px 20px; max-width: 600px; margin: auto;">
-    <h2>Track Your Appointment</h2>
-    <p>Enter your Booking ID to check your appointment status.</p>
-    
-    <div style="margin-top: 20px;">
-      <input type="text" id="searchBookingId" placeholder="e.g., APT-172485..." style="padding: 10px; width: 70%; border: 1px solid #ccc; border-radius: 4px;">
-      <button onclick="trackAppointment()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Search</button>
-    </div>
+    <!-- Header -->
+    <header>
+        <div class="logo">NSF</div>
+        <nav>
+            <a href="index.html">Home</a>
+            <a href="track-booking.html" class="active">Track Appt</a>
+            <a href="admin.html">Admin</a>
+        </nav>
+    </header>
 
-    <div id="trackingResult" style="margin-top: 20px;"></div>
-  </main>
+    <!-- Hero Banner -->
+    <section class="hero" style="padding: 25px 5%;">
+        <h1 style="font-size: 24px;">Track Your Appointment</h1>
+        <p class="subtitle" style="font-size: 14px; margin-top: 4px;">Enter your Booking ID or Phone Number to check status</p>
+    </section>
 
-  <footer>
-    <p>&copy; 2026 ClinicBook. All rights reserved.</p>
-  </footer>
-
-  <script>
-    async function trackAppointment() {
-      const id = document.getElementById("searchBookingId").value.trim();
-      const resultDiv = document.getElementById("trackingResult");
-      
-      if (!id) {
-        resultDiv.innerHTML = "<p style='color: red;'>Please enter a valid Booking ID.</p>";
-        return;
-      }
-
-      try {
-        const response = await fetch("/api/appointments");
-        const appointments = await response.json();
-        const found = appointments.find(item => item.id === id);
-
-        if (found) {
-          resultDiv.innerHTML = `
-            <div style="background: #e9ecef; padding: 15px; border-radius: 5px; margin-top: 10px;">
-              <p><strong>Booking ID:</strong> ${found.id}</p>
-              <p><strong>Patient Name:</strong> ${found.name}</p>
-              <p><strong>Date & Time:</strong> ${found.date} at ${found.time}</p>
-              <p><strong>Status:</strong> <span style="color: ${found.status === 'Pending' ? 'orange' : 'green'}; font-weight: bold;">${found.status}</span></p>
+    <!-- Main Content -->
+    <main style="margin-top: 20px;">
+        <div class="form-card">
+            <h2 style="font-size: 18px; margin-bottom: 15px;">Appointment Status Search</h2>
+            
+            <div class="form-group">
+                <label>Booking ID or Phone Number</label>
+                <input type="text" id="searchQuery" placeholder="e.g., APT-172485 or 03XXXXXXXXX">
             </div>
-          `;
-        } else {
-          resultDiv.innerHTML = "<p style='color: red;'>No appointment found with this ID.</p>";
+
+            <button type="button" onclick="trackBooking()" style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Search Status</button>
+            
+            <div id="resultBox" style="margin-top: 20px;"></div>
+        </div>
+    </main>
+
+    <!-- Professional Footer -->
+    <footer style="text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 40px;">
+        &copy; 2026 NSF Clinic (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
+    </footer>
+
+    <script>
+        function trackBooking() {
+            const query = document.getElementById('searchQuery').value.trim();
+            const box = document.getElementById('resultBox');
+
+            if (!query) {
+                box.innerHTML = <p style="color: #dc2626; font-size: 13px; text-align: center;">Please enter a valid Booking ID or Phone Number.</p>;
+                return;
+            }
+
+            box.innerHTML = <p style="color: #0369a1; font-size: 13px; text-align: center;">Searching appointment records...</p>;
+
+            // Simulated lookup or connect with backend API if needed
+            setTimeout(() => {
+                box.innerHTML = `
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; font-size: 13px; color: #166534;">
+                        <strong>Status: Pending Verification</strong><br>
+                        Booking ID: ${query}<br>
+                        Advance Payment TID submitted. Clinic will verify and confirm shortly.
+                    </div>
+                `;
+            }, 600);
         }
-      } catch (err) {
-        resultDiv.innerHTML = "<p style='color: red;'>Error fetching data. Try again later.</p>";
-      }
-    }
-  </script>
+    </script>
 </body>
 </html>

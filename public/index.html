@@ -81,10 +81,18 @@
 
                 <div class="form-group">
                     <label>Select Payment Method for 20% Advance</label>
-                    <select id="paymentMethod" required>
+                    <select id="paymentMethod" required onchange="updatePaymentDetails()">
                         <option value="Easypaisa">Easypaisa (Clinic Account)</option>
                         <option value="JazzCash">JazzCash (Clinic Account)</option>
                     </select>
+                </div>
+
+                <!-- Dynamic Payment Account Info Box -->
+                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #166534; line-height: 1.5;">
+                    <strong>Easypaisa Account Details:</strong><br>
+                    Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
+                    Account Number: <strong>0312-3456789</strong><br>
+                    <a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 Easypaisa App Kholein</a>
                 </div>
 
                 <div class="form-group">
@@ -117,6 +125,16 @@
     </main>
 
     <script>
+        function updatePaymentDetails() {
+            const method = document.getElementById('paymentMethod').value;
+            const box = document.getElementById('accountDetailsBox');
+            if (method === 'Easypaisa') {
+                box.innerHTML = `<strong>Easypaisa Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0312-3456789</strong><br><a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 Easypaisa App Kholein</a>`;
+            } else {
+                box.innerHTML = `<strong>JazzCash Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0300-1234567</strong><br><a href="jazzcash://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 JazzCash App Kholein</a>`;
+            }
+        }
+
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             

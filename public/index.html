@@ -13,7 +13,7 @@
         <div class="logo">NSF</div>
         <nav>
             <a href="index.html" class="active">Home</a>
-            <a href="track-booking.html">My Appointments</a>
+            <a href="track-booking.html">Track Appointment</a>
             <a href="admin.html">Admin Dashboard</a>
         </nav>
     </header>
@@ -28,20 +28,20 @@
     <!-- Main Content & Direct Booking Form -->
     <main>
         
-        <!-- Clinic Info Box -->
+        <!-- Clinic Info Box (Without Fee repetition) -->
         <div class="info-card">
-            <h3>Clinic Information & Fee Structure</h3>
+            <h3>Clinic Information</h3>
             <div class="info-item">
                 <span><strong>Address:</strong></span>
                 <span>House # 311, Street # 4, Phase 3, Gulrez, Rawalpindi</span>
             </div>
             <div class="info-item">
-                <span><strong>Initial Consultation:</strong></span>
-                <span>PKR 12,000 (Advance 20%: <strong>PKR 2,400</strong>)</span>
+                <span><strong>Timings:</strong></span>
+                <span>Mon - Sat (Evening Slots Available)</span>
             </div>
             <div class="info-item">
-                <span><strong>Follow-up Consultation:</strong></span>
-                <span>PKR 8,000 (Advance 20%: <strong>PKR 1,600</strong>)</span>
+                <span><strong>Contact Support:</strong></span>
+                <span>Available via Admin / WhatsApp</span>
             </div>
         </div>
 
@@ -88,11 +88,11 @@
                 </div>
 
                 <!-- Dynamic Payment Account Info Box -->
-                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-size: 14px; color: #166534; line-height: 1.5;">
+                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 16px; font-size: 13px; color: #166534; line-height: 1.5;">
                     <strong>Easypaisa Account Details:</strong><br>
                     Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
                     Account Number: <strong>0312-3456789</strong><br>
-                    <a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 Easypaisa App Kholein</a>
+                    <a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 Easypaisa App Kholein</a>
                 </div>
 
                 <div class="form-group">
@@ -129,9 +129,9 @@
             const method = document.getElementById('paymentMethod').value;
             const box = document.getElementById('accountDetailsBox');
             if (method === 'Easypaisa') {
-                box.innerHTML = `<strong>Easypaisa Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0312-3456789</strong><br><a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 Easypaisa App Kholein</a>`;
+                box.innerHTML = `<strong>Easypaisa Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0312-3456789</strong><br><a href="easypaisa://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 Easypaisa App Kholein</a>`;
             } else {
-                box.innerHTML = `<strong>JazzCash Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0300-1234567</strong><br><a href="jazzcash://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 8px;">📱 JazzCash App Kholein</a>`;
+                box.innerHTML = `<strong>JazzCash Account Details:</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong>0300-1234567</strong><br><a href="jazzcash://" style="color: #0284c7; font-weight: 600; text-decoration: none; display: inline-block; margin-top: 6px;">📱 JazzCash App Kholein</a>`;
             }
         }
 

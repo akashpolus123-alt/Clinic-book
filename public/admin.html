@@ -166,9 +166,6 @@
             <th>Fee / Advance</th>
             <th>Status</th>
             <th>Actions</th>
-            <td>
-    <button onclick="deleteAppointment('${app.id}')" style="background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;">Delete</button>
-</td>
           </tr>
         </thead>
         <tbody id="appTableBody">
@@ -315,6 +312,9 @@
           <td><span class="badge ${badgeClass}">${app.status}</span></td>
           <td>
             ${app.status !== 'Completed' ? `<button class="btn-action btn-done" onclick="updateStatus('${app.id}', 'Completed')">Mark Done</button>` : '<span style="color:#16a34a; font-size:13px; font-weight:600;">Completed</span>'}
+            <td>
+    <button onclick="deleteAppointment('${app.id}')" style="background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600;">Delete</button>
+</td>
           </td>
         </tr>`;
       });

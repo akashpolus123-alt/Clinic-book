@@ -146,6 +146,28 @@ app.put("/api/appointments/cancel/:id", async (req, res) => {
   }
 });
 
+app.put('/api/appointments/cancel/:id', async (req, res) => {
+    try {
+        const appointmentId = req.params.id;
+        
+        // Agar aap MongoDB/Mongoose use kar rahe hain:
+        const updatedAppt = await Appointment.findOneAndUpdate(
+            { id: appointmentId }, 
+            { status: 'Cancelled' }, 
+            { new: true }
+        );
+
+        if (!updatedAppt) {
+            return res.status(404).json({ success: false, message: 'Appointment nahi mili.' });
+        }
+
+        res.json({ success: true, message: 'Appointment kamyaabi se cancel ho chuki hai.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error aaya hai.' });
+    }
+});
+
 app.get("/api/finance-summary", async (req, res) => {
   try {
     const appointments = await Appointment.find({ clinicId: "professorial-clinic", status: { $ne: "Cancelled" } });

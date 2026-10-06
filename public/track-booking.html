@@ -58,15 +58,15 @@
             box.innerHTML = '<p style="color: #0369a1; font-size: 13px; text-align: center;">Searching appointment records...</p>';
 
             try {
-                const response = await fetch(`/api/track?query=${encodeURIComponent(query)}`);
+                const response = await fetch('/api/track?query=' + encodeURIComponent(query));
                 const data = await response.json();
 
                 if (data.success && data.appointment) {
                     const appt = data.appointment;
                     
-                    let statusColor = '#166534';
-                    let bgCol = '#f0fdf4';
-                    let borderCol = '#bbf7d0';
+                    var statusColor = '#166534';
+                    var bgCol = '#f0fdf4';
+                    var borderCol = '#bbf7d0';
                     
                     if (appt.status === 'Pending') {
                         statusColor = '#854d0e';
@@ -78,19 +78,17 @@
                         borderCol = '#fecaca';
                     }
 
-                    box.innerHTML = `
-                        <div style="background: ${bgCol}; border: 1px solid ${borderCol}; padding: 15px; border-radius: 8px; font-size: 13px; color: ${statusColor};">
-                            <strong>Status: ${appt.status}</strong><br>
-                            <strong>Booking ID:</strong> ${appt.id}<br>
-                            <strong>Patient Name:</strong> ${appt.name}<br>
-                            <strong>Phone:</strong> ${appt.phone}<br>
-                            <strong>Date & Time:</strong> ${appt.date} (${appt.time})<br>
-                            <strong>Consultation Type:</strong> ${appt.type}<br>
-                            <strong>Fee:</strong> ${appt.fee} PKR (Advance Paid: ${appt.advancePaid} PKR)
-                        </div>
-                    `;
+                    box.innerHTML = '<div style="background: ' + bgCol + '; border: 1px solid ' + borderCol + '; padding: 15px; border-radius: 8px; font-size: 13px; color: ' + statusColor + ';">' +
+                        '<strong>Status: ' + appt.status + '</strong><br>' +
+                        '<strong>Booking ID:</strong> ' + appt.id + '<br>' +
+                        '<strong>Patient Name:</strong> ' + appt.name + '<br>' +
+                        '<strong>Phone:</strong> ' + appt.phone + '<br>' +
+                        '<strong>Date & Time:</strong> ' + appt.date + ' (' + appt.time + ')<br>' +
+                        '<strong>Consultation Type:</strong> ' + appt.type + '<br>' +
+                        '<strong>Fee:</strong> ' + appt.fee + ' PKR (Advance Paid: ' + appt.advancePaid + ' PKR)' +
+                        '</div>';
                 } else {
-                    box.innerHTML = <p style="color: #dc2626; font-size: 13px; text-align: center;">${data.message || 'No appointment found with this ID or phone number.'}</p>;
+                    box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">' + (data.message || 'No appointment found with this ID or phone number.') + '</p>';
                 }
             } catch (error) {
                 box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">Server error occurred while searching. Please try again.</p>';

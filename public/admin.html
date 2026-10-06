@@ -395,6 +395,29 @@
         console.error("Error updating status:", err);
       }
     }
+
+    async function deleteAppointment(id) {
+    const pin = prompt("Developer Secret PIN darj karein:");
+    if (!pin) return; // Agar cancel kar diya
+    
+    try {
+        const res = await fetch(`/api/appointments/${id}`, {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ devPin: pin })
+        });
+        
+        const result = await res.json();
+        alert(result.message);
+        
+        if (result.success) {
+            loadAdminData(); // Table refresh karne ke liye
+        }
+    } catch (err) {
+        alert("Delete karne mein error aaya.");
+    }
+}
+
   </script>
 </body>
 </html

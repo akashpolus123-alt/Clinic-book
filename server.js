@@ -168,6 +168,29 @@ app.put('/api/appointments/cancel/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/appointments/:id', async (req, res) => {
+    try {
+        const { devPin } = req.body; // Frontend se aane wala PIN
+        
+        // Yahan apna secret PIN set kar dein (misal ke tor par: 'AKASH123@')
+        if (devPin !== '2527') {
+            return res.status(403).json({ success: false, message: 'Access Denied! Sirf developer hi delete kar sakta hai.' });
+        }
+
+        const appointmentId = req.params.id;
+        const deletedAppt = await Appointment.findOneAndDelete({ id: appointmentId });
+        
+        if (!deletedAppt) {
+            return res.status(404).json({ success: false, message: 'Appointment nahi mili.' });
+        }
+
+        res.json({ success: true, message: 'Appointment kamyaabi se delete ho chuki hai.' });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, message: 'Server error aaya hai.' });
+    }
+});
+
 app.get("/api/finance-summary", async (req, res) => {
   try {
     const appointments = await Appointment.find({ clinicId: "professorial-clinic", status: { $ne: "Cancelled" } });

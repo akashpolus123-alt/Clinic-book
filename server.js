@@ -29,8 +29,8 @@ const appointmentSchema = new mongoose.Schema({
   time: { type: String, required: true },
   type: { type: String, default: "Initial" },
   fee: { type: Number, default: 12000 },
-  advancePaid: { type: Number, default: 0 }, // 20% Advance via EasyPaisa/JazzCash
-  platformCommission: { type: Number, default: 100 }, // Fixed 100 PKR Commission for you
+  advancePaid: { type: Number, default: 0 },
+  platformCommission: { type: Number, default: 100 },
   clinicShare: { type: Number, default: 0 },
   paymentMethod: { type: String, default: "EasyPaisa/JazzCash" },
   problem: String,
@@ -106,8 +106,8 @@ app.post("/api/appointments", async (req, res) => {
     }
 
     const consultFee = fee || (type === 'Follow-up' ? 8000 : 12000);
-    const advancePaid = consultFee * 0.20; // 20% Advance Online Payment via EasyPaisa/JazzCash
-    const platformCommission = 100; // Fixed 100 PKR Commission goes to your account instantly
+    const advancePaid = consultFee * 0.20;
+    const platformCommission = 100;
     const clinicShare = advancePaid - platformCommission;
 
     const uniqueId = "APT-" + Date.now() + "-" + Math.floor(Math.random() * 10000);
@@ -133,7 +133,6 @@ app.post("/api/appointments", async (req, res) => {
 
     await newAppointment.save();
 
-    // Email Notification
     try {
       const mailOptions = {
         from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
@@ -154,15 +153,13 @@ app.post("/api/appointments", async (req, res) => {
   }
 });
 
-// 4. Admin Login Route for NSF Clinic
+// 4. Admin Login Route for NSF Clinic (Fixed quotes issue)
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
-    const clinics = readJSON(clinicsFile);
-    const clinic = clinics.find(c => c.username === nsf && c.password === nsf123);
     
-    if (clinic) {
-      res.json({ success: true, clinicId: clinic.id, clinicName: clinic.name });
+    if (username === "nsf" && password === "nsf123") {
+      res.json({ success: true, clinicId: "professorial-clinic", clinicName: "NSF Clinic" });
     } else {
       res.status(401).json({ success: false, message: 'Invalid username or password' });
     }
@@ -181,7 +178,7 @@ app.get("/api/clinic-appointments", async (req, res) => {
   }
 });
 
-// 6. Finance Analytics Route (Total Revenue, Total Commission, Advance Collections)
+// 6. Finance Analytics Route
 app.get("/api/finance-summary", async (req, res) => {
   try {
     const appointments = await Appointment.find({ clinicId: "professorial-clinic" });
@@ -213,7 +210,6 @@ app.get("/api/hr-staff", async (req, res) => {
   try {
     let staffList = await Staff.find();
     if (staffList.length === 0) {
-      // Default initial staff if empty
       staffList = [
         { staffId: "STF-01", name: "Receptionist Desk", role: "Front Desk", phone: "0330-5934059", salary: 35000 },
         { staffId: "STF-02", name: "Clinic Assistant", role: "Medical Assistant", phone: "0300-1234567", salary: 40000 }

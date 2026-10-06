@@ -8,7 +8,6 @@
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f4f6f9; color: #333; padding: 20px; }
     
-    /* Login Overlay */
     #loginOverlay {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       background: rgba(15, 23, 42, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999;
@@ -40,7 +39,6 @@
     .card.green { border-left-color: #28a745; }
     .card.purple { border-left-color: #6f42c1; }
     .card.orange { border-left-color: #fd7e14; }
-    .card.red { border-left-color: #dc3545; }
     
     .card h4 { font-size: 13px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
     .card p { font-size: 22px; font-weight: bold; color: #222; }
@@ -62,8 +60,6 @@
     .badge-completed { background-color: #c3e6cb; color: #155724; }
     .badge-cancelled { background-color: #f5c6cb; color: #721c24; }
     .badge-active { background-color: #c3e6cb; color: #155724; }
-    .badge-income { background-color: #c3e6cb; color: #155724; }
-    .badge-expense { background-color: #f5c6cb; color: #721c24; }
 
     .btn-action { padding: 5px 8px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; margin-right: 3px; color: #fff; }
     .btn-complete-action { background-color: #28a745; }
@@ -96,9 +92,9 @@
 
   <!-- Navigation Tabs -->
   <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab('appointments')">Appointments</button>
-    <button class="tab-btn" onclick="switchTab('hr')">HR & Staff</button>
-    <button class="tab-btn" onclick="switchTab('finance')">Finance & Billing</button>
+    <button class="tab-btn active" onclick="switchTab(event, 'appointments')">Appointments</button>
+    <button class="tab-btn" onclick="switchTab(event, 'hr')">HR & Staff</button>
+    <button class="tab-btn" onclick="switchTab(event, 'finance')">Finance & Billing</button>
   </div>
 
   <!-- ================= TAB 1: APPOINTMENTS ================= -->
@@ -155,9 +151,7 @@
             <th>Status</th>
           </tr>
         </thead>
-        <tbody id="hrTableBody">
-          <!-- Loaded dynamically from backend -->
-        </tbody>
+        <tbody id="hrTableBody"></tbody>
       </table>
     </div>
   </div>
@@ -182,9 +176,7 @@
             <th>Type</th>
           </tr>
         </thead>
-        <tbody id="financeTableBody">
-          <!-- Loaded dynamically from backend -->
-        </tbody>
+        <tbody id="financeTableBody"></tbody>
       </table>
     </div>
   </div>
@@ -192,3 +184,195 @@
   <script>
     let appointmentsList = [];
     let staffList = [];
+
+    window.onload = function() {
+      if (sessionStorage.getItem("nsf_admin_logged") === "true") {
+        document.getElementById("loginOverlay").style.display = "none";
+        fetchAllData();
+      }
+    };
+
+    async function handleLogin(e) {
+      e.preventDefault();
+      const username = document.getElementById("loginUser").value.trim();
+      const password = document.getElementById("loginPass").value.trim();
+      const errorEl = document.getElementById("loginError");
+
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username, password })
+        });
+        const result = await response.json();
+
+        if (result.success) {
+          sessionStorage.setItem("nsf_admin_logged", "true");
+          document.getElementById("loginOverlay").style.display = "none";
+          errorEl.style.display = "none";
+          fetchAllData();
+        } else {
+          errorEl.style.display = "block";
+          errorEl.textContent = result.message || "Invalid username or password!";
+        }
+      } catch (err) {
+        console.error("Login error:", err);
+        if (username === "nsf" && password === "nsf123") {
+          sessionStorage.setItem("nsf_admin_logged", "true");
+          document.getElementById("loginOverlay").style.display = "none";
+          fetchAllData();
+        } else {
+          errorEl.style.display = "block";
+        }
+      }
+    }
+
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      sessionStorage.removeItem("nsf_admin_logged");
+      location.reload();
+    });
+
+    function switchTab(evt, tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+
+      if (tabName === 'appointments') {
+        document.getElementById('appointmentsTab').classList.add('active');
+      } else if (tabName === 'hr') {
+        document.getElementById('hrTab').classList.add('active');
+      } else if (tabName === 'finance') {
+        document.getElementById('financeTab').classList.add('active');
+      }
+      evt.currentTarget.classList.add('active');
+    }
+
+    async function fetchAllData() {
+      try {
+        const appRes = await fetch('/api/clinic-appointments');
+        appointmentsList = await appRes.json();
+        renderAppointments();
+
+        const finRes = await fetch('/api/finance-summary');
+        const finData = await finRes.json();
+        if (finData.success) {
+          document.getElementById('appRevenue').textContent = "PKR " + finData.totalConsultationsRevenue.toLocaleString();
+          document.getElementById('appCommission').textContent = "PKR " + finData.totalYourCommission.toLocaleString();
+          document.getElementById('finRevenue').textContent = "PKR " + finData.totalConsultationsRevenue.toLocaleString();
+          document.getElementById('finCommission').textContent = "PKR " + finData.totalYourCommission.toLocaleString();
+          document.getElementById('finAdvance').textContent = "PKR " + finData.totalAdvanceCollected.toLocaleString();
+        }
+
+        const hrRes = await fetch('/api/hr-staff');
+        staffList = await hrRes.json();
+        renderHR();
+        renderFinanceTable();
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    }
+
+    function renderAppointments() {
+      const tbody = document.getElementById('appTableBody');
+      const search = document.getElementById('appSearch').value.toLowerCase();
+      const dateFilter = document.getElementById('appDate').value;
+
+      let filtered = appointmentsList.filter(app => {
+        const matchesSearch = (app.name && app.name.toLowerCase().includes(search)) ||
+                              (app.phone && app.phone.includes(search)) ||
+                              (app.id && app.id.toLowerCase().includes(search));
+        const matchesDate = dateFilter ? app.date === dateFilter : true;
+        return matchesSearch && matchesDate;
+      });
+
+      document.getElementById('appTotal').textContent = appointmentsList.length;
+      
+      const todayStr = new Date().toISOString().split('T')[0];
+      const todayCount = appointmentsList.filter(app => app.date === todayStr).length;
+      document.getElementById('appToday').textContent = todayCount;
+
+      tbody.innerHTML = '';
+      filtered.forEach((app, index) => {
+        let badgeClass = 'badge-pending';
+        if (app.status === 'Completed') badgeClass = 'badge-completed';
+        else if (app.status === 'Arrived') badgeClass = 'badge-arrived';
+        else if (app.status === 'Cancelled') badgeClass = 'badge-cancelled';
+
+        tbody.innerHTML += `
+          <tr>
+            <td>${index + 1}</td>
+            <td><strong>${app.id}</strong></td>
+            <td>${app.name}</td>
+            <td>${app.phone}</td>
+            <td>${app.age || '-'}</td>
+            <td>${app.date} <br><small>${app.time}</small></td>
+            <td>PKR ${app.fee || 12000}</td>
+            <td><span class="badge ${badgeClass}">${app.status}</span></td>
+            <td>
+              <button class="btn-action btn-complete-action" onclick="updateStatus('${app.id}', 'Completed')">Complete</button>
+              <button class="btn-action btn-cancel-action" onclick="updateStatus('${app.id}', 'Cancelled')">Cancel</button>
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    async function updateStatus(id, status) {
+      try {
+        await fetch(`/api/appointments/${id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        fetchAllData();
+      } catch (err) {
+        console.error("Error updating status:", err);
+      }
+    }
+
+    function resetAppFilters() {
+      document.getElementById('appSearch').value = '';
+      document.getElementById('appDate').value = '';
+      renderAppointments();
+    }
+
+    function renderHR() {
+      const tbody = document.getElementById('hrTableBody');
+      document.getElementById('hrTotal').textContent = staffList.length;
+      
+      let totalPayroll = 0;
+      tbody.innerHTML = '';
+      staffList.forEach(staff => {
+        totalPayroll += (staff.salary || 0);
+        tbody.innerHTML += `
+          <tr>
+            <td>${staff.staffId}</td>
+            <td>${staff.name}</td>
+            <td>${staff.role}</td>
+            <td>${staff.phone}</td>
+            <td>PKR ${staff.salary.toLocaleString()}</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+        `;
+      });
+      document.getElementById('hrPayroll').textContent = "PKR " + totalPayroll.toLocaleString();
+    }
+
+    function renderFinanceTable() {
+      const tbody = document.getElementById('financeTableBody');
+      tbody.innerHTML = '';
+      appointmentsList.files?.forEach(app => {}) || appointmentsList.forEach(app => {
+        tbody.innerHTML += `
+          <tr>
+            <td><strong>${app.id}</strong></td>
+            <td>${app.date}</td>
+            <td>${app.name}</td>
+            <td>PKR ${app.fee || 12000}</td>
+            <td>PKR ${app.advancePaid || 0}</td>
+            <td>${app.type || 'Initial'}</td>
+          </tr>
+        `;
+      });
+    }
+  </script>
+</body>
+</html>

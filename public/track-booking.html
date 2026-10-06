@@ -4,13 +4,73 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Track Appointment - NSF Clinic</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --primary: #0284c7;
+            --primary-dark: #0369a1;
+            --bg-color: #f4f6f9;
+            --card-bg: #ffffff;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+        }
+
+        * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding: 20px; }
+
+        header {
+            display: flex; justify-content: space-between; align-items: center; background: var(--card-bg);
+            padding: 15px 24px; border-radius: 12px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .logo { font-size: 20px; font-weight: 800; color: var(--primary); }
+        nav { display: flex; gap: 15px; }
+        nav a { text-decoration: none; color: var(--text-muted); font-weight: 600; font-size: 14px; transition: color 0.2s; }
+        nav a.active, nav a:hover { color: var(--primary); }
+
+        .hero {
+            text-align: center; background: var(--card-bg); padding: 30px 20px; border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05); margin-bottom: 24px;
+        }
+        .hero h1 { font-size: 24px; color: var(--text-main); font-weight: 700; }
+        .hero p { color: var(--text-muted); font-size: 14px; margin-top: 6px; }
+
+        main { max-width: 500px; margin: 0 auto; }
+        .form-card {
+            background: var(--card-bg); padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+        .form-group { margin-bottom: 18px; }
+        .form-group label { display: block; font-size: 13px; font-weight: 600; color: var(--text-muted); margin-bottom: 6px; }
+        .form-group input {
+            width: 100%; padding: 12px 16px; border: 1px solid var(--border-color); border-radius: 8px;
+            font-size: 14px; outline: none; transition: border-color 0.2s;
+        }
+        .form-group input:focus { border-color: var(--primary); }
+
+        .btn-search {
+            width: 100%; padding: 12px; background: var(--primary); color: white; border: none;
+            border-radius: 8px; font-weight: 700; font-size: 15px; cursor: pointer; transition: background 0.2s;
+        }
+        .btn-search:hover { background: var(--primary-dark); }
+
+        #resultBox { margin-top: 20px; }
+        .result-card {
+            background: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 10px; font-size: 14px; color: #166534;
+        }
+        .result-card strong { color: #14532d; }
+        .error-card {
+            background: #fef2f2; border: 1px solid #fecaca; padding: 15px; border-radius: 10px; font-size: 14px; color: #991b1b; text-align: center;
+        }
+        .btn-cancel {
+            margin-top: 15px; background: #dc2626; color: white; border: none; padding: 8px 14px;
+            border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 13px; transition: background 0.2s;
+        }
+        .btn-cancel:hover { background: #b91c1c; }
+    </style>
 </head>
 <body>
 
-    <!-- Header -->
     <header>
-        <div class="logo">NSF</div>
+        <div class="logo">NSF Clinic</div>
         <nav>
             <a href="index.html">Home</a>
             <a href="track-booking.html" class="active">Track Appt</a>
@@ -18,44 +78,33 @@
         </nav>
     </header>
 
-    <!-- Hero Banner -->
-    <section class="hero" style="padding: 25px 5%;">
-        <h1 style="font-size: 24px;">Track Your Appointment</h1>
-        <p class="subtitle" style="font-size: 14px; margin-top: 4px;">Enter your Booking ID or Phone Number to check status</p>
+    <section class="hero">
+        <h1>Track Your Appointment</h1>
+        <p>Enter your Booking ID or Phone Number to check status</p>
     </section>
 
-    <!-- Main Content -->
-    <main style="margin-top: 20px;">
+    <main>
         <div class="form-card">
-            <h2 style="font-size: 18px; margin-bottom: 15px;">Appointment Status Search</h2>
-            
             <div class="form-group">
                 <label>Booking ID or Phone Number</label>
-                <input type="text" id="searchQuery" placeholder="e.g., APT-172485 or 03XXXXXXXXX">
+                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX">
             </div>
-
-            <button type="button" onclick="trackBooking()" style="width: 100%; padding: 12px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: 700; cursor: pointer;">Search Status</button>
-            
-            <div id="resultBox" style="margin-top: 20px;"></div>
+            <button type="button" class="btn-search" onclick="trackBooking()">Search Status</button>
+            <div id="resultBox"></div>
         </div>
     </main>
-
-    <!-- Professional Footer -->
-    <footer style="text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 40px;">
-        &copy; 2026 NSF Clinic (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
-    </footer>
 
     <script>
         async function trackBooking() {
             const query = document.getElementById('searchQuery').value.trim();
             const box = document.getElementById('resultBox');
-
+            
             if (!query) {
-                box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">Please enter a valid Booking ID or Phone Number.</p>';
+                box.innerHTML = '<div class="error-card">Bara-e-karam apna Booking ID ya Phone number likhein.</div>';
                 return;
             }
 
-            box.innerHTML = '<p style="color: #0369a1; font-size: 13px; text-align: center;">Searching appointment records...</p>';
+            box.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 15px;">Searching record...</p>';
 
             try {
                 const response = await fetch('/api/track?query=' + encodeURIComponent(query));
@@ -63,35 +112,38 @@
 
                 if (data.success && data.appointment) {
                     const appt = data.appointment;
-                    
-                    var statusColor = '#166534';
-                    var bgCol = '#f0fdf4';
-                    var borderCol = '#bbf7d0';
-                    
-                    if (appt.status === 'Pending') {
-                        statusColor = '#854d0e';
-                        bgCol = '#fefce8';
-                        borderCol = '#fef08a';
-                    } else if (appt.status === 'Cancelled') {
-                        statusColor = '#991b1b';
-                        bgCol = '#fef2f2';
-                        borderCol = '#fecaca';
-                    }
+                    let cancelBtnHTML = appt.status === 'Pending' ? `<br><button class="btn-cancel" onclick="cancelAppointment('${appt.id}')">Cancel Appointment</button>` : '';
 
-                    box.innerHTML = '<div style="background: ' + bgCol + '; border: 1px solid ' + borderCol + '; padding: 15px; border-radius: 8px; font-size: 13px; color: ' + statusColor + ';">' +
-                        '<strong>Status: ' + appt.status + '</strong><br>' +
-                        '<strong>Booking ID:</strong> ' + appt.id + '<br>' +
-                        '<strong>Patient Name:</strong> ' + appt.name + '<br>' +
-                        '<strong>Phone:</strong> ' + appt.phone + '<br>' +
-                        '<strong>Date & Time:</strong> ' + appt.date + ' (' + appt.time + ')<br>' +
-                        '<strong>Consultation Type:</strong> ' + appt.type + '<br>' +
-                        '<strong>Fee:</strong> ' + appt.fee + ' PKR (Advance Paid: ' + appt.advancePaid + ' PKR)' +
-                        '</div>';
+                    box.innerHTML = `<div class="result-card">
+                        <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #bbf7d0; padding-bottom: 6px;">
+                            Status: <span style="color: #047857;">${appt.status}</span>
+                        </div>
+                        <strong>Booking ID:</strong> ${appt.id}<br>
+                        <strong>Patient Name:</strong> ${appt.name}<br>
+                        <strong>Phone:</strong> ${appt.phone}<br>
+                        <strong>Date & Time:</strong> ${appt.date} (${appt.time})<br>
+                        <strong>Consultation Type:</strong> ${appt.type || 'Initial'}<br>
+                        <strong>Total Fee:</strong> PKR ${appt.fee} (Advance Paid: PKR ${appt.advancePaid})<br>
+                        ${cancelBtnHTML}
+                    </div>`;
                 } else {
-                    box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">' + (data.message || 'No appointment found with this ID or phone number.') + '</p>';
+                    box.innerHTML = '<div class="error-card">Koi appointment ya record nahi mila is query ke khilaaf.</div>';
                 }
             } catch (error) {
-                box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">Server error occurred while searching. Please try again.</p>';
+                box.innerHTML = '<div class="error-card">Server se rabta karne mein masla hua. Dobara koshish karein.</div>';
+            }
+        }
+
+        async function cancelAppointment(id) {
+            if (!confirm("Kya aap waqai apni yeh appointment cancel karna chahte hain?")) return;
+            
+            try {
+                const res = await fetch(`/api/appointments/cancel/${id}, { method: 'PUT' }`);
+                const result = await res.json();
+                alert(result.message || "Appointment cancel ho chuki hai.");
+                trackBooking();
+            } catch (err) {
+                alert("Appointment cancel karne mein error aaya.");
             }
         }
     </script>

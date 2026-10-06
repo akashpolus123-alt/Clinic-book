@@ -138,7 +138,7 @@
             if (!confirm("Kya aap waqai apni yeh appointment cancel karna chahte hain?")) return;
             
             try {
-                const res = await fetch(`/api/appointments/cancel/${id}, { method: 'PUT' }`);
+                const res = await fetch(`/api/appointments/cancel/${id}`, { method: 'PUT' });
                 const result = await res.json();
                 alert(result.message || "Appointment cancel ho chuki hai.");
                 trackBooking();

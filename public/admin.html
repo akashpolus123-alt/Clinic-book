@@ -311,7 +311,7 @@
           <td>PKR ${app.fee.toLocaleString()} <br><small style="color:var(--text-muted);">Adv: ${app.advancePaid.toLocaleString()}</small></td>
           <td><span class="badge ${badgeClass}">${app.status}</span></td>
           <td>
-            ${app.status !== 'Completed' ? <button class="btn-action btn-done" onclick="updateStatus('${app.id}', 'Completed')">Mark Done</button> : '<span style="color:#16a34a; font-size:13px; font-weight:600;">Completed</span>'}
+            ${app.status !== 'Completed' ? `<button class="btn-action btn-done" onclick="updateStatus('${app.id}', 'Completed')">Mark Done</button>` : '<span style="color:#16a34a; font-size:13px; font-weight:600;">Completed</span>'}
           </td>
         </tr>`;
       });

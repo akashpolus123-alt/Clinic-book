@@ -1,298 +1,309 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clinic Admin Dashboard</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clinic Admin Portal</title>
+  <style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body { background-color: #f4f6f9; color: #333; padding: 20px; }
+    
+    .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
+    .header h2 { font-size: 20px; color: #1a252f; }
+    .header p { font-size: 14px; color: #666; }
+    .btn-logout { background-color: #dc3545; color: #fff; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: bold; }
+    
+    .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
+    .tab-btn { padding: 10px 20px; border: none; border-radius: 5px; background-color: #e2e8f0; color: #333; cursor: pointer; font-weight: 600; }
+    .tab-btn.active { background-color: #007bff; color: #fff; }
+
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
+    .card { background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #007bff; }
+    .card.blue { border-left-color: #007bff; }
+    .card.green { border-left-color: #28a745; }
+    .card.purple { border-left-color: #6f42c1; }
+    .card.orange { border-left-color: #fd7e14; }
+    .card.red { border-left-color: #dc3545; }
+    
+    .card h4 { font-size: 13px; color: #666; text-transform: uppercase; margin-bottom: 5px; }
+    .card p { font-size: 22px; font-weight: bold; color: #222; }
+
+    .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
+    .filter-bar input[type="text"] { flex: 1; min-width: 180px; }
+    .btn-add { background-color: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: auto; font-weight: bold; }
+    .btn-reset { background-color: #6c757d; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+
+    .table-container { background: #fff; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th, td { padding: 12px 15px; border-bottom: 1px solid #e9ecef; font-size: 14px; }
+    th { background-color: #f8f9fa; color: #495057; font-weight: 600; }
+    tr:hover { background-color: #f1f5f9; }
+
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; display: inline-block; }
+    .badge-pending { background-color: #ffeba8; color: #856404; }
+    .badge-arrived { background-color: #b8daff; color: #004085; }
+    .badge-completed { background-color: #c3e6cb; color: #155724; }
+    .badge-cancelled { background-color: #f5c6cb; color: #721c24; }
+    .badge-active { background-color: #c3e6cb; color: #155724; }
+    .badge-leave { background-color: #ffeeba; color: #856404; }
+    .badge-income { background-color: #c3e6cb; color: #155724; }
+    .badge-expense { background-color: #f5c6cb; color: #721c24; }
+
+    .btn-action { padding: 5px 8px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; margin-right: 3px; color: #fff; }
+    .btn-arrived-action { background-color: #17a2b8; }
+    .btn-complete-action { background-color: #28a745; }
+    .btn-cancel-action { background-color: #dc3545; }
+  </style>
 </head>
 <body>
-    <div class="container" style="max-width: 900px; margin-top: 30px; font-family: Arial, sans-serif;">
-        <h2>Clinic Admin Portal</h2>
-        
-        <!-- Login Form -->
-        <div id="loginSection" style="margin-top: 20px;">
-            <h3>Clinic Login</h3>
-            <form id="loginForm">
-                <div style="margin-bottom: 15px;">
-                    <label>Username:</label><br>
-                    <input type="text" id="username" required style="width: 100%; padding: 8px; box-sizing: border-box;">
-                </div>
-                <div style="margin-bottom: 15px;">
-                    <label>Password:</label><br>
-                    <input type="password" id="password" required style="width: 100%; padding: 8px; box-sizing: border-box;">
-                </div>
-                <button type="submit" style="padding: 10px 20px; background: #007bff; color: white; border: none; cursor: pointer; border-radius: 4px;">Login</button>
-            </form>
-            <p id="errorMsg" style="color: red; margin-top: 10px;"></p>
-        </div>
 
-        <!-- Dashboard Section -->
-        <div id="dashboardSection" style="display: none; margin-top: 20px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                <h3 id="clinicTitle" style="margin: 0;">Welcome</h3>
-                <button onclick="logout()" style="padding: 8px 15px; background: #dc3545; color: white; border: none; cursor: pointer; border-radius: 4px;">Logout</button>
-            </div>
+  <!-- Header -->
+  <div class="header">
+    <div>
+      <h2>Clinic Admin Portal</h2>
+      <p>Welcome, NSF Clinic - Psychological Medicine & Neuro Psychiatry</p>
+    </div>
+    <button class="btn-logout">Logout</button>
+  </div>
 
-            <!-- Admin Navigation Tabs -->
-            <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #eee; padding-bottom: 10px;">
-                <button onclick="switchAdminTab('appointments')" id="tabBtnAppointments" style="padding: 8px 16px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Appointments</button>
-                <button onclick="switchAdminTab('hr')" id="tabBtnHr" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">HR & Staff</button>
-                <button onclick="switchAdminTab('finance')" id="tabBtnFinance" style="padding: 8px 16px; background: #e0e0e0; color: #333; border: none; border-radius: 4px; cursor: pointer; font-weight: bold;">Finance & Billing</button>
-            </div>
+  <!-- Navigation Tabs -->
+  <div class="nav-tabs">
+    <button class="tab-btn active" onclick="switchTab('appointments')">Appointments</button>
+    <button class="tab-btn" onclick="switchTab('hr')">HR & Staff</button>
+    <button class="tab-btn" onclick="switchTab('finance')">Finance & Billing</button>
+  </div>
 
-            <!-- TAB 1: Appointments -->
-            <div id="adminTabAppointments">
-                <!-- Summary Cards Section -->
-                <div id="statsSection" style="margin-bottom: 20px;">
-                    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #007bff; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Appointments</h4>
-                            <p id="totalCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
-                        </div>
-                        <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
-                            <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Today's Appointments</h4>
-                            <p id="todayCount" style="margin: 5px 0 0 0; font-size: 24px; font-weight: bold; color: #333;">0</p>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Search and Filter Controls -->
-                <div style="display: flex; gap: 10px; margin-bottom: 15px; flex-wrap: wrap;">
-                    <input type="text" id="searchInput" placeholder="Search by name or phone..." onkeyup="filterAppointments()" style="flex: 2; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                    <input type="date" id="dateFilter" onchange="filterAppointments()" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
-                    <button onclick="resetFilters()" style="padding: 8px 15px; background: #6c757d; color: white; border: none; cursor: pointer; border-radius: 4px;">Reset</button>
-                </div>
-
-                <h4>Your Appointments</h4>
-                <div style="overflow-x: auto;">
-                    <table border="1" style="width: 100%; border-collapse: collapse; text-align: left; background: white;">
-                        <thead>
-                            <tr style="background: #f2f2f2;">
-                                <th style="padding: 10px;">Patient Name</th>
-                                <th style="padding: 10px;">Phone</th>
-                                <th style="padding: 10px;">Age</th>
-                                <th style="padding: 10px;">Date & Time</th>
-                                <th style="padding: 10px;">Status</th>
-                            </tr>
-                        </thead>
-                        <tbody id="appointmentsTableBody">
-                            <!-- Appointments yahan load hongi -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- TAB 2: HR & Staff -->
-            <div id="adminTabHr" style="display: none;">
-                <h4>HR & Staff Management</h4>
-                <div style="background: #f8f9fa; padding: 20px; border-radius: 8px; border: 1px solid #ddd; margin-top: 10px;">
-                    <p style="color: #555; margin-bottom: 15px;">Clinic doctors aur staff ki details yahan manage ki jati hain:</p>
-                    <ul style="list-style-type: none; padding: 0;">
-                        <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
-                            <span><strong>Dr. Shakil Jehangir Malik</strong> (Specialist)</span>
-                            <span style="color: #28a745; font-weight: bold;">Active | Salary: PKR 150,000</span>
-                        </li>
-                        <li style="padding: 10px 0; border-bottom: 1px solid #eee; display: flex; justify-content: space-between;">
-                            <span><strong>Front Desk / Receptionist</strong> (Staff)</span>
-                            <span style="color: #28a745; font-weight: bold;">Active | Salary: PKR 45,000</span>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-
-            <!-- TAB 3: Finance -->
-            <div id="adminTabFinance" style="display: none;">
-                <h4>Finance & Revenue Reports</h4>
-                <div style="display: flex; gap: 15px; flex-wrap: wrap; margin-top: 10px;">
-                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #17a2b8; border: 1px solid #ddd;">
-                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Total Revenue</h4>
-                        <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #333;">PKR 75,000</p>
-                    </div>
-                    <div style="flex: 1; min-width: 200px; background: #f8f9fa; padding: 15px; border-radius: 8px; border-left: 4px solid #dc3545; border: 1px solid #ddd;">
-                        <h4 style="margin: 0; color: #6c757d; font-size: 14px;">Monthly Expenses</h4>
-                        <p style="margin: 5px 0 0 0; font-size: 22px; font-weight: bold; color: #333;">PKR 195,000</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
+  <!-- ================= TAB 1: APPOINTMENTS ================= -->
+  <div id="appointmentsTab" class="tab-content active">
+    <div class="cards-grid">
+      <div class="card blue"><h4>Total Appointments</h4><p id="appTotal">0</p></div>
+      <div class="card green"><h4>Today's Appointments</h4><p id="appToday">0</p></div>
+      <div class="card purple"><h4>This Month</h4><p id="appMonth">0</p></div>
+      <div class="card orange"><h4>Completed</h4><p id="appCompleted">0</p></div>
+      <div class="card red"><h4>Cancelled</h4><p id="appCancelled">0</p></div>
     </div>
 
-    <script>
-        const loginForm = document.getElementById('loginForm');
-        const loginSection = document.getElementById('loginSection');
-        const dashboardSection = document.getElementById('dashboardSection');
-        const errorMsg = document.getElementById('errorMsg');
-        const clinicTitle = document.getElementById('clinicTitle');
-        const appointmentsTableBody = document.getElementById('appointmentsTableBody');
+    <div class="filter-bar">
+      <input type="text" id="appSearch" placeholder="Search by name, phone or App ID..." onkeyup="renderAppointments()">
+      <input type="date" id="appDate" onchange="renderAppointments()">
+      <button class="btn-reset" onclick="resetAppFilters()">Reset</button>
+    </div>
 
-        let allAppointments = [];
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Sr. No.</th>
+            <th>Appointment ID</th>
+            <th>Patient Name</th>
+            <th>Phone</th>
+            <th>Age</th>
+            <th>Date & Time</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="appTableBody"></tbody>
+      </table>
+    </div>
+  </div>
 
-        function switchAdminTab(tabName) {
-            document.getElementById('adminTabAppointments').style.display = 'none';
-            document.getElementById('adminTabHr').style.display = 'none';
-            document.getElementById('adminTabFinance').style.display = 'none';
+  <!-- ================= TAB 2: HR & STAFF ================= -->
+  <div id="hrTab" class="tab-content">
+    <div class="cards-grid">
+      <div class="card blue"><h4>Total Staff</h4><p id="hrTotal">2</p></div>
+      <div class="card green"><h4>Active Staff</h4><p id="hrActive">2</p></div>
+      <div class="card purple"><h4>Monthly Salary Budget</h4><p id="hrPayroll">PKR 195,000</p></div>
+    </div>
 
-            document.getElementById('tabBtnAppointments').style.background = '#e0e0e0';
-            document.getElementById('tabBtnAppointments').style.color = '#333';
-            document.getElementById('tabBtnHr').style.background = '#e0e0e0';
-            document.getElementById('tabBtnHr').style.color = '#333';
-            document.getElementById('tabBtnFinance').style.background = '#e0e0e0';
-            document.getElementById('tabBtnFinance').style.color = '#333';
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Emp ID</th>
+            <th>Name</th>
+            <th>Role / Designation</th>
+            <th>Phone</th>
+            <th>Shift Timings</th>
+            <th>Salary (PKR)</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>EMP-001</strong></td>
+            <td>Dr. Shakil Jehangir Malik</td>
+            <td>Specialist Doctor</td>
+            <td>0300-1112233</td>
+            <td>10:00 AM - 02:00 PM</td>
+            <td>PKR 150,000</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+          <tr>
+            <td><strong>EMP-002</strong></td>
+            <td>Front Desk / Receptionist</td>
+            <td>Front Desk Staff</td>
+            <td>0312-4455667</td>
+            <td>09:00 AM - 06:00 PM</td>
+            <td>PKR 45,000</td>
+            <td><span class="badge badge-active">Active</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-            if (tabName === 'appointments') {
-                document.getElementById('adminTabAppointments').style.display = 'block';
-                document.getElementById('tabBtnAppointments').style.background = '#007bff';
-                document.getElementById('tabBtnAppointments').style.color = 'white';
-            } else if (tabName === 'hr') {
-                document.getElementById('adminTabHr').style.display = 'block';
-                document.getElementById('tabBtnHr').style.background = '#007bff';
-                document.getElementById('tabBtnHr').style.color = 'white';
-            } else if (tabName === 'finance') {
-                document.getElementById('adminTabFinance').style.display = 'block';
-                document.getElementById('tabBtnFinance').style.background = '#007bff';
-                document.getElementById('tabBtnFinance').style.color = 'white';
-            }
-        }
+  <!-- ================= TAB 3: FINANCE & BILLING ================= -->
+  <div id="financeTab" class="tab-content">
+    <div class="cards-grid">
+      <div class="card green"><h4>Total Revenue</h4><p>PKR 75,000</p></div>
+      <div class="card red"><h4>Monthly Expenses</h4><p>PKR 195,000</p></div>
+      <div class="card purple"><h4>Net Balance (Profit/Loss)</h4><p style="color:#dc3545;">- PKR 120,000</p></div>
+    </div>
 
-        loginForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
+    <div class="table-container">
+      <table>
+        <thead>
+          <tr>
+            <th>Txn ID</th>
+            <th>Date</th>
+            <th>Category / Description</th>
+            <th>Type</th>
+            <th>Amount (PKR)</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>TXN-101</strong></td>
+            <td>01/10/2026</td>
+            <td>Doctor Salary (Dr. Shakil)</td>
+            <td><span class="badge badge-expense">Expense</span></td>
+            <td>PKR 150,000</td>
+          </tr>
+          <tr>
+            <td><strong>TXN-102</strong></td>
+            <td>02/10/2026</td>
+            <td>Receptionist Salary</td>
+            <td><span class="badge badge-expense">Expense</span></td>
+            <td>PKR 45,000</td>
+          </tr>
+          <tr>
+            <td><strong>TXN-103</strong></td>
+            <td>04/10/2026</td>
+            <td>Patient Consultations Fee</td>
+            <td><span class="badge badge-income">Income</span></td>
+            <td>PKR 75,000</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
-            try {
-                const response = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ username, password })
-                });
-                const data = await response.json();
+  <script>
+    // Tab Switching Logic
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
 
-                if (data.success) {
-                    localStorage.setItem('clinicId', data.clinicId);
-                    localStorage.setItem('clinicName', data.clinicName);
-                    showDashboard(data.clinicId, data.clinicName);
-                } else {
-                    errorMsg.textContent = data.message || 'Invalid Credentials';
-                }
-            } catch (err) {
-                errorMsg.textContent = 'Server connection error!';
-            }
+      if (tabName === 'appointments') {
+        document.querySelectorAll('.tab-btn')[0].classList.add('active');
+        document.getElementById('appointmentsTab').classList.add('active');
+      } else if (tabName === 'hr') {
+        document.querySelectorAll('.tab-btn')[1].classList.add('active');
+        document.getElementById('hrTab').classList.add('active');
+      } else if (tabName === 'finance') {
+        document.querySelectorAll('.tab-btn')[2].classList.add('active');
+        document.getElementById('financeTab').classList.add('active');
+      }
+    }
+
+    // Appointment Data Logic
+    let appointments = [
+      { id: 'APP-20261006-01', name: 'Ali Ahmed', phone: '03001234567', age: 28, dateTime: '2026-10-06T10:00', status: 'Pending' },
+      { id: 'APP-20261006-02', name: 'Sara Khan', phone: '03129876543', age: 34, dateTime: '2026-10-06T11:30', status: 'Arrived' },
+      { id: 'APP-20261006-03', name: 'Usman Raza', phone: '03335554433', age: 45, dateTime: '2026-10-05T09:15', status: 'Completed' },
+      { id: 'APP-20261006-04', name: 'Hamza Malik', phone: '03217654321', age: 22, dateTime: '2026-10-06T14:00', status: 'Cancelled' }
+    ];
+
+    function renderAppointments() {
+      const tbody = document.getElementById('appTableBody');
+      const searchVal = document.getElementById('appSearch').value.toLowerCase();
+      const dateVal = document.getElementById('appDate').value;
+
+      tbody.innerHTML = '';
+
+      let filtered = appointments.filter(app => {
+        const matchesSearch = app.name.toLowerCase().includes(searchVal) || app.phone.includes(searchVal) || app.id.toLowerCase().includes(searchVal);
+        const matchesDate = dateVal ? app.dateTime.startsWith(dateVal) : true;
+        return matchesSearch && matchesDate;
+      });
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = <tr><td colspan="8" style="text-align:center; color:#888;">No appointments found.</td></tr>;
+      } else {
+        filtered.forEach((app, index) => {
+          const dateObj = new Date(app.dateTime);
+          const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+          let badgeClass = 'badge-pending';
+          if (app.status === 'Arrived') badgeClass = 'badge-arrived';
+          if (app.status === 'Completed') badgeClass = 'badge-completed';
+          if (app.status === 'Cancelled') badgeClass = 'badge-cancelled';
+
+          tbody.innerHTML += `
+            <tr>
+              <td><strong>${index + 1}</strong></td>
+              <td>${app.id}</td>
+              <td>${app.name}</td>
+              <td>${app.phone}</td>
+              <td>${app.age}</td>
+              <td>${formattedDate}</td>
+              <td><span class="badge ${badgeClass}">${app.status}</span></td>
+              <td>
+                ${app.status === 'Pending' ? <button class="btn-action btn-arrived-action" onclick="changeStatus('${app.id}', 'Arrived')">Mark Arrived</button> : ''}
+                ${app.status === 'Arrived' || app.status === 'Pending' ? <button class="btn-action btn-complete-action" onclick="changeStatus('${app.id}', 'Completed')">Complete</button> : ''}
+                ${app.status !== 'Completed' && app.status !== 'Cancelled' ? <button class="btn-action btn-cancel-action" onclick="changeStatus('${app.id}', 'Cancelled')">Cancel</button> : ''}
+                ${app.status === 'Completed' || app.status === 'Cancelled' ? '<span style="color:#aaa; font-size:12px;">Done</span>' : ''}
+              </td>
+            </tr>
+          `;
         });
+      }
 
-        function showDashboard(clinicId, clinicName) {
-            loginSection.style.display = 'none';
-            dashboardSection.style.display = 'block';
-            clinicTitle.textContent = 'Welcome, ' + clinicName;
-            loadAppointments(clinicId);
-        }
+      updateAppMetrics();
+    }
 
-        async function loadAppointments(clinicId) {
-            try {
-                const response = await fetch('/api/clinic-appointments?clinicId=' + clinicId);
-                const data = await response.json();
-                
-                allAppointments = Array.isArray(data) ? data : [];
-                displayAppointments(allAppointments);
-            } catch (err) {
-                console.error('Error loading appointments:', err);
-                allAppointments = [];
-                displayAppointments([]);
-            }
-        }
+    function updateAppMetrics() {
+      const todayStr = new Date().toISOString().split('T')[0];
+      const currentMonth = new Date().toISOString().slice(0, 7);
 
-        function displayAppointments(appointments) {
-            document.getElementById('totalCount').textContent = allAppointments.length;
-            const todayStr = new Date().toISOString().split('T')[0];
-            const todayAppointments = allAppointments.filter(function(app) {
-                return app.date === todayStr;
-            });
-            document.getElementById('todayCount').textContent = todayAppointments.length;
+      document.getElementById('appTotal').innerText = appointments.length;
+      document.getElementById('appToday').innerText = appointments.filter(a => a.dateTime.startsWith(todayStr)).length;
+      document.getElementById('appMonth').innerText = appointments.filter(a => a.dateTime.startsWith(currentMonth)).length;
+      document.getElementById('appCompleted').innerText = appointments.filter(a => a.status === 'Completed').length;
+      document.getElementById('appCancelled').innerText = appointments.filter(a => a.status === 'Cancelled').length;
+    }
 
-            appointmentsTableBody.innerHTML = '';
-            if (!appointments || appointments.length === 0) {
-                appointmentsTableBody.innerHTML = '<tr><td colspan="5" style="padding: 15px; text-align: center; color: #666;">No appointments found.</td></tr>';
-                return;
-            }
+    function changeStatus(id, newStatus) {
+      const app = appointments.find(a => a.id === id);
+      if (app) {
+        app.status = newStatus;
+        renderAppointments();
+      }
+    }
 
-            appointments.forEach(function(app) {
-                const currentStatus = app.status || 'Pending';
-                let badgeColor = '#ffc107'; 
-                if (currentStatus === 'Confirmed') badgeColor = '#17a2b8'; 
-                if (currentStatus === 'Completed') badgeColor = '#28a745'; 
+    function resetAppFilters() {
+      document.getElementById('appSearch').value = '';
+      document.getElementById('appDate').value = '';
+      renderAppointments();
+    }
 
-                const row = '<tr>' +
-                    '<td style="padding: 10px;">' + app.name + '</td>' +
-                    '<td style="padding: 10px;">' + app.phone + '</td>' +
-                    '<td style="padding: 10px;">' + (app.age || '-') + '</td>' +
-                    '<td style="padding: 10px;">' + (app.date || 'N/A') + '<br><small><b>' + (app.time || '') + '</b></small></td>' +
-                    '<td style="padding: 10px;">' +
-                        '<span style="padding: 4px 8px; border-radius: 4px; background: ' + badgeColor + '; color: white; font-size: 12px; margin-right: 5px; display: inline-block;">' + currentStatus + '</span>' +
-                        '<select onchange="updateStatus(\'' + app.id + '\', this.value)" style="padding: 4px; border-radius: 4px; border: 1px solid #ccc;">' +
-                            '<option value="Pending" ' + (currentStatus === 'Pending' ? 'selected' : '') + '>Pending</option>' +
-                            '<option value="Confirmed" ' + (currentStatus === 'Confirmed' ? 'selected' : '') + '>Confirmed</option>' +
-                            '<option value="Completed" ' + (currentStatus === 'Completed' ? 'selected' : '') + '>Completed</option>' +
-                        '</select>' +
-                    '</td>' +
-                '</tr>';
-                appointmentsTableBody.innerHTML += row;
-            });
-        }
-
-        async function updateStatus(appId, newStatus) {
-            try {
-                const response = await fetch('/api/appointments/' + appId, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ status: newStatus })
-                });
-                const result = await response.json();
-                if (result.success) {
-                    const clinicId = localStorage.getItem('clinicId');
-                    loadAppointments(clinicId);
-                } else {
-                    alert('Status update karne mein masla aaya hai.');
-                }
-            } catch (err) {
-                console.error('Error updating status:', err);
-            }
-        }
-
-        function filterAppointments() {
-            const searchText = document.getElementById('searchInput').value.toLowerCase();
-            const selectedDate = document.getElementById('dateFilter').value;
-
-            const filtered = allAppointments.filter(function(app) {
-                const matchesSearch = (app.name && app.name.toLowerCase().includes(searchText)) || 
-                                      (app.phone && app.phone.includes(searchText));
-                const matchesDate = selectedDate ? app.date === selectedDate : true;
-                return matchesSearch && matchesDate;
-            });
-
-            displayAppointments(filtered);
-        }
-
-        function resetFilters() {
-            document.getElementById('searchInput').value = '';
-            document.getElementById('dateFilter').value = '';
-            displayAppointments(allAppointments);
-        }
-
-        function logout() {
-            localStorage.clear();
-            dashboardSection.style.display = 'none';
-            loginSection.style.display = 'block';
-            loginForm.reset();
-        }
-
-        window.onload = function() {
-            const savedClinicId = localStorage.getItem('clinicId');
-            const savedClinicName = localStorage.getItem('clinicName');
-            if (savedClinicId) {
-                showDashboard(savedClinicId, savedClinicName);
-            }
-        };
-    </script>
+    // Initial render
+    renderAppointments();
+  </script>
 </body>
 </html>

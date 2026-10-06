@@ -34,7 +34,6 @@
     .filter-bar { display: flex; flex-wrap: wrap; gap: 10px; background: #fff; padding: 15px; border-radius: 8px; margin-bottom: 20px; align-items: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
     .filter-bar input, .filter-bar select { padding: 8px 12px; border: 1px solid #ccc; border-radius: 5px; font-size: 14px; }
     .filter-bar input[type="text"] { flex: 1; min-width: 180px; }
-    .btn-add { background-color: #28a745; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; margin-left: auto; font-weight: bold; }
     .btn-reset { background-color: #6c757d; color: #fff; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
 
     .table-container { background: #fff; border-radius: 8px; overflow-x: auto; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
@@ -49,7 +48,6 @@
     .badge-completed { background-color: #c3e6cb; color: #155724; }
     .badge-cancelled { background-color: #f5c6cb; color: #721c24; }
     .badge-active { background-color: #c3e6cb; color: #155724; }
-    .badge-leave { background-color: #ffeeba; color: #856404; }
     .badge-income { background-color: #c3e6cb; color: #155724; }
     .badge-expense { background-color: #f5c6cb; color: #721c24; }
 
@@ -67,7 +65,7 @@
       <h2>Clinic Admin Portal</h2>
       <p>Welcome, NSF Clinic - Psychological Medicine & Neuro Psychiatry</p>
     </div>
-    <button class="btn-logout">Logout</button>
+    <button class="btn-logout" id="logoutBtn">Logout</button>
   </div>
 
   <!-- Navigation Tabs -->
@@ -221,6 +219,13 @@
       }
     }
 
+    // Logout Functionality
+    document.getElementById('logoutBtn').addEventListener('click', function() {
+      localStorage.clear();
+      sessionStorage.clear();
+      window.location.href = 'index.html';
+    });
+
     // Appointment Data Logic
     let appointments = [
       { id: 'APP-20261006-01', name: 'Ali Ahmed', phone: '03001234567', age: 28, dateTime: '2026-10-06T10:00', status: 'Pending' },
@@ -243,7 +248,7 @@
       });
 
       if (filtered.length === 0) {
-        tbody.innerHTML = <tr><td colspan="8" style="text-align:center; color:#888;">No appointments found.</td></tr>;
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">No appointments found.</td></tr>';
       } else {
         filtered.forEach((app, index) => {
           const dateObj = new Date(app.dateTime);
@@ -254,6 +259,20 @@
           if (app.status === 'Completed') badgeClass = 'badge-completed';
           if (app.status === 'Cancelled') badgeClass = 'badge-cancelled';
 
+          let actionButtons = '';
+          if (app.status === 'Pending') {
+            actionButtons += <button class="btn-action btn-arrived-action" onclick="changeStatus('${app.id}', 'Arrived')">Mark Arrived</button>;
+          }
+          if (app.status === 'Arrived' || app.status === 'Pending') {
+            actionButtons += <button class="btn-action btn-complete-action" onclick="changeStatus('${app.id}', 'Completed')">Complete</button>;
+          }
+          if (app.status !== 'Completed' && app.status !== 'Cancelled') {
+            actionButtons += <button class="btn-action btn-cancel-action" onclick="changeStatus('${app.id}', 'Cancelled')">Cancel</button>;
+          }
+          if (app.status === 'Completed' || app.status === 'Cancelled') {
+            actionButtons += '<span style="color:#aaa; font-size:12px;">Done</span>';
+          }
+
           tbody.innerHTML += `
             <tr>
               <td><strong>${index + 1}</strong></td>
@@ -263,12 +282,7 @@
               <td>${app.age}</td>
               <td>${formattedDate}</td>
               <td><span class="badge ${badgeClass}">${app.status}</span></td>
-              <td>
-                ${app.status === 'Pending' ? <button class="btn-action btn-arrived-action" onclick="changeStatus('${app.id}', 'Arrived')">Mark Arrived</button> : ''}
-                ${app.status === 'Arrived' || app.status === 'Pending' ? <button class="btn-action btn-complete-action" onclick="changeStatus('${app.id}', 'Completed')">Complete</button> : ''}
-                ${app.status !== 'Completed' && app.status !== 'Cancelled' ? <button class="btn-action btn-cancel-action" onclick="changeStatus('${app.id}', 'Cancelled')">Cancel</button> : ''}
-                ${app.status === 'Completed' || app.status === 'Cancelled' ? '<span style="color:#aaa; font-size:12px;">Done</span>' : ''}
-              </td>
+              <td>${actionButtons}</td>
             </tr>
           `;
         });

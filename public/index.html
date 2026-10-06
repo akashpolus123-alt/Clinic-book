@@ -5,6 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        main {
+            padding-top: 20px;
+        }
+        .form-card {
+            margin-top: 15px;
+        }
+    </style>
 </head>
 <body>
 
@@ -18,11 +26,14 @@
         </nav>
     </header>
 
-    <!-- Hero Section -->
+    <!-- Hero Section with Availability Info -->
     <section class="hero">
         <h1>NSF Clinic</h1>
         <p class="subtitle">Psychological Medicine & Neuro Psychiatry</p>
         <p class="doctor">Prof. Dr. Shakil Jehangir Malik</p>
+        <p style="margin-top: 8px; font-size: 14px; background: rgba(255, 255, 255, 0.15); display: inline-block; padding: 4px 12px; border-radius: 20px; color: #e0f2fe;">
+            📅 Doctor Availability: <strong>Tuesday & Saturday Only</strong>
+        </p>
     </section>
 
     <!-- Main Content & Booking Form -->
@@ -49,16 +60,17 @@
                         <input type="number" id="patientAge" required placeholder="Age">
                     </div>
                     <div class="form-col form-group">
-                        <label>Appointment Date</label>
-                        <input type="date" id="appointmentDate" required>
+                        <label>Appointment Date (Tue & Sat Only)</label>
+                        <input type="date" id="appointmentDate" required onchange="validateAppointmentDate()">
+                        <small id="dateWarning" style="color: #dc2626; font-size: 11px; display: none;"></small>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Consultation Type & Fee</label>
-                    <select id="consultationType" required onchange="updateFeeDisplay()">
-                        <option value="initial">Initial Consultation - PKR 12,000 (Advance 20%: PKR 2,400)</option>
-                        <option value="followup">Follow-up Consultation - PKR 8,000 (Advance 20%: PKR 1,600)</option>
+                    <select id="consultationType" required onchange="updateConsultationType()">
+                        <option value="initial">Initial Consultation (1 Hour) - PKR 12,000 (Advance 20%: PKR 2,400)</option>
+                        <option value="followup">Follow-up Consultation (30 Mins) - PKR 8,000 (Advance 20%: PKR 1,600)</option>
                     </select>
                 </div>
 
@@ -78,24 +90,19 @@
                     Account Number: <strong id="accNum">0312-3456789</strong>
                     <div style="margin-top: 10px; display: flex; gap: 10px;">
                         <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button>
-                        <a href="easypaisa://" onclick="setTimeout(function(){window.location.href='https://play.google.com/store/apps/details?id=pk.com.telenor.easypaisa'}, 1000);" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa</a>
+                        <a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa App</a>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label>Transaction ID (Tid) from Payment SMS</label>
-                    <input type="text" id="transactionId" required placeholder="Enter 11-digit TID received in SMS">
+                    <label>Transaction ID (Tid) from Payment SMS <span style="font-size: 11px; color: #666;">(Use <b>TEST1234567</b> for testing)</span></label>
+                    <input type="text" id="transactionId" required placeholder="Enter 11-digit TID or TEST1234567">
                 </div>
 
                 <div class="form-group">
-                    <label>Select Time Slot</label>
+                    <label id="timeSlotLabel">Select Time Slot (10:30 AM - 06:00 PM | Break: 12:30 - 01:00 PM)</label>
                     <select id="appointmentTime" required>
                         <option value="">Select Time Slot</option>
-                        <option value="10:00 AM">10:00 AM</option>
-                        <option value="11:00 AM">11:00 AM</option>
-                        <option value="12:00 PM">12:00 PM</option>
-                        <option value="05:00 PM">05:00 PM</option>
-                        <option value="06:00 PM">06:00 PM</option>
                     </select>
                 </div>
 
@@ -117,6 +124,57 @@
     </footer>
 
     <script>
+        // Populate time slots dynamically based on Consultation Type (Initial: 1 Hour, Followup: 30 Mins)
+        function generateTimeSlots() {
+            const type = document.getElementById('consultationType').value;
+            const timeSelect = document.getElementById('appointmentTime');
+            timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+
+            let slots = [];
+            if (type === 'initial') {
+                // 1 Hour slots (Skipping 12:30 - 01:00 break)
+                slots = [
+                    "10:30 AM - 11:30 AM",
+                    "11:30 AM - 12:30 PM",
+                    "01:00 PM - 02:00 PM",
+                    "02:00 PM - 03:00 PM",
+                    "03:00 PM - 04:00 PM",
+                    "04:00 PM - 05:00 PM",
+                    "05:00 PM - 06:00 PM"
+                ];
+            } else {
+                // 30 Mins slots (Skipping 12:30 - 01:00 break)
+                slots = [
+                    "10:30 AM - 11:00 AM",
+                    "11:00 AM - 11:30 AM",
+                    "11:30 AM - 12:00 PM",
+                    "12:00 PM - 12:30 PM",
+                    "01:00 PM - 01:30 PM",
+                    "01:30 PM - 02:00 PM",
+                    "02:00 PM - 02:30 PM",
+                    "02:30 PM - 03:00 PM",
+                    "03:00 PM - 03:30 PM",
+                    "03:30 PM - 04:00 PM",
+                    "04:00 PM - 04:30 PM",
+                    "04:30 PM - 05:00 PM",
+                    "05:00 PM - 05:30 PM",
+                    "05:30 PM - 06:00 PM"
+                ];
+            }
+
+            slots.forEach(slot => {
+                const opt = document.createElement('option');
+                opt.value = slot;
+                opt.textContent = slot;
+                timeSelect.appendChild(opt);
+            });
+        }
+
+        function updateConsultationType() {
+            updateFeeDisplay();
+            generateTimeSlots();
+        }
+
         function updateFeeDisplay() {
             const type = document.getElementById('consultationType').value;
             const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
@@ -130,9 +188,9 @@
             const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
 
             if (method === 'Easypaisa') {
-                box.innerHTML = `<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="easypaisa://" onclick="setTimeout(function(){window.location.href='https://play.google.com/store/apps/details?id=pk.com.telenor.easypaisa'}, 1000);" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa</a></div>`;
+                box.innerHTML = `<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa App</a></div>`;
             } else {
-                box.innerHTML = `<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="jazzcash://" onclick="setTimeout(function(){window.location.href='https://play.google.com/store/apps/details?id=com.mobilinkmicrofinance.jazzcash'}, 1000);" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open JazzCash</a></div>`;
+                box.innerHTML = `<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open JazzCash App</a></div>`;
             }
         }
 
@@ -142,8 +200,37 @@
             alert('Account number copied: ' + num);
         }
 
+        function validateAppointmentDate() {
+            const dateInput = document.getElementById('appointmentDate').value;
+            const warningBox = document.getElementById('dateWarning');
+            if (!dateInput) return true;
+
+            const selectedDate = new Date(dateInput);
+            const dayOfWeek = selectedDate.getDay(); // 2 is Tuesday, 6 is Saturday
+
+            if (dayOfWeek !== 2 && dayOfWeek !== 6) {
+                warningBox.style.display = 'block';
+                warningBox.textContent = 'Doctor is only available on Tuesday and Saturday. Please select a valid day.';
+                return false;
+            } else {
+                warningBox.style.display = 'none';
+                warningBox.textContent = '';
+                return true;
+            }
+        }
+
+        // Initialize slots on page load
+        window.onload = function() {
+            generateTimeSlots();
+        };
+
         document.getElementById('bookingForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+
+            if (!validateAppointmentDate()) {
+                alert('Please select a valid appointment date (Tuesday or Saturday).');
+                return;
+            }
             
             const consultationType = document.getElementById('consultationType').value;
             const fee = consultationType === 'initial' ? 12000 : 8000;
@@ -181,6 +268,7 @@
                     msgBox.style.color = '#16a34a';
                     msgBox.textContent = 'Booking submitted successfully! Clinic will verify your payment and confirm your slot shortly.';
                     document.getElementById('bookingForm').reset();
+                    generateTimeSlots();
                 } else {
                     msgBox.style.color = '#dc2626';
                     msgBox.textContent = result.message || 'Failed to submit appointment.';

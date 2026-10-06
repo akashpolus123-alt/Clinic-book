@@ -153,7 +153,7 @@ app.post("/api/appointments", async (req, res) => {
   }
 });
 
-// 4. Admin Login Route for NSF Clinic (Fixed quotes issue)
+// 4. Admin Login Route for NSF Clinic
 app.post("/api/login", (req, res) => {
   try {
     const { username, password } = req.body;
@@ -178,7 +178,29 @@ app.get("/api/clinic-appointments", async (req, res) => {
   }
 });
 
-// 6. Finance Analytics Route
+// 6. Track Appointment API Route (Added)
+app.get("/api/track", async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({ success: false, message: "Booking ID ya Phone number likhein" });
+    }
+    
+    const appointment = await Appointment.findOne({
+      $or: [{ id: query }, { phone: query }]
+    });
+
+    if (!appointment) {
+      return res.status(404).json({ success: false, message: "Koi appointment nahi mili is ID ya phone number par." });
+    }
+
+    res.json({ success: true, appointment });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 7. Finance Analytics Route
 app.get("/api/finance-summary", async (req, res) => {
   try {
     const appointments = await Appointment.find({ clinicId: "professorial-clinic" });
@@ -205,7 +227,7 @@ app.get("/api/finance-summary", async (req, res) => {
   }
 });
 
-// 7. HR Data Route
+// 8. HR Data Route
 app.get("/api/hr-staff", async (req, res) => {
   try {
     let staffList = await Staff.find();
@@ -221,7 +243,7 @@ app.get("/api/hr-staff", async (req, res) => {
   }
 });
 
-// 8. Update Appointment Status
+// 9. Update Appointment Status
 app.put("/api/appointments/:id", async (req, res) => {
   try {
     const { status } = req.body;

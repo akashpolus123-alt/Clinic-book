@@ -67,8 +67,8 @@
                 <div class="form-group">
                     <label>Consultation Type & Fee</label>
                     <select id="consultationType" required onchange="updateConsultationType()">
-                        <option value="initial">Initial Consultation (1 Hour) - PKR 12,000 (Advance 20%: PKR 2,400)</option>
-                        <option value="followup">Follow-up Consultation (30 Mins) - PKR 8,000 (Advance 20%: PKR 1,600)</option>
+                        <option value="Initial">Initial Consultation (1 Hour) - PKR 12,000 (Advance 20%: PKR 2,400)</option>
+                        <option value="Follow-up">Follow-up Consultation (30 Mins) - PKR 8,000 (Advance 20%: PKR 1,600)</option>
                     </select>
                 </div>
 
@@ -87,8 +87,8 @@
                     Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
                     Account Number: <strong id="accNum">0312-3456789</strong>
                     <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button>
-                        <a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa App</a>
+                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button>
+                        <a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a>
                     </div>
                 </div>
 
@@ -122,15 +122,13 @@
     </footer>
 
     <script>
-        // Populate time slots dynamically based on Consultation Type (Initial: 1 Hour, Followup: 30 Mins)
         function generateTimeSlots() {
             const type = document.getElementById('consultationType').value;
             const timeSelect = document.getElementById('appointmentTime');
             timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
 
             let slots = [];
-            if (type === 'initial') {
-                // 1 Hour slots (Skipping 12:30 - 01:00 break)
+            if (type === 'Initial') {
                 slots = [
                     "10:30 AM - 11:30 AM",
                     "11:30 AM - 12:30 PM",
@@ -141,7 +139,6 @@
                     "05:00 PM - 06:00 PM"
                 ];
             } else {
-                // 30 Mins slots (Skipping 12:30 - 01:00 break)
                 slots = [
                     "10:30 AM - 11:00 AM",
                     "11:00 AM - 11:30 AM",
@@ -171,11 +168,12 @@
         function updateConsultationType() {
             updateFeeDisplay();
             generateTimeSlots();
+            updatePaymentDetails();
         }
 
         function updateFeeDisplay() {
             const type = document.getElementById('consultationType').value;
-            const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
+            const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
             document.getElementById('payableAmount').innerText = amountStr;
         }
 
@@ -183,12 +181,12 @@
             const method = document.getElementById('paymentMethod').value;
             const box = document.getElementById('accountDetailsBox');
             const type = document.getElementById('consultationType').value;
-            const amountStr = type === 'initial' ? 'PKR 2,400' : 'PKR 1,600';
+            const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
 
             if (method === 'Easypaisa') {
-                box.innerHTML = `<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open Easypaisa App</a></div>`;
+                box.innerHTML = '<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a></div>';
             } else {
-                box.innerHTML = `<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">${amountStr}</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">📋 Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">🔗 Open JazzCash App</a></div>`;
+                box.innerHTML = '<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open JazzCash App</a></div>';
             }
         }
 
@@ -204,7 +202,7 @@
             if (!dateInput) return true;
 
             const selectedDate = new Date(dateInput);
-            const dayOfWeek = selectedDate.getDay(); // 2 is Tuesday, 6 is Saturday
+            const dayOfWeek = selectedDate.getDay();
 
             if (dayOfWeek !== 2 && dayOfWeek !== 6) {
                 warningBox.style.display = 'block';
@@ -217,7 +215,6 @@
             }
         }
 
-        // Initialize slots on page load
         window.onload = function() {
             generateTimeSlots();
         };
@@ -231,8 +228,8 @@
             }
             
             const consultationType = document.getElementById('consultationType').value;
-            const fee = consultationType === 'initial' ? 12000 : 8000;
-            const advanceFee = consultationType === 'initial' ? 2400 : 1600;
+            const fee = consultationType === 'Initial' ? 12000 : 8000;
+            const advanceFee = consultationType === 'Initial' ? 2400 : 1600;
 
             const bookingData = {
                 clinicId: 'professorial-clinic',

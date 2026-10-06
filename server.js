@@ -93,7 +93,7 @@ app.get("/api/doctors/:clinicId", (req, res) => {
   }
 });
 
-// 3. Create Appointment & Calculate 20% Advance + 100 PKR Commission
+// 3. Create Appointment (Fixed: Double-Booking Prevention & Exact Fee Handling)
 app.post("/api/appointments", async (req, res) => {
   try {
     const { name, phone, age, date, time, problem, type, fee, paymentMethod } = req.body;
@@ -102,6 +102,20 @@ app.post("/api/appointments", async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "Please fill all required fields"
+      });
+    }
+
+    // Check if time slot is already booked for that date (Excluding cancelled appointments)
+    const existingBooking = await Appointment.findOne({ 
+      date: date, 
+      time: time, 
+      status: { $ne: "Cancelled" } 
+    });
+
+    if (existingBooking) {
+      return res.status(400).json({
+        success: false,
+        message: "Yeh time slot pehle se book ho chuki hai! Bara-e-karam koi aur time ya date select karein."
       });
     }
 
@@ -138,14 +152,14 @@ app.post("/api/appointments", async (req, res) => {
         from: process.env.EMAIL_USER || 'akashpolous123@gmail.com',
         to: process.env.CLINIC_EMAIL || 'akashpolous123@gmail.com',
         subject: `New NSF Clinic Appointment - ${newAppointment.id}`,
-        text: `Nayi appointment book hui hai!\n\nPatient: ${name}\nPhone: ${phone}\nDate: ${date} (${time})\nFee: ${consultFee} PKR\n20% Advance Paid via EasyPaisa/JazzCash: ${advancePaid} PKR\nYour Commission: ${platformCommission} PKR`
+        text: `Nayi appointment book hui hai!\n\nPatient: ${name}\nPhone: ${phone}\nDate: ${date} (${time})\nType: ${type}\nFee: ${consultFee} PKR\n20% Advance Paid: ${advancePaid} PKR`
       };
       transporter.sendMail(mailOptions, () => {});
     } catch (mailErr) {}
 
     res.json({
       success: true,
-      message: "Appointment booked successfully with 20% advance!",
+      message: "Appointment booked successfully!",
       appointment: newAppointment
     });
   } catch (error) {
@@ -178,7 +192,7 @@ app.get("/api/clinic-appointments", async (req, res) => {
   }
 });
 
-// 6. Track Appointment API Route (Added)
+// 6. Track Appointment API Route
 app.get("/api/track", async (req, res) => {
   try {
     const { query } = req.query;
@@ -188,7 +202,7 @@ app.get("/api/track", async (req, res) => {
     
     const appointment = await Appointment.findOne({
       $or: [{ id: query }, { phone: query }]
-    });
+    }).sort({ createdAt: -1 });
 
     if (!appointment) {
       return res.status(404).json({ success: false, message: "Koi appointment nahi mili is ID ya phone number par." });
@@ -200,10 +214,27 @@ app.get("/api/track", async (req, res) => {
   }
 });
 
-// 7. Finance Analytics Route
+// 7. Cancel Appointment Route (Added)
+app.put("/api/appointments/cancel/:id", async (req, res) => {
+  try {
+    const updated = await Appointment.findOneAndUpdate(
+      { id: req.params.id }, 
+      { status: "Cancelled" },
+      { new: true }
+    );
+    if (!updated) {
+      return res.status(404).json({ success: false, message: "Appointment nahi mili." });
+    }
+    res.json({ success: true, message: "Appointment successfully cancel ho gayi hai." });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// 8. Finance Analytics Route
 app.get("/api/finance-summary", async (req, res) => {
   try {
-    const appointments = await Appointment.find({ clinicId: "professorial-clinic" });
+    const appointments = await Appointment.find({ clinicId: "professorial-clinic", status: { $ne: "Cancelled" } });
     
     let totalConsultationsRevenue = 0;
     let totalAdvanceCollected = 0;
@@ -227,7 +258,7 @@ app.get("/api/finance-summary", async (req, res) => {
   }
 });
 
-// 8. HR Data Route
+// 9. HR Data Route
 app.get("/api/hr-staff", async (req, res) => {
   try {
     let staffList = await Staff.find();
@@ -243,7 +274,7 @@ app.get("/api/hr-staff", async (req, res) => {
   }
 });
 
-// 9. Update Appointment Status
+// 10. Update Appointment Status
 app.put("/api/appointments/:id", async (req, res) => {
   try {
     const { status } = req.body;

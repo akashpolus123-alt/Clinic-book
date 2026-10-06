@@ -46,27 +46,55 @@
     </footer>
 
     <script>
-        function trackBooking() {
+        async function trackBooking() {
             const query = document.getElementById('searchQuery').value.trim();
             const box = document.getElementById('resultBox');
 
             if (!query) {
-                box.innerHTML = <p style="color: #dc2626; font-size: 13px; text-align: center;">Please enter a valid Booking ID or Phone Number.</p>;
+                box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">Please enter a valid Booking ID or Phone Number.</p>';
                 return;
             }
 
-            box.innerHTML = <p style="color: #0369a1; font-size: 13px; text-align: center;">Searching appointment records...</p>;
+            box.innerHTML = '<p style="color: #0369a1; font-size: 13px; text-align: center;">Searching appointment records...</p>';
 
-            // Simulated lookup or connect with backend API if needed
-            setTimeout(() => {
-                box.innerHTML = `
-                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; font-size: 13px; color: #166534;">
-                        <strong>Status: Pending Verification</strong><br>
-                        Booking ID: ${query}<br>
-                        Advance Payment TID submitted. Clinic will verify and confirm shortly.
-                    </div>
-                `;
-            }, 600);
+            try {
+                const response = await fetch(`/api/track?query=${encodeURIComponent(query)}`);
+                const data = await response.json();
+
+                if (data.success && data.appointment) {
+                    const appt = data.appointment;
+                    
+                    let statusColor = '#166534';
+                    let bgCol = '#f0fdf4';
+                    let borderCol = '#bbf7d0';
+                    
+                    if (appt.status === 'Pending') {
+                        statusColor = '#854d0e';
+                        bgCol = '#fefce8';
+                        borderCol = '#fef08a';
+                    } else if (appt.status === 'Cancelled') {
+                        statusColor = '#991b1b';
+                        bgCol = '#fef2f2';
+                        borderCol = '#fecaca';
+                    }
+
+                    box.innerHTML = `
+                        <div style="background: ${bgCol}; border: 1px solid ${borderCol}; padding: 15px; border-radius: 8px; font-size: 13px; color: ${statusColor};">
+                            <strong>Status: ${appt.status}</strong><br>
+                            <strong>Booking ID:</strong> ${appt.id}<br>
+                            <strong>Patient Name:</strong> ${appt.name}<br>
+                            <strong>Phone:</strong> ${appt.phone}<br>
+                            <strong>Date & Time:</strong> ${appt.date} (${appt.time})<br>
+                            <strong>Consultation Type:</strong> ${appt.type}<br>
+                            <strong>Fee:</strong> ${appt.fee} PKR (Advance Paid: ${appt.advancePaid} PKR)
+                        </div>
+                    `;
+                } else {
+                    box.innerHTML = <p style="color: #dc2626; font-size: 13px; text-align: center;">${data.message || 'No appointment found with this ID or phone number.'}</p>;
+                }
+            } catch (error) {
+                box.innerHTML = '<p style="color: #dc2626; font-size: 13px; text-align: center;">Server error occurred while searching. Please try again.</p>';
+            }
         }
     </script>
 </body>

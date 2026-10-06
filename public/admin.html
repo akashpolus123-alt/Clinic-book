@@ -3,11 +3,25 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Clinic Admin Portal</title>
+  <title>Clinic Admin Portal - NSF Clinic</title>
   <style>
     * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
     body { background-color: #f4f6f9; color: #333; padding: 20px; }
     
+    /* Login Overlay */
+    #loginOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(15, 23, 42, 0.9); display: flex; justify-content: center; align-items: center; z-index: 9999;
+    }
+    .login-box {
+      background: #fff; padding: 30px; border-radius: 12px; width: 100%; max-width: 380px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center;
+    }
+    .login-box h2 { margin-bottom: 20px; color: #0284c7; }
+    .login-box input { width: 100%; padding: 12px; margin-bottom: 15px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
+    .login-box button { width: 100%; padding: 12px; background: #0284c7; color: #fff; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .login-box button:hover { background: #0369a1; }
+    .login-error { color: #dc3545; font-size: 13px; margin-top: 10px; display: none; }
+
     .header { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 15px 20px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); margin-bottom: 20px; }
     .header h2 { font-size: 20px; color: #1a252f; }
     .header p { font-size: 14px; color: #666; }
@@ -15,14 +29,14 @@
     
     .nav-tabs { display: flex; gap: 10px; margin-bottom: 20px; }
     .tab-btn { padding: 10px 20px; border: none; border-radius: 5px; background-color: #e2e8f0; color: #333; cursor: pointer; font-weight: 600; }
-    .tab-btn.active { background-color: #007bff; color: #fff; }
+    .tab-btn.active { background-color: #0284c7; color: #fff; }
 
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
     .cards-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 25px; }
-    .card { background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #007bff; }
-    .card.blue { border-left-color: #007bff; }
+    .card { background: #fff; padding: 18px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.05); border-left: 5px solid #0284c7; }
+    .card.blue { border-left-color: #0284c7; }
     .card.green { border-left-color: #28a745; }
     .card.purple { border-left-color: #6f42c1; }
     .card.orange { border-left-color: #fd7e14; }
@@ -52,12 +66,24 @@
     .badge-expense { background-color: #f5c6cb; color: #721c24; }
 
     .btn-action { padding: 5px 8px; border: none; border-radius: 4px; font-size: 12px; cursor: pointer; margin-right: 3px; color: #fff; }
-    .btn-arrived-action { background-color: #17a2b8; }
     .btn-complete-action { background-color: #28a745; }
     .btn-cancel-action { background-color: #dc3545; }
   </style>
 </head>
 <body>
+
+  <!-- Password Protection Login Modal -->
+  <div id="loginOverlay">
+    <div class="login-box">
+      <h2>Clinic Admin Login</h2>
+      <form id="loginForm" onsubmit="handleLogin(event)">
+        <input type="text" id="loginUser" placeholder="Username (e.g. nsf)" required>
+        <input type="password" id="loginPass" placeholder="Password" required>
+        <button type="submit">Login to Dashboard</button>
+        <p id="loginError" class="login-error">Invalid username or password!</p>
+      </form>
+    </div>
+  </div>
 
   <!-- Header -->
   <div class="header">
@@ -80,13 +106,12 @@
     <div class="cards-grid">
       <div class="card blue"><h4>Total Appointments</h4><p id="appTotal">0</p></div>
       <div class="card green"><h4>Today's Appointments</h4><p id="appToday">0</p></div>
-      <div class="card purple"><h4>This Month</h4><p id="appMonth">0</p></div>
-      <div class="card orange"><h4>Completed</h4><p id="appCompleted">0</p></div>
-      <div class="card red"><h4>Cancelled</h4><p id="appCancelled">0</p></div>
+      <div class="card purple"><h4>Total Revenue</h4><p id="appRevenue">PKR 0</p></div>
+      <div class="card orange"><h4>Platform Commission</h4><p id="appCommission">PKR 0</p></div>
     </div>
 
     <div class="filter-bar">
-      <input type="text" id="appSearch" placeholder="Search by name, phone or App ID..." onkeyup="renderAppointments()">
+      <input type="text" id="appSearch" placeholder="Search by patient name, phone or App ID..." onkeyup="renderAppointments()">
       <input type="date" id="appDate" onchange="renderAppointments()">
       <button class="btn-reset" onclick="resetAppFilters()">Reset</button>
     </div>
@@ -101,6 +126,7 @@
             <th>Phone</th>
             <th>Age</th>
             <th>Date & Time</th>
+            <th>Fee (PKR)</th>
             <th>Status</th>
             <th>Actions</th>
           </tr>
@@ -113,9 +139,8 @@
   <!-- ================= TAB 2: HR & STAFF ================= -->
   <div id="hrTab" class="tab-content">
     <div class="cards-grid">
-      <div class="card blue"><h4>Total Staff</h4><p id="hrTotal">2</p></div>
-      <div class="card green"><h4>Active Staff</h4><p id="hrActive">2</p></div>
-      <div class="card purple"><h4>Monthly Salary Budget</h4><p id="hrPayroll">PKR 195,000</p></div>
+      <div class="card blue"><h4>Total Staff Members</h4><p id="hrTotal">0</p></div>
+      <div class="card purple"><h4>Monthly Salary Budget</h4><p id="hrPayroll">PKR 0</p></div>
     </div>
 
     <div class="table-container">
@@ -126,30 +151,12 @@
             <th>Name</th>
             <th>Role / Designation</th>
             <th>Phone</th>
-            <th>Shift Timings</th>
             <th>Salary (PKR)</th>
             <th>Status</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><strong>EMP-001</strong></td>
-            <td>Dr. Shakil Jehangir Malik</td>
-            <td>Specialist Doctor</td>
-            <td>0300-1112233</td>
-            <td>10:00 AM - 02:00 PM</td>
-            <td>PKR 150,000</td>
-            <td><span class="badge badge-active">Active</span></td>
-          </tr>
-          <tr>
-            <td><strong>EMP-002</strong></td>
-            <td>Front Desk / Receptionist</td>
-            <td>Front Desk Staff</td>
-            <td>0312-4455667</td>
-            <td>09:00 AM - 06:00 PM</td>
-            <td>PKR 45,000</td>
-            <td><span class="badge badge-active">Active</span></td>
-          </tr>
+        <tbody id="hrTableBody">
+          <!-- Loaded dynamically from backend -->
         </tbody>
       </table>
     </div>
@@ -158,166 +165,30 @@
   <!-- ================= TAB 3: FINANCE & BILLING ================= -->
   <div id="financeTab" class="tab-content">
     <div class="cards-grid">
-      <div class="card green"><h4>Total Revenue</h4><p>PKR 75,000</p></div>
-      <div class="card red"><h4>Monthly Expenses</h4><p>PKR 195,000</p></div>
-      <div class="card purple"><h4>Net Balance (Profit/Loss)</h4><p style="color:#dc3545;">- PKR 120,000</p></div>
+      <div class="card green"><h4>Total Consultations Revenue</h4><p id="finRevenue">PKR 0</p></div>
+      <div class="card purple"><h4>Total Platform Commission</h4><p id="finCommission">PKR 0</p></div>
+      <div class="card orange"><h4>Advance Collected (20%)</h4><p id="finAdvance">PKR 0</p></div>
     </div>
 
     <div class="table-container">
       <table>
         <thead>
           <tr>
-            <th>Txn ID</th>
+            <th>Booking ID</th>
             <th>Date</th>
-            <th>Category / Description</th>
+            <th>Patient Name</th>
+            <th>Consultation Fee</th>
+            <th>Advance Paid (20%)</th>
             <th>Type</th>
-            <th>Amount (PKR)</th>
           </tr>
         </thead>
-        <tbody>
-          <tr>
-            <td><strong>TXN-101</strong></td>
-            <td>01/10/2026</td>
-            <td>Doctor Salary (Dr. Shakil)</td>
-            <td><span class="badge badge-expense">Expense</span></td>
-            <td>PKR 150,000</td>
-          </tr>
-          <tr>
-            <td><strong>TXN-102</strong></td>
-            <td>02/10/2026</td>
-            <td>Receptionist Salary</td>
-            <td><span class="badge badge-expense">Expense</span></td>
-            <td>PKR 45,000</td>
-          </tr>
-          <tr>
-            <td><strong>TXN-103</strong></td>
-            <td>04/10/2026</td>
-            <td>Patient Consultations Fee</td>
-            <td><span class="badge badge-income">Income</span></td>
-            <td>PKR 75,000</td>
-          </tr>
+        <tbody id="financeTableBody">
+          <!-- Loaded dynamically from backend -->
         </tbody>
       </table>
     </div>
   </div>
 
   <script>
-    // Tab Switching Logic
-    function switchTab(tabName) {
-      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-      document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
-
-      if (tabName === 'appointments') {
-        document.querySelectorAll('.tab-btn')[0].classList.add('active');
-        document.getElementById('appointmentsTab').classList.add('active');
-      } else if (tabName === 'hr') {
-        document.querySelectorAll('.tab-btn')[1].classList.add('active');
-        document.getElementById('hrTab').classList.add('active');
-      } else if (tabName === 'finance') {
-        document.querySelectorAll('.tab-btn')[2].classList.add('active');
-        document.getElementById('financeTab').classList.add('active');
-      }
-    }
-
-    // Logout Functionality
-    document.getElementById('logoutBtn').addEventListener('click', function() {
-      localStorage.clear();
-      sessionStorage.clear();
-      window.location.href = 'index.html';
-    });
-
-    // Appointment Data Logic
-    let appointments = [
-      { id: 'APP-20261006-01', name: 'Ali Ahmed', phone: '03001234567', age: 28, dateTime: '2026-10-06T10:00', status: 'Pending' },
-      { id: 'APP-20261006-02', name: 'Sara Khan', phone: '03129876543', age: 34, dateTime: '2026-10-06T11:30', status: 'Arrived' },
-      { id: 'APP-20261006-03', name: 'Usman Raza', phone: '03335554433', age: 45, dateTime: '2026-10-05T09:15', status: 'Completed' },
-      { id: 'APP-20261006-04', name: 'Hamza Malik', phone: '03217654321', age: 22, dateTime: '2026-10-06T14:00', status: 'Cancelled' }
-    ];
-
-    function renderAppointments() {
-      const tbody = document.getElementById('appTableBody');
-      const searchVal = document.getElementById('appSearch').value.toLowerCase();
-      const dateVal = document.getElementById('appDate').value;
-
-      tbody.innerHTML = '';
-
-      let filtered = appointments.filter(app => {
-        const matchesSearch = app.name.toLowerCase().includes(searchVal) || app.phone.includes(searchVal) || app.id.toLowerCase().includes(searchVal);
-        const matchesDate = dateVal ? app.dateTime.startsWith(dateVal) : true;
-        return matchesSearch && matchesDate;
-      });
-
-      if (filtered.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="8" style="text-align:center; color:#888;">No appointments found.</td></tr>';
-      } else {
-        filtered.forEach((app, index) => {
-          const dateObj = new Date(app.dateTime);
-          const formattedDate = dateObj.toLocaleDateString() + ' ' + dateObj.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-
-          let badgeClass = 'badge-pending';
-          if (app.status === 'Arrived') badgeClass = 'badge-arrived';
-          if (app.status === 'Completed') badgeClass = 'badge-completed';
-          if (app.status === 'Cancelled') badgeClass = 'badge-cancelled';
-
-          let actionButtons = '';
-          if (app.status === 'Pending') {
-            actionButtons += <button class="btn-action btn-arrived-action" onclick="changeStatus('${app.id}', 'Arrived')">Mark Arrived</button>;
-          }
-          if (app.status === 'Arrived' || app.status === 'Pending') {
-            actionButtons += <button class="btn-action btn-complete-action" onclick="changeStatus('${app.id}', 'Completed')">Complete</button>;
-          }
-          if (app.status !== 'Completed' && app.status !== 'Cancelled') {
-            actionButtons += <button class="btn-action btn-cancel-action" onclick="changeStatus('${app.id}', 'Cancelled')">Cancel</button>;
-          }
-          if (app.status === 'Completed' || app.status === 'Cancelled') {
-            actionButtons += '<span style="color:#aaa; font-size:12px;">Done</span>';
-          }
-
-          tbody.innerHTML += `
-            <tr>
-              <td><strong>${index + 1}</strong></td>
-              <td>${app.id}</td>
-              <td>${app.name}</td>
-              <td>${app.phone}</td>
-              <td>${app.age}</td>
-              <td>${formattedDate}</td>
-              <td><span class="badge ${badgeClass}">${app.status}</span></td>
-              <td>${actionButtons}</td>
-            </tr>
-          `;
-        });
-      }
-
-      updateAppMetrics();
-    }
-
-    function updateAppMetrics() {
-      const todayStr = new Date().toISOString().split('T')[0];
-      const currentMonth = new Date().toISOString().slice(0, 7);
-
-      document.getElementById('appTotal').innerText = appointments.length;
-      document.getElementById('appToday').innerText = appointments.filter(a => a.dateTime.startsWith(todayStr)).length;
-      document.getElementById('appMonth').innerText = appointments.filter(a => a.dateTime.startsWith(currentMonth)).length;
-      document.getElementById('appCompleted').innerText = appointments.filter(a => a.status === 'Completed').length;
-      document.getElementById('appCancelled').innerText = appointments.filter(a => a.status === 'Cancelled').length;
-    }
-
-    function changeStatus(id, newStatus) {
-      const app = appointments.find(a => a.id === id);
-      if (app) {
-        app.status = newStatus;
-        renderAppointments();
-      }
-    }
-
-    function resetAppFilters() {
-      document.getElementById('appSearch').value = '';
-      document.getElementById('appDate').value = '';
-      renderAppointments();
-    }
-
-    // Initial render
-    renderAppointments();
-  </script>
-</body>
-</html>
+    let appointmentsList = [];
+    let staffList = [];

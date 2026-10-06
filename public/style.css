@@ -216,3 +216,53 @@ button[type="submit"]:hover {
         gap: 0;
     }
 }
+
+ Slot Container & Styling */
+#slotContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+.slot {
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    border: 1px solid var(--border-color);
+    background-color: #f8fafc;
+    color: var(--text-main);
+    transition: all 0.2s ease;
+    flex: 1 1 calc(50% - 8px);
+    text-align: center;
+    box-sizing: border-box;
+}
+
+.slot.available {
+    background-color: #e0f2fe;
+    color: var(--primary-dark);
+    border-color: #bae6fd;
+}
+
+.slot.available:hover {
+    background-color: #bae6fd;
+}
+
+/* Booked Slots - Soft Green & Unclickable */
+.slot.booked {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+    border-color: #34d399 !important;
+    cursor: not-allowed !important;
+    pointer-events: none !important;
+    opacity: 0.85;
+}
+
+/* Selected Slot */
+.slot.selected {
+    background-color: var(--primary) !important;
+    color: white !important;
+    border-color: var(--primary-dark) !important;
+}

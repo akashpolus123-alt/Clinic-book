@@ -6,6 +6,44 @@
     <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
     <link rel="stylesheet" href="style.css">
     <style>
+        :root {
+            --theme-color: #0284c7;
+            --theme-dark: #0369a1;
+            --theme-soft: #e0f2fe;
+        }
+        .clinic-message {
+            width: 100%;
+            max-width: 680px;
+            box-sizing: border-box;
+            margin: 8px 0 18px;
+            padding: 18px 20px;
+            background: var(--theme-soft);
+            border-left: 5px solid var(--theme-color);
+            border-radius: 10px;
+            color: #334155;
+            text-align: left;
+            line-height: 1.7;
+            font-size: 14px;
+        }
+        .clinic-message strong {
+            display: block;
+            color: var(--theme-dark);
+            font-size: 16px;
+            margin-bottom: 6px;
+        }
+        .clinic-location {
+            width: 100%;
+            max-width: 680px;
+            box-sizing: border-box;
+            margin: 0 0 18px;
+            padding: 12px 16px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            color: #475569;
+            font-size: 14px;
+            text-align: left;
+        }
         main { padding-top: 20px; }
         .form-card { 
             display: none; /* Form pehle hide rahega */
@@ -28,7 +66,7 @@
     border-radius: 50%;
     object-fit: cover;
     object-position: top center; /* Yeh line lazmi add karein */
-    border: 3px solid #0284c7;
+    border: 3px solid var(--theme-color);
     margin-bottom: 15px;
 }
     
@@ -75,22 +113,31 @@
         <div class="profile-section">
             <img src="img/doctor.jpeg" alt="Prof. Dr. Shakil Jehangir Malik" class="doctor-img" onerror="this.src='https://via.placeholder.com/130?text=Doctor'">
             <h2 style="color: #1e293b; margin-bottom: 5px;">Prof. Dr. Shakil Jehangir Malik</h2>
-            <p style="color: #0284c7; font-weight: 600; margin-bottom: 8px;">Consultant Neuro Psychiatrist</p>
-            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">📍 Location: Rawalpindi, Pakistan</p>
+            <p style="color: var(--theme-color); font-weight: 600; margin-bottom: 8px;">Consultant Neuro Psychiatrist</p>
+            <div class="clinic-message">
+                <strong>You Have Not Lost Hope — There Is Still Help</strong>
+                If you feel discouraged after visiting different doctors and still have not found the right answers or relief, please do not lose hope. Our clinic welcomes patients who have been struggling for a long time and provides a careful, comprehensive evaluation with an individualized treatment plan.
+            </div>
+
+            <div class="clinic-location">
+                <strong style="color: var(--theme-dark);">📍 Clinic Location</strong><br>
+                Rawalpindi, Pakistan
+            </div>
+
             <p style="color: #475569; font-size: 13px; max-width: 600px; margin-bottom: 15px;">
             <!-- Professional Background & Achievements Section -->
     <div style="max-width: 700px; margin: 30px auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); text-align: left;">
         <h3 style="color: #1e293b; margin-top: 0; font-size: 20px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Professional Background & Achievements</h3>
         <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-            Professor Dr. Shakil Jehangir Malik possesses an extensive medical career spanning more than 35 years across the globe, encompassing clinical work, teaching, and healthcare management[span_1](start_span)[span_1](end_span).
+            Professor Dr. Shakil Jehangir Malik possesses an extensive medical career spanning more than 35 years across the globe, encompassing clinical work, teaching, and healthcare management
         </p>
         <p style="color: #475569; font-size: 14px; line-height: 1.6;">
-            Alongside his core practice, he has dedicated his expertise to supporting communities globally, including victims of natural and man-made disasters, terrorism, discrimination, as well as interfaith leaders, the disabled, and disadvantaged groups[span_2](start_span)[span_2](end_span).
+            Alongside his core practice, he has dedicated his expertise to supporting communities globally, including victims of natural and man-made disasters, terrorism, discrimination, as well as interfaith leaders, the disabled, and disadvantaged groups
         </p>
-        <div style="background: #f8fafc; padding: 15px; border-left: 4px solid #0284c7; border-radius: 4px; margin-top: 15px;">
+        <div style="background: #f8fafc; padding: 15px; border-left: 4px solid var(--theme-color); border-radius: 4px; margin-top: 15px;">
             <strong style="color: #1e293b; font-size: 14px;">NHS Emeritus Consultant Recognition:</strong>
             <p style="color: #475569; font-size: 13px; margin: 5px 0 0 0; line-height: 1.5;">
-                Following his retirement from the Sussex Partnership NHS Foundation Trust (SPFT), he was awarded the coveted Emeritus Consultant Status by the NHS in recognition of his exceptional services to medicine. He stands as the only Pakistani to have received this prestigious honor[span_3](start_span)[span_3](end_span).
+                Following his retirement from the Sussex Partnership NHS Foundation Trust (SPFT), he was awarded the coveted Emeritus Consultant Status by the NHS in recognition of his exceptional services to medicine. He stands as the only Pakistani to have received this prestigious honor
             </p>
         </div>
     </div>
@@ -158,7 +205,7 @@
                     Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
                     Account Number: <strong id="accNum">0312-3456789</strong>
                     <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button>
+                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: var(--theme-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button>
                         <a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a>
                     </div>
                 </div>
@@ -197,7 +244,7 @@
                     <small style="color:#64748b; font-size:11px;">Hold Ctrl (Windows) or tap multiple options on mobile to select more than one.</small>
                 </div>
 
-                <button type="submit" style="width: 100%; background: #0284c7; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm & Submit Appointment</button>
+                <button type="submit" style="width: 100%; background: var(--theme-color); color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm & Submit Appointment</button>
             </form>
             <p id="responseMsg" style="margin-top: 10px; text-align: center; font-weight: 550;"></p>
         </div>
@@ -279,9 +326,9 @@
             const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
 
             if (method === 'Easypaisa') {
-                box.innerHTML = '<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a></div>';
+                box.innerHTML = '<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: var(--theme-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a></div>';
             } else {
-                box.innerHTML = '<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open JazzCash App</a></div>';
+                box.innerHTML = '<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: var(--theme-color); color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open JazzCash App</a></div>';
             }
         }
 

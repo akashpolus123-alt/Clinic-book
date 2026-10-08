@@ -50,14 +50,26 @@
             <input type="text" id="patientName" required placeholder="Enter full name">
         </div>
 
-        <div class="form-group">
-            <label>Phone Number *</label>
-            <input type="text" id="phoneNumber" required placeholder="03XXXXXXXXX">
+        <!-- Date of Birth & Gender Fields -->
+        <div style="display: flex; gap: 15px;">
+            <div class="form-group" style="flex: 1;">
+                <label>Date of Birth (DOB) *</label>
+                <input type="date" id="patientDob" required>
+            </div>
+            <div class="form-group" style="flex: 1;">
+                <label>Gender *</label>
+                <select id="patientGender" required style="background: white;">
+                    <option value="">Select Gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                    <option value="Other">Other</option>
+                </select>
+            </div>
         </div>
 
         <div class="form-group">
-            <label>Age *</label>
-            <input type="number" id="age" required placeholder="Enter age">
+            <label>Phone Number *</label>
+            <input type="text" id="phoneNumber" required placeholder="03XXXXXXXXX">
         </div>
 
         <div class="form-group">
@@ -72,27 +84,65 @@
             <input type="hidden" id="selectedSlotInput" required>
         </div>
 
-        <!-- EasyPaisa / JazzCash Payment Information Box -->
+        <!-- In-Form EasyPaisa / JazzCash Payment & TID Section -->
         <div class="payment-box">
-            <label style="color: #004080; margin-bottom: 5px;">💳 Online Advance Payment (EasyPaisa / JazzCash)</label>
-            <p style="margin: 0; font-size: 14px; color: #444;">
+            <label style="color: #004080; margin-bottom: 5px;">💳 Online Advance Payment (JazzCash / EasyPaisa)</label>
+            <p style="margin: 0 0 10px 0; font-size: 14px; color: #444;">
                 Appointment confirm karne ke liye <strong>20% Advance Payment</strong> lazmi hai.<br>
-                Total Fee: <span id="totalFeeText">12,000</span> PKR | <strong>Advance Required (20%): <span id="advanceFeeText" style="color: #d9534f;">2,400</span> PKR</strong>
+                Total Fee: <span id="totalFeeText">12,000</span> PKR | <strong>Advance Required: <span id="advanceFeeText" style="color: #d9534f;">2,400</span> PKR</strong>
             </p>
-            <div style="margin-top: 10px;">
-                <label style="font-size: 13px; font-weight: normal;">Select Gateway:</label>
-                <select id="paymentGateway" style="padding: 6px;">
-                    <option value="EasyPaisa">EasyPaisa Account Transfer</option>
-                    <option value="JazzCash">JazzCash Mobile Account</option>
+            
+            <div class="form-group" style="margin-bottom: 10px;">
+                <label style="font-size: 13px;">Select Payment Method:</label>
+                <select id="paymentGateway" onchange="updatePaymentInstructions()" style="padding: 8px;">
+                    <option value="JazzCash">JazzCash</option>
+                    <option value="EasyPaisa">EasyPaisa</option>
                 </select>
+            </div>
+
+            <div id="paymentInstructions" style="background: #fff; padding: 10px; border-radius: 4px; font-size: 13px; color: #333; margin-bottom: 10px; border: 1px solid #cbd5e1;">
+                <!-- Dynamic Instructions will appear here -->
+            </div>
+
+            <div class="form-group" style="margin-bottom: 0;">
+                <label style="font-size: 13px;">Enter Transaction ID / TID (After Payment) *</label>
+                <input type="text" id="transactionId" required placeholder="e.g. 38472910293" style="padding: 8px; font-size: 14px;">
             </div>
         </div>
 
-        <button type="submit" class="submit-btn">Pay Advance & Confirm Appointment</button>
+        <!-- Symptoms List -->
+        <div class="form-group">
+            <label>Symptoms / Psychological Concerns (Select all that apply) *</label>
+            <div style="display: flex; flex-direction: column; gap: 8px; background: #f8fafc; padding: 15px; border: 1px solid #ccc; border-radius: 5px;">
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Anxiety & Panic Attacks"> Anxiety & Panic Attacks</label>
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Depression & Low Mood"> Depression & Low Mood</label>
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Sleep Disorders / Insomnia"> Sleep Disorders / Insomnia</label>
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Stress & Behavioral Issues"> Stress & Behavioral Issues</label>
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Memory & Cognitive Concerns"> Memory & Cognitive Concerns</label>
+                <label style="font-size: 14px; font-weight: normal; display: flex; align-items: center; gap: 8px;"><input type="checkbox" name="symptoms" value="Other Neuropsychiatric Conditions"> Other Neuropsychiatric Conditions</label>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-btn">Verify Payment & Confirm Appointment</button>
     </form>
 </div>
 
 <script>
+    // Initial load instructions
+    window.onload = function() {
+        updatePaymentInstructions();
+    };
+
+    function updatePaymentInstructions() {
+        const gateway = document.getElementById('paymentGateway').value;
+        const box = document.getElementById('paymentInstructions');
+        if (gateway === 'JazzCash') {
+            box.innerHTML = `Please transfer advance amount to JazzCash Account: <strong>0300-1234567</strong> (Title: NSF Clinic). Enter the TID below.;`
+        } else {
+            box.innerHTML = `Please transfer advance amount to EasyPaisa Account: <strong>0345-1234567</strong> (Title: NSF Clinic). Enter the TID below.;`
+        }
+    }
+
     function updateFeeDetails() {
         const typeVal = document.getElementById('appointmentType').value;
         const total = typeVal === 'Initial' ? 12000 : 8000;
@@ -110,7 +160,7 @@
         if (!dateInput || !dateInput.value) return;
         
         const selectedDate = new Date(dateInput.value);
-        const dayOfWeek = selectedDate.getDay(); // 2 = Tuesday, 6 = Saturday
+        const dayOfWeek = selectedDate.getDay(); 
         
         if (dayOfWeek !== 2 && dayOfWeek !== 6) {
             msgElement.innerText = "Doctor sirf Tuesday aur Saturday ko available hain.";
@@ -164,7 +214,7 @@
             let slotButton = document.createElement('button');
             slotButton.type = 'button';
             slotButton.className = 'slot-btn';
-            slotButton.innerText = `${startTimeFormatted} - ${endTimeFormatted}`;
+            slotButton.innerText = `${startTimeFormatted} - ${endTimeFormatted};`
             
             slotButton.onclick = function() {
                 document.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
@@ -182,7 +232,7 @@
         let formattedHour = hour % 12;
         formattedHour = formattedHour ? formattedHour : 12;
         let formattedMin = min < 10 ? '0' + min : min;
-        return `${formattedHour}:${formattedMin} ${ampm}`;
+        return `${formattedHour}:${formattedMin} ${ampm};`
     }
 
     function submitAppointment(event) {
@@ -191,17 +241,25 @@
         const typeVal = document.getElementById('appointmentType').value;
         const feeVal = typeVal === 'Initial' ? 12000 : 8000; 
 
+        const selectedSymptoms = [];
+        document.querySelectorAll('input[name="symptoms"]:checked').forEach((checkbox) => {
+            selectedSymptoms.push(checkbox.value);
+        });
+
         const bookingData = {
             clinicId: 'professorial-clinic',
             doctorId: 'doc-shakil',
             type: typeVal,
             fee: feeVal,
             name: document.getElementById('patientName').value,
+            dob: document.getElementById('patientDob').value,
+            gender: document.getElementById('patientGender').value,
             phone: document.getElementById('phoneNumber').value,
-            age: document.getElementById('age').value,
             date: document.getElementById('selectDate').value,
             time: document.getElementById('selectedSlotInput').value,
-            paymentMethod: document.getElementById('paymentGateway').value
+            paymentMethod: document.getElementById('paymentGateway').value,
+            transactionId: document.getElementById('transactionId').value,
+            symptoms: selectedSymptoms
         };
 
         fetch('/api/appointments', {
@@ -212,7 +270,7 @@
         .then(res => res.json())
         .then(data => {
             if (data.success) {
-                alert('Advance Payment Received via EasyPaisa/JazzCash!\nAppointment Confirmed. Number: ' + data.appointment.id);
+                alert('Payment Transaction Verified!\nAppointment Confirmed. Number: ' + data.appointment.id);
                 window.location.reload();
             } else {
                 alert('Error: ' + (data.message || 'Kuch galat ho gaya hai'));

@@ -64,7 +64,7 @@
 
     <!-- Hero Section -->
     <section class="hero" style="text-align: center; padding: 30px 20px;">
-        <h1>NSF Clinic</h1>
+        <h1>NSF Pakistan</h1>
         <p class="subtitle">Psychological Medicine & Neuro Psychiatry</p>
     </section>
 
@@ -115,15 +115,25 @@
 
                 <div class="form-row">
                     <div class="form-col form-group">
-                        <label>Age</label>
-                        <input type="number" id="patientAge" required placeholder="Age">
+                        <label>Date of Birth</label>
+                        <input type="date" id="patientDob" required>
                     </div>
                     <div class="form-col form-group">
-                        <label>Appointment Date (Tue & Sat Only)</label>
+                        <label>Gender</label>
+                        <select id="patientGender" required>
+                            <option value="">Select Gender</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Appointment Date (Tue & Sat Only)</label>
                         <input type="date" id="appointmentDate" required onchange="validateAppointmentDate()">
                         <small id="dateWarning" style="color: #dc2626; font-size: 11px; display: none;"></small>
                     </div>
-                </div>
 
                 <div class="form-group">
                     <label>Consultation Type & Fee</label>
@@ -166,8 +176,25 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Problem / Symptoms (Brief)</label>
-                    <textarea id="patientProblem" rows="3" placeholder="Describe your issue briefly..."></textarea>
+                    <label>Select Symptoms</label>
+                    <select id="patientSymptoms" multiple size="8" required>
+                        <option value="Anxiety">Anxiety</option>
+                        <option value="Depression / Low Mood">Depression / Low Mood</option>
+                        <option value="Panic Attacks">Panic Attacks</option>
+                        <option value="Excessive Worry">Excessive Worry</option>
+                        <option value="Sleep Problems / Insomnia">Sleep Problems / Insomnia</option>
+                        <option value="Stress">Stress</option>
+                        <option value="Irritability / Anger">Irritability / Anger</option>
+                        <option value="Poor Concentration / Memory">Poor Concentration / Memory</option>
+                        <option value="Mood Swings">Mood Swings</option>
+                        <option value="Obsessive Thoughts / Compulsions">Obsessive Thoughts / Compulsions</option>
+                        <option value="Fear / Phobia">Fear / Phobia</option>
+                        <option value="Hallucinations">Hallucinations</option>
+                        <option value="Unusual Thoughts / Suspiciousness">Unusual Thoughts / Suspiciousness</option>
+                        <option value="Behavioral Changes">Behavioral Changes</option>
+                        <option value="Other">Other</option>
+                    </select>
+                    <small style="color:#64748b; font-size:11px;">Hold Ctrl (Windows) or tap multiple options on mobile to select more than one.</small>
                 </div>
 
                 <button type="submit" style="width: 100%; background: #0284c7; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm & Submit Appointment</button>
@@ -179,7 +206,7 @@
 
     <!-- Professional Footer -->
     <footer style="text-align: center; padding: 20px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 40px;">
-        &copy; 2026 NSF Clinic (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
+        &copy; 2026 NSF Pakistan (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
     </footer>
 
     <script>
@@ -304,7 +331,8 @@
                 doctorId: 'doc-shakil',
                 name: document.getElementById('patientName').value,
                 phone: document.getElementById('patientPhone').value,
-                age: document.getElementById('patientAge').value,
+                dob: document.getElementById('patientDob').value,
+                gender: document.getElementById('patientGender').value,
                 date: document.getElementById('appointmentDate').value,
                 time: document.getElementById('appointmentTime').value,
                 consultationType: consultationType,
@@ -312,7 +340,7 @@
                 advanceFee: advanceFee,
                 paymentMethod: document.getElementById('paymentMethod').value,
                 transactionId: document.getElementById('transactionId').value,
-                problem: document.getElementById('patientProblem').value
+                symptoms: Array.from(document.getElementById('patientSymptoms').selectedOptions).map(option => option.value)
             };
 
             const msgBox = document.getElementById('responseMsg');

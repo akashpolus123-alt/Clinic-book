@@ -6,11 +6,40 @@
     <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        main {
-            padding-top: 20px;
+        main { padding-top: 20px; }
+        .form-card { margin-top: 15px; }
+        .profile-section {
+            background: #ffffff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            margin-bottom: 25px;
         }
-        .form-card {
+        .doctor-img {
+            width: 130px;
+            height: 130px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid #0284c7;
+            margin-bottom: 15px;
+        }
+        .book-btn-hero {
+            display: inline-block;
+            background: #16a34a;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
             margin-top: 15px;
+            transition: background 0.2s;
+        }
+        .book-btn-hero:hover {
+            background: #15803d;
         }
     </style>
 </head>
@@ -26,19 +55,31 @@
         </nav>
     </header>
 
-    <!-- Hero Section with Availability Info -->
-    <section class="hero">
+    <!-- Hero Section -->
+    <section class="hero" style="text-align: center; padding: 30px 20px;">
         <h1>NSF Clinic</h1>
         <p class="subtitle">Psychological Medicine & Neuro Psychiatry</p>
-        <p class="doctor">Prof. Dr. Shakil Jehangir Malik</p>
-        <p style="margin-top: 8px; font-size: 14px; background: rgba(255, 255, 255, 0.15); display: inline-block; padding: 4px 12px; border-radius: 20px; color: #e0f2fe;">
     </section>
 
-    <!-- Main Content & Booking Form -->
-    <main>
+    <!-- Main Content -->
+    <main style="max-width: 800px; margin: 0 auto; padding: 0 15px;">
+
+        <!-- Doctor Profile Card with Picture & Location -->
+        <div class="profile-section">
+            <!-- Yahan doctor ki picture ka link ya local asset lagaya gaya hai -->
+            <img src="doctor.jpg" alt="Prof. Dr. Shakil Jehangir Malik" class="doctor-img" onerror="this.src='https://via.placeholder.com/130?text=Doctor'">
+            <h2 style="color: #1e293b; margin-bottom: 5px;">Prof. Dr. Shakil Jehangir Malik</h2>
+            <p style="color: #0284c7; font-weight: 600; margin-bottom: 8px;">Consultant Neuro Psychiatrist</p>
+            <p style="color: #64748b; font-size: 14px; margin-bottom: 15px;">📍 Location: Rawalpindi / Islamabad, Pakistan</p>
+            <p style="color: #475569; font-size: 13px; max-width: 600px; margin-bottom: 15px;">
+                Specialized in psychological medicine, behavioral therapy, and mental health care. Available on Tuesdays and Saturdays.
+            </p>
+            <!-- Booking Button Jo Form Ki Taraf Le Jata Hai -->
+            <a href="#bookingFormCard" class="book-btn-hero">Book Appointment Now</a>
+        </div>
 
         <!-- Booking Form Card -->
-        <div class="form-card">
+        <div class="form-card" id="bookingFormCard">
             <h2>Book Your Appointment</h2>
             
             <form id="bookingForm">
@@ -80,7 +121,7 @@
                     </select>
                 </div>
 
-                <!-- Professional Payment Box with Direct App Launcher & Copy Option -->
+                <!-- Professional Payment Box -->
                 <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; color: #166534; line-height: 1.6;">
                     <strong>Easypaisa Secure Payment:</strong><br>
                     Amount to Send: <strong id="payableAmount" style="color: #dc2626; font-size: 15px;">PKR 2,400</strong><br>
@@ -109,15 +150,15 @@
                     <textarea id="patientProblem" rows="3" placeholder="Describe your issue briefly..."></textarea>
                 </div>
 
-                <button type="submit">Confirm & Submit Appointment</button>
+                <button type="submit" style="width: 100%; background: #0284c7; color: white; padding: 12px; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Confirm & Submit Appointment</button>
             </form>
-            <p id="responseMsg"></p>
+            <p id="responseMsg" style="margin-top: 10px; text-align: center; font-weight: 550;"></p>
         </div>
 
     </main>
 
     <!-- Professional Footer -->
-    <footer style="text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 40px;">
+    <footer style="text-align: center; padding: 20px; font-size: 12px; color: #64748b; border-top: 1px solid #e2e8f0; margin-top: 40px;">
         &copy; 2026 NSF Clinic (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
     </footer>
 

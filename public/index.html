@@ -1,255 +1,199 @@
-<!DOCTYPE html>
+[1:54 PM, 10/8/2026] Absoutions: <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NSF - Psychological Medicine & Neuro Psychiatry</title>
-    <link rel="stylesheet" href="style.css">
-    <style>
-        main {
-            padding-top: 20px;
-        }
-        .form-card {
-            margin-top: 15px;
-        }
-    </style>
+    <title>Prof. Dr. Shakil Jehangir Malik - NSF Clinic Booking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
-<body>
+<body class="bg-gray-50 font-sans text-gray-800">
 
-    <!-- Header -->
-    <header>
-        <div class="logo">NSF</div>
-        <nav>
-            <a href="index.html" class="active">Home</a>
-            <a href="track-booking.html">Track Appt</a>
-            <a href="admin.html">Admin</a>
-        </nav>
+    <!-- Header / Clinic Profile Section -->
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-4xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <!-- Logo & Clinic Info -->
+            <div class="flex items-cent…
+[1:59 PM, 10/8/2026] Absoutions: <!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prof. Dr. Shakil Jehangir Malik - NSF Clinic Booking</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-50 font-sans text-gray-800">
+
+    <!-- Header / Clinic Profile Section -->
+    <header class="bg-white shadow-sm border-b border-gray-100">
+        <div class="max-w-4xl mx-auto px-4 py-6 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div class="flex items-center gap-4 text-center md:text-left">
+                <!-- Clinic Logo -->
+                <div class="w-16 h-16 rounded-full bg-blue-50 flex items-center justify-center border-2 border-blue-500 overflow-hidden shadow-sm">
+                    <img src="logo.png" alt="NSF Clinic Logo" class="w-full h-full object-cover" onerror="this.src='https://via.placeholder.com/150?text=NSF'">
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-gray-900">NSF Clinic</h1>
+                    <p class="text-xs text-blue-600 font-semibold uppercase tracking-wider">Prof. Dr. Shakil Jehangir Malik</p>
+                    <p class="text-xs text-gray-500 flex items-center justify-center md:justify-start gap-1 mt-1">
+                        <i class="fa-solid fa-location-dot text-red-500"></i> Islamabad / Rawalpindi, Pakistan
+                    </p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-4">
+                <!-- Doctor Profile Card -->
+                <div class="flex items-center gap-3 bg-gray-50 px-3 py-2 rounded-xl border border-gray-200">
+                    <img src="doctor.jpg" alt="Dr. Shakil Jehangir Malik" class="w-12 h-12 rounded-full object-cover border border-blue-400" onerror="this.src='https://via.placeholder.com/150?text=Dr'">
+                    <div class="text-left text-xs">
+                        <p class="font-bold text-gray-800">Consultant Specialist</p>
+                        <p class="text-gray-500">Tue & Sat Available</p>
+                    </div>
+                </div>
+                <a href="track-booking.html" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-xs font-semibold shadow transition flex items-center gap-1.5">
+                    <i class="fa-solid fa-magnifying-glass"></i> Track Booking
+                </a>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero Section with Availability Info -->
-    <section class="hero">
-        <h1>NSF Clinic</h1>
-        <p class="subtitle">Psychological Medicine & Neuro Psychiatry</p>
-        <p class="doctor">Prof. Dr. Shakil Jehangir Malik</p>
-        <p style="margin-top: 8px; font-size: 14px; background: rgba(255, 255, 255, 0.15); display: inline-block; padding: 4px 12px; border-radius: 20px; color: #e0f2fe;">
-    </section>
+    <!-- Main Booking Section -->
+    <main class="max-w-4xl mx-auto px-4 py-8">
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-gray-900 mb-6 border-b pb-3 flex items-center gap-2">
+                <i class="fa-solid fa-calendar-check text-blue-600"></i> Book Appointment Consultation
+            </h2>
 
-    <!-- Main Content & Booking Form -->
-    <main>
-
-        <!-- Booking Form Card -->
-        <div class="form-card">
-            <h2>Book Your Appointment</h2>
-            
-            <form id="bookingForm">
-                <div class="form-group">
-                    <label>Full Name</label>
-                    <input type="text" id="patientName" required placeholder="Enter your full name">
-                </div>
-
-                <div class="form-group">
-                    <label>Phone Number</label>
-                    <input type="tel" id="patientPhone" required placeholder="03XXXXXXXXX">
-                </div>
-
-                <div class="form-row">
-                    <div class="form-col form-group">
-                        <label>Age</label>
-                        <input type="number" id="patientAge" required placeholder="Age">
+            <form id="bookingForm" class="space-y-6">
+                <!-- Patient Name, Age & Phone -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Patient Full Name</label>
+                        <input type="text" id="patientName" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-blue-500 text-sm" placeholder="Enter full name">
                     </div>
-                    <div class="form-col form-group">
-                        <label>Appointment Date (Tue & Sat Only)</label>
-                        <input type="date" id="appointmentDate" required onchange="validateAppointmentDate()">
-                        <small id="dateWarning" style="color: #dc2626; font-size: 11px; display: none;"></small>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Age</label>
+                        <input type="number" id="patientAge" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-blue-500 text-sm" placeholder="Enter age">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Phone Number (WhatsApp)</label>
+                        <input type="text" id="phone" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-blue-500 text-sm" placeholder="03XXXXXXXXX">
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Consultation Type & Fee</label>
-                    <select id="consultationType" required onchange="updateConsultationType()">
-                        <option value="Initial">Initial Consultation (1 Hour) - PKR 12,000 (Advance 20%: PKR 2,400)</option>
-                        <option value="Follow-up">Follow-up Consultation (30 Mins) - PKR 8,000 (Advance 20%: PKR 1,600)</option>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label>Select Payment Method for Advance</label>
-                    <select id="paymentMethod" required onchange="updatePaymentDetails()">
-                        <option value="Easypaisa">Easypaisa (Clinic Account)</option>
-                        <option value="JazzCash">JazzCash (Clinic Account)</option>
-                    </select>
-                </div>
-
-                <!-- Professional Payment Box with Direct App Launcher & Copy Option -->
-                <div id="accountDetailsBox" style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 8px; margin-bottom: 14px; font-size: 13px; color: #166534; line-height: 1.6;">
-                    <strong>Easypaisa Secure Payment:</strong><br>
-                    Amount to Send: <strong id="payableAmount" style="color: #dc2626; font-size: 15px;">PKR 2,400</strong><br>
-                    Account Title: Dr. Shakil Jehangir Malik (NSF)<br>
-                    Account Number: <strong id="accNum">0312-3456789</strong>
-                    <div style="margin-top: 10px; display: flex; gap: 10px;">
-                        <button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button>
-                        <a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Consultation Type</label>
+                        <select id="consultationType" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-blue-500 text-sm bg-white">
+                            <option value="Initial">Initial Consultation - PKR 3,000</option>
+                            <option value="Follow-up">Follow-up Consultation - PKR 2,000</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-semibold uppercase text-gray-600 mb-1">Select Date (Tuesdays / Saturdays)</label>
+                        <input type="date" id="appointmentDate" required class="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:outline-none focus:border-blue-500 text-sm">
+                        <p id="dateError" class="text-xs text-red-500 mt-1 hidden">Please select a valid Tuesday or Saturday.</p>
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Transaction ID (Tid) from Payment SMS <span style="font-size: 11px; color: #666;">(Use <b>TEST1234567</b> for testing)</span></label>
-                    <input type="text" id="transactionId" required placeholder="Enter 11-digit TID or TEST1234567">
+                <!-- Time Slots Grid -->
+                <div>
+                    <label class="block text-xs font-semibold uppercase text-gray-600 mb-2">Available Time Slots (10:30 AM - 6:00 PM)</label>
+                    <div id="timeSlotsContainer" class="grid grid-cols-3 md:grid-cols-6 gap-2">
+                        <!-- Populated dynamically via JS -->
+                    </div>
+                    <input type="hidden" id="selectedTimeSlot" required>
                 </div>
 
-                <div class="form-group">
-                    <label id="timeSlotLabel">Select Time Slot (10:30 AM - 06:00 PM | Break: 12:30 - 01:00 PM)</label>
-                    <select id="appointmentTime" required>
-                        <option value="">Select Time Slot</option>
-                    </select>
+                <!-- Payment Details Section -->
+                <div class="bg-blue-50/50 border border-blue-100 rounded-xl p-4 text-xs space-y-3">
+                    <p class="font-bold text-blue-900 text-sm"><i class="fa-solid fa-wallet mr-1"></i> Payment & Advance (20% Required):</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="bg-white p-3 rounded-lg border border-blue-200 shadow-sm">
+                            <p class="font-bold text-gray-800">Easypaisa / JazzCash</p>
+                            <p class="text-gray-600 mt-1">Number: <span class="font-mono font-bold text-gray-900">0300-1234567</span></p>
+                            <p class="text-gray-500 text-[11px]">Title: Shakil Jehangir Malik</p>
+                        </div>
+                        <div>
+                            <label class="block font-semibold uppercase text-gray-600 mb-1">Enter Transaction ID (TID)</label>
+                            <input type="text" id="transactionId" required class="w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-sm" placeholder="Enter TID number">
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label>Problem / Symptoms (Brief)</label>
-                    <textarea id="patientProblem" rows="3" placeholder="Describe your issue briefly..."></textarea>
-                </div>
-
-                <button type="submit">Confirm & Submit Appointment</button>
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-xl shadow-md transition text-sm">
+                    Confirm & Submit Booking
+                </button>
             </form>
-            <p id="responseMsg"></p>
         </div>
-
     </main>
 
-    <!-- Professional Footer -->
-    <footer style="text-align: center; padding: 20px; font-size: 12px; color: var(--text-muted); border-top: 1px solid var(--border-color); margin-top: 40px;">
-        &copy; 2026 NSF Clinic (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
-    </footer>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 hidden flex items-center justify-center p-4 z-50">
+        <div class="bg-white rounded-2xl p-6 max-w-md w-full text-center space-y-4">
+            <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto text-xl">
+                <i class="fa-solid fa-check"></i>
+            </div>
+            <h3 class="text-lg font-bold text-gray-900">Booking Successful!</h3>
+            <p id="modalMessage" class="text-xs text-gray-600"></p>
+            <button onclick="closeModal()" class="w-full bg-blue-600 text-white py-2.5 rounded-xl text-xs font-semibold">Done</button>
+        </div>
+    </div>
 
     <script>
-        function generateTimeSlots() {
-            const type = document.getElementById('consultationType').value;
-            const timeSelect = document.getElementById('appointmentTime');
-            timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
+        // Generate time slots from 10:30 AM to 6:00 PM
+        const slotsContainer = document.getElementById('timeSlotsContainer');
+        const selectedTimeInput = document.getElementById('selectedTimeSlot');
+        
+        const times = [
+            "10:30 AM", "11:15 AM", "12:00 PM", "12:45 PM", 
+            "01:30 PM", "02:15 PM", "03:00 PM", "03:45 PM", 
+            "04:30 PM", "05:15 PM", "06:00 PM"
+        ];
 
-            let slots = [];
-            if (type === 'Initial') {
-                slots = [
-                    "10:30 AM - 11:30 AM",
-                    "11:30 AM - 12:30 PM",
-                    "01:00 PM - 02:00 PM",
-                    "02:00 PM - 03:00 PM",
-                    "03:00 PM - 04:00 PM",
-                    "04:00 PM - 05:00 PM",
-                    "05:00 PM - 06:00 PM"
-                ];
+        times.forEach(time => {
+            const btn = document.createElement('button');
+            btn.type = 'button';
+            btn.textContent = time;
+            btn.className = "py-2 px-1 text-xs font-semibold rounded-lg border border-gray-200 bg-white hover:border-blue-500 transition text-center";
+            btn.onclick = () => {
+                document.querySelectorAll('#timeSlotsContainer button').forEach(b => b.classList.remove('bg-blue-600', 'text-white', 'border-blue-600'));
+                btn.classList.add('bg-blue-600', 'text-white', 'border-blue-600');
+                selectedTimeInput.value = time;
+            };
+            slotsContainer.appendChild(btn);
+        });
+
+        // Date validation for Tuesday & Saturday
+        const dateInput = document.getElementById('appointmentDate');
+        const dateError = document.getElementById('dateError');
+
+        dateInput.onchange = function() {
+            const day = new Date(this.value).getDay();
+            // 2 = Tuesday, 6 = Saturday
+            if (day !== 2 && day !== 6) {
+                dateError.classList.remove('hidden');
+                this.value = '';
             } else {
-                slots = [
-                    "10:30 AM - 11:00 AM",
-                    "11:00 AM - 11:30 AM",
-                    "11:30 AM - 12:00 PM",
-                    "12:00 PM - 12:30 PM",
-                    "01:00 PM - 01:30 PM",
-                    "01:30 PM - 02:00 PM",
-                    "02:00 PM - 02:30 PM",
-                    "02:30 PM - 03:00 PM",
-                    "03:00 PM - 03:30 PM",
-                    "03:30 PM - 04:00 PM",
-                    "04:00 PM - 04:30 PM",
-                    "04:30 PM - 05:00 PM",
-                    "05:00 PM - 05:30 PM",
-                    "05:30 PM - 06:00 PM"
-                ];
+                dateError.classList.add('hidden');
             }
-
-            slots.forEach(slot => {
-                const opt = document.createElement('option');
-                opt.value = slot;
-                opt.textContent = slot;
-                timeSelect.appendChild(opt);
-            });
-        }
-
-        function updateConsultationType() {
-            updateFeeDisplay();
-            generateTimeSlots();
-            updatePaymentDetails();
-        }
-
-        function updateFeeDisplay() {
-            const type = document.getElementById('consultationType').value;
-            const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
-            document.getElementById('payableAmount').innerText = amountStr;
-        }
-
-        function updatePaymentDetails() {
-            const method = document.getElementById('paymentMethod').value;
-            const box = document.getElementById('accountDetailsBox');
-            const type = document.getElementById('consultationType').value;
-            const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
-
-            if (method === 'Easypaisa') {
-                box.innerHTML = '<strong>Easypaisa Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0312-3456789</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="easypaisa://" style="flex: 1; text-align: center; background: #16a34a; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open Easypaisa App</a></div>';
-            } else {
-                box.innerHTML = '<strong>JazzCash Secure Payment:</strong><br>Amount to Send: <strong style="color: #dc2626; font-size: 15px;">' + amountStr + '</strong><br>Account Title: Dr. Shakil Jehangir Malik (NSF)<br>Account Number: <strong id="accNum">0300-1234567</strong><div style="margin-top: 10px; display: flex; gap: 10px;"><button type="button" onclick="copyAccountNo()" style="flex: 1; background: #0284c7; color: white; border: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; cursor: pointer;">Copy Number</button><a href="jazzcash://" style="flex: 1; text-align: center; background: #ea580c; color: white; text-decoration: none; padding: 8px; border-radius: 6px; font-size: 12px; font-weight: 600; display: inline-block;">Open JazzCash App</a></div>';
-            }
-        }
-
-        function copyAccountNo() {
-            const num = document.getElementById('accNum').innerText;
-            navigator.clipboard.writeText(num);
-            alert('Account number copied: ' + num);
-        }
-
-        function validateAppointmentDate() {
-            const dateInput = document.getElementById('appointmentDate').value;
-            const warningBox = document.getElementById('dateWarning');
-            if (!dateInput) return true;
-
-            const selectedDate = new Date(dateInput);
-            const dayOfWeek = selectedDate.getDay();
-
-            if (dayOfWeek !== 2 && dayOfWeek !== 6) {
-                warningBox.style.display = 'block';
-                warningBox.textContent = 'Doctor is only available on Tuesday and Saturday. Please select a valid day.';
-                return false;
-            } else {
-                warningBox.style.display = 'none';
-                warningBox.textContent = '';
-                return true;
-            }
-        }
-
-        window.onload = function() {
-            generateTimeSlots();
         };
 
-        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+        // Form submission handling
+        document.getElementById('bookingForm').onsubmit = async (e) => {
             e.preventDefault();
-
-            if (!validateAppointmentDate()) {
-                alert('Please select a valid appointment date (Tuesday or Saturday).');
-                return;
-            }
-            
-            const consultationType = document.getElementById('consultationType').value;
-            const fee = consultationType === 'Initial' ? 12000 : 8000;
-            const advanceFee = consultationType === 'Initial' ? 2400 : 1600;
-
             const bookingData = {
-                clinicId: 'professorial-clinic',
-                doctorId: 'doc-shakil',
-                name: document.getElementById('patientName').value,
-                phone: document.getElementById('patientPhone').value,
-                age: document.getElementById('patientAge').value,
-                date: document.getElementById('appointmentDate').value,
-                time: document.getElementById('appointmentTime').value,
-                consultationType: consultationType,
-                totalFee: fee,
-                advanceFee: advanceFee,
-                paymentMethod: document.getElementById('paymentMethod').value,
-                transactionId: document.getElementById('transactionId').value,
-                problem: document.getElementById('patientProblem').value
+                patientName: document.getElementById('patientName').value,
+                patientAge: document.getElementById('patientAge').value,
+                phone: document.getElementById('phone').value,
+                consultationType: document.getElementById('consultationType').value,
+                appointmentDate: dateInput.value,
+                timeSlot: selectedTimeInput.value,
+                transactionId: document.getElementById('transactionId').value
             };
-
-            const msgBox = document.getElementById('responseMsg');
-            msgBox.style.color = '#0369a1';
-            msgBox.textContent = 'Submitting your appointment and verifying TID...';
 
             try {
                 const response = await fetch('/api/appointments', {
@@ -258,21 +202,22 @@
                     body: JSON.stringify(bookingData)
                 });
                 const result = await response.json();
-
-                if (result.success || response.ok) {
-                    msgBox.style.color = '#16a34a';
-                    msgBox.textContent = 'Booking submitted successfully! Clinic will verify your payment and confirm your slot shortly.';
-                    document.getElementById('bookingForm').reset();
-                    generateTimeSlots();
+                if (response.ok) {
+                    document.getElementById('modalMessage').textContent = `Your appointment is booked successfully. Booking ID: ${result.bookingId || 'Confirmed'}`;
+                    document.getElementById('successModal').classList.remove('hidden');
                 } else {
-                    msgBox.style.color = '#dc2626';
-                    msgBox.textContent = result.message || 'Failed to submit appointment.';
+                    alert(result.message || 'Error booking appointment');
                 }
             } catch (err) {
-                msgBox.style.color = '#dc2626';
-                msgBox.textContent = 'Server connection error!';
+                console.error(err);
+                alert('Server connection error!');
             }
-        });
+        };
+
+        function closeModal() {
+            document.getElementById('successModal').classList.add('hidden');
+            location.reload();
+        }
     </script>
 </body>
 </html>

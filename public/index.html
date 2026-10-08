@@ -7,7 +7,10 @@
     <link rel="stylesheet" href="style.css">
     <style>
         main { padding-top: 20px; }
-        .form-card { margin-top: 15px; }
+        .form-card { 
+            display: none; /* Form pehle hide rahega */
+            margin-top: 25px; 
+        }
         .profile-section {
             background: #ffffff;
             border-radius: 12px;
@@ -28,13 +31,13 @@
             margin-bottom: 15px;
         }
         .book-btn-hero {
-            display: inline-block;
             background: #16a34a;
             color: white;
             padding: 10px 24px;
             border-radius: 8px;
-            text-decoration: none;
+            border: none;
             font-weight: 600;
+            cursor: pointer;
             margin-top: 15px;
             transition: background 0.2s;
         }
@@ -66,7 +69,6 @@
 
         <!-- Doctor Profile Card with Picture & Location -->
         <div class="profile-section">
-            <!-- Yahan doctor ki picture ka link ya local asset lagaya gaya hai -->
             <img src="doctor.jpg" alt="Prof. Dr. Shakil Jehangir Malik" class="doctor-img" onerror="this.src='https://via.placeholder.com/130?text=Doctor'">
             <h2 style="color: #1e293b; margin-bottom: 5px;">Prof. Dr. Shakil Jehangir Malik</h2>
             <p style="color: #0284c7; font-weight: 600; margin-bottom: 8px;">Consultant Neuro Psychiatrist</p>
@@ -74,11 +76,11 @@
             <p style="color: #475569; font-size: 13px; max-width: 600px; margin-bottom: 15px;">
                 Specialized in psychological medicine, behavioral therapy, and mental health care. Available on Tuesdays and Saturdays.
             </p>
-            <!-- Booking Button Jo Form Ki Taraf Le Jata Hai -->
-            <a href="#bookingFormCard" class="book-btn-hero">Book Appointment Now</a>
+            <!-- Button jo click hone par form show karega -->
+            <button type="button" class="book-btn-hero" onclick="openBookingForm()">Book Appointment Now</button>
         </div>
 
-        <!-- Booking Form Card -->
+        <!-- Booking Form Card (Hidden initially) -->
         <div class="form-card" id="bookingFormCard">
             <h2>Book Your Appointment</h2>
             
@@ -163,6 +165,13 @@
     </footer>
 
     <script>
+        // Button click hone par form show hoga aur screen scroll ho gi
+        function openBookingForm() {
+            const formCard = document.getElementById('bookingFormCard');
+            formCard.style.display = 'block';
+            formCard.scrollIntoView({ behavior: 'smooth' });
+        }
+
         function generateTimeSlots() {
             const type = document.getElementById('consultationType').value;
             const timeSelect = document.getElementById('appointmentTime');

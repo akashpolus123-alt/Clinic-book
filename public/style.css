@@ -579,44 +579,30 @@ footer {
     margin-bottom: 20px;
 }
 
-/* Track Appointment Heading & Subtitle Compact Fix */
-main .hero-track h1,
-main .track-header-area h1,
-main div h1 {
-    font-size: 16px !important;
-    margin-bottom: 2px !important;
-}
-
-main .hero-track p,
-main .track-header-area p,
-main div p {
-    font-size: 11px !important;
-
-}
-
-.status-legend {
-    background: #f8fafc;
-    border: 1px solid #e2e8f0;
-    padding: 14px;
-    border-radius: 10px;
+/* --- Ultra-Professional Track Page Styling --- */
+.hero-track-box {
+    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    color: white;
+    text-align: center;
+    padding: 24px 20px;
+    border-radius: 14px;
     margin-bottom: 20px;
-    font-size: 11.5px;
-    color: #475569;
-    text-align: left;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.08);
 }
 
-.status-legend strong {
-    display: block;
-    margin-bottom: 6px;
-    color: #1e293b;
-    font-size: 12px;
-}
-
-.status-legend div {
+.hero-track-box h1 {
+    font-size: 20px;
+    font-weight: 700;
     margin-bottom: 4px;
+    color: white;
 }
 
-.track-input-field {
+.hero-track-box .subtitle {
+    font-size: 11.5px;
+    opacity: 0.9;
+}
+
+.search-input-box {
     width: 100%;
     padding: 12px 14px;
     border: 1px solid var(--border-color);
@@ -624,16 +610,16 @@ main div p {
     font-size: 13px;
     outline: none;
     background: #ffffff;
-    color: #1e293b;
+    color: var(--text-color);
     transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.track-input-field:focus {
+.search-input-box:focus {
     border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
 }
 
-.btn-track-search {
+.btn-track-action {
     background: var(--primary);
     color: white;
     border: none;
@@ -648,72 +634,27 @@ main div p {
     transition: background 0.2s;
 }
 
-.btn-track-search:hover {
+.btn-track-action:hover {
     background: var(--primary-dark);
 }
 
-.result-card {
-    background: #f8fafc;
-    border: 1px solid var(--border-color);
-    padding: 16px;
-    border-radius: 10px;
-    text-align: left;
-    font-size: 12px;
-    margin-top: 15px;
-}
-
-.error-card {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
-    color: #991b1b;
-    padding: 14px;
-    border-radius: 8px;
-    font-size: 12px;
-    margin-top: 15px;
-    text-align: center;
-}
-
-.result-actions {
-    display: flex;
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.btn-quick {
-    flex: 1;
-    padding: 9px;
-    border-radius: 6px;
-    font-size: 11.5px;
-    font-weight: 600;
-    text-align: center;
-    text-decoration: none;
-    display: inline-block;
-    border: none;
-    cursor: pointer;
-}
-
-.btn-call-clinic {
-    background: #16a34a;
-    color: white;
-}
-
-.btn-map-clinic {
-    background: #0284c7;
-    color: white;
-}
-
-.btn-support-whatsapp {
+.btn-whatsapp-support {
     background: #dc2626;
     color: white;
     width: 100%;
     margin-top: 8px;
-    padding: 9px;
+    padding: 10px;
     border-radius: 6px;
     font-size: 11.5px;
     font-weight: 600;
     text-align: center;
     text-decoration: none;
     display: block;
+    transition: background 0.2s;
+}
+
+.btn-whatsapp-support:hover {
+    background: #b91c1c;
 }
 
 /* --- Admin Portal Custom Styles --- */

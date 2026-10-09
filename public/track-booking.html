@@ -14,38 +14,40 @@
           <img src="img/logo.jpeg" alt="NSF Logo">
       </div>
       <nav>
-          <a href="index.html">Home</a>
-          <a href="track-booking.html" class="active">Track Appt</a>
-          <a href="admin.html">Admin</a>
+          <a href="index.html">🏠 Home</a>
+          <a href="track-booking.html" class="active">🔍 Track Appt</a>
+          <a href="admin.html">🔐 Admin</a>
       </nav>
   </header>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Track Your Appointment</h1>
-        <p class="subtitle">Enter your Booking ID or Phone Number to check status</p>
-    </section>
-
     <!-- Main Content -->
     <main>
+        <!-- Hero Section (Matching Home Page Aesthetic) -->
+        <div class="hero-track-box">
+            <h1>Track Your Appointment</h1>
+            <p class="subtitle">Enter your Booking ID or Phone Number to check real-time status</p>
+        </div>
+
+        <!-- Tracking Card -->
         <div class="form-card">
             <h2>Search Booking Status</h2>
             
             <!-- Status Legend Guide -->
             <div class="status-legend">
                 <strong>📌 Status Guide:</strong>
-                • <span style="color:#d97706; font-weight:600;">Pending</span>: Payment verification or slot approval under process.<br>
-                • <span style="color:#166534; font-weight:600;">Completed/Confirmed</span>: Your appointment slot has been successfully booked!<br>
-                • <span style="color:#991b1b; font-weight:600;">Cancelled</span>: Appointment was cancelled.
+                <div>• <span style="color:#d97706; font-weight:700;">Pending</span>: Payment verification or slot approval under process.</div>
+                <div>• <span style="color:#166534; font-weight:700;">Completed/Confirmed</span>: Your appointment slot has been successfully booked!</div>
+                <div>• <span style="color:#991b1b; font-weight:700;">Cancelled</span>: Appointment was cancelled.</div>
             </div>
 
             <div class="form-group">
                 <label>Booking ID or Phone Number</label>
-                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX" class="search-input" style="max-width: 100%;">
+                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX" class="search-input-box">
             </div>
-            <button type="button" class="btn-search" onclick="searchBookingStatus()">Search Status</button>
+
+            <button type="button" class="btn-track-action" onclick="searchBookingStatus()">Search Status</button>
             
-            <div id="resultBox" style="margin-top: 15px;"></div>
+            <div id="resultBox"></div>
         </div>
     </main>
 
@@ -64,30 +66,31 @@
                 return;
             }
 
-            resultBox.innerHTML = '<div style="text-align: center; color: #0369a1; font-size: 13px; padding: 10px;">Searching appointment status...</div>';
+            resultBox.innerHTML = '<div style="text-align: center; color: var(--primary); font-size: 12px; padding: 15px; font-weight: 600;">Searching appointment status...</div>';
 
             try {
-                const response = await fetch('/api/appointments/track?query=' + encodeURIComponent(query));
+                const response = await fetch('/api/track?query=' + encodeURIComponent(query));
                 const result = await response.json();
 
                 if (response.ok && result.success) {
-                    const appt = result.data;
+                    const appt = result.data || result.appointment;
                     resultBox.innerHTML = `
                         <div class="result-card">
-                            <strong>Appointment Found!</strong><br>
-                            <strong>Patient Name:</strong> ${appt.name}<br>
-                            <strong>Phone:</strong> ${appt.phone}<br>
-                            <strong>Date:</strong> ${appt.date}<br>
-                            <strong>Time Slot:</strong> ${appt.time}<br>
-                            <strong>Type:</strong> ${appt.consultationType || appt.type}<br>
-                            <strong>Status:</strong> <span class="badge badge-${appt.status ? appt.status.toLowerCase() : 'pending'}">${appt.status || 'Pending'}</span>
+                            <strong style="color: var(--primary); font-size: 13.5px; display: block; margin-bottom: 10px; border-bottom: 1px solid #e2e8f0; padding-bottom: 6px;">✅ Appointment Found!</strong>
+                            <div style="margin-bottom: 5px;"><strong>Booking ID:</strong> ${appt.id}</div>
+                            <div style="margin-bottom: 5px;"><strong>Patient Name:</strong> ${appt.name}</div>
+                            <div style="margin-bottom: 5px;"><strong>Phone:</strong> ${appt.phone}</div>
+                            <div style="margin-bottom: 5px;"><strong>Date:</strong> ${appt.date}</div>
+                            <div style="margin-bottom: 5px;"><strong>Time Slot:</strong> ${appt.time}</div>
+                            <div style="margin-bottom: 5px;"><strong>Type:</strong> ${appt.type}</div>
+                            <div style="margin-bottom: 10px;"><strong>Status:</strong> <span class="badge badge-${appt.status ? appt.status.toLowerCase() : 'pending'}">${appt.status || 'Pending'}</span></div>
                             
                             <!-- Quick Action Buttons -->
                             <div class="result-actions">
                                 <a href="tel:+92511234567" class="btn-quick btn-call-clinic">📞 Call Clinic</a>
-                                <a href="https://maps.google.com/?q=Rawalpindi" target="_blank" class="btn-quick btn-map-clinic">📍 View Location</a>
+                                <a href="https://maps.google.com/?q=Rawalpindi" target="_blank" class="btn-quick btn-map-clinic">📍 Location</a>
                             </div>
-                            <a href="https://wa.me/923001234567?text=Hello,%20I%20want%20to%20inquire%20about%20my%20appointment%20Booking%20ID:%20${appt._id || 'N/A'}" target="_blank" class="btn-quick btn-support">💬 Contact Support / Reschedule</a>
+                            <a href="https://wa.me/923001234567?text=Hello,%20I%20want%20to%20inquire%20about%20my%20appointment%20ID:%20${appt.id}" target="_blank" class="btn-whatsapp-support">💬 WhatsApp Support</a>
                         </div>
                     `;
                 } else {

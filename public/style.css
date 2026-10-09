@@ -579,14 +579,19 @@ footer {
     margin-bottom: 20px;
 }
 
-.track-header-area h1, .hero-track h1 {
-    font-size: 16px !important; 
+/* Track Appointment Heading & Subtitle Compact Fix */
+main .hero-track h1,
+main .track-header-area h1,
+main div h1 {
+    font-size: 16px !important;
     margin-bottom: 2px !important;
 }
 
-.track-header-area p, .hero-track .subtitle {
-    font-size: 11px !important; 
-    color: #64748b;
+main .hero-track p,
+main .track-header-area p,
+main div p {
+    font-size: 11px !important;
+
 }
 
 .status-legend {

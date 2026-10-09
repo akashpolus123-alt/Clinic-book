@@ -3,13 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Track Appointment - NSF Clinic</title>
+    <title>Track Appointment - NSF Pakistan</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+    <!-- Header -->
     <header>
-        <div class="logo">NSF Clinic</div>
+        <div class="logo" style="color: var(--primary); font-weight: 800; font-size: 20px;">NSF Pakistan</div>
         <nav>
             <a href="index.html">Home</a>
             <a href="track-booking.html" class="active">Track Appt</a>
@@ -17,21 +18,29 @@
         </nav>
     </header>
 
+    <!-- Hero Section -->
     <section class="hero">
         <h1>Track Your Appointment</h1>
-        <p>Enter your Booking ID or Phone Number to check status</p>
+        <p class="subtitle">Enter your Booking ID or Phone Number to check status</p>
     </section>
 
+    <!-- Main Container -->
     <main>
         <div class="form-card">
+            <h2>Search Booking Status</h2>
             <div class="form-group">
                 <label>Booking ID or Phone Number</label>
-                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX">
+                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX" autocomplete="off">
             </div>
             <button type="button" class="btn-search" onclick="trackBooking()">Search Status</button>
             <div id="resultBox"></div>
         </div>
     </main>
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2026 NSF Pakistan (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
+    </footer>
 
     <script>
         async function trackBooking() {
@@ -39,7 +48,7 @@
             const box = document.getElementById('resultBox');
             
             if (!query) {
-                box.innerHTML = '<div class="error-card">Bara-e-karam apna Booking ID ya Phone number likhein.</div>';
+                box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Baraye meharbani apni Booking ID ya Phone number darj karein.</div>';
                 return;
             }
 
@@ -51,11 +60,12 @@
 
                 if (data.success && data.appointment) {
                     const appt = data.appointment;
+                    let badgeClass = appt.status === 'Completed' ? 'badge-completed' : (appt.status === 'Cancelled' ? 'badge-cancelled' : 'badge-pending');
                     let cancelBtnHTML = appt.status === 'Pending' ? `<br><button class="btn-cancel" onclick="cancelAppointment('${appt.id}')">Cancel Appointment</button>` : '';
 
-                    box.innerHTML = `<div class="result-card">
+                    box.innerHTML = `<div class="result-card" style="margin-top: 15px;">
                         <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #bbf7d0; padding-bottom: 6px;">
-                            Status: <span style="color: #047857;">${appt.status}</span>
+                            Status: <span class="badge ${badgeClass}">${appt.status}</span>
                         </div>
                         <strong>Booking ID:</strong> ${appt.id}<br>
                         <strong>Patient Name:</strong> ${appt.name}<br>
@@ -66,10 +76,10 @@
                         ${cancelBtnHTML}
                     </div>`;
                 } else {
-                    box.innerHTML = '<div class="error-card">Koi appointment ya record nahi mila is query ke khilaaf.</div>';
+                    box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Koi appointment ya record nahi mila is query ke khilaaf.</div>';
                 }
             } catch (error) {
-                box.innerHTML = '<div class="error-card">Server se rabta karne mein masla hua. Dobara koshish karein.</div>';
+                box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Server se rabta karne mein masla hua. Dobara koshish karein.</div>';
             }
         }
 
@@ -77,7 +87,7 @@
             if (!confirm("Kya aap waqai apni yeh appointment cancel karna chahte hain?")) return;
             
             try {
-                const res = await fetch(`/api/appointments/cancel/${id}, { method: 'PUT' }`);
+                const res = await fetch(`/api/appointments/cancel/${id}`, { method: 'PUT' });
                 const result = await res.json();
                 alert(result.message || "Appointment cancel ho chuki hai.");
                 trackBooking();

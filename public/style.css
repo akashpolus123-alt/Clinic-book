@@ -371,14 +371,14 @@ width: 100%;
     background: #ffffff;
     border: 1px solid #ccfbf1;
     border-radius: 14px;
-    padding: 22px;
+    padding: 20px;
     margin-bottom: 20px;
     box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
     text-align: left;
 }
 
 .form-card h2 {
-    font-size: 16px;
+    font-size: 14px;
     color: #0f766e;
     margin-bottom: 16px;
     border-bottom: 2px solid #f0fdfa;
@@ -392,7 +392,7 @@ width: 100%;
     padding: 12px 14px;
     border: 1px solid #cbd5e1;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: 12px;
     background: #f8fafc;
     color: #1e293b;
     outline: none;
@@ -411,8 +411,8 @@ width: 100%;
     background: #f0fdfa;
     border: 1px solid #99f6e4;
     border-radius: 12px;
-    padding: 16px;
-    font-size: 12px;
+    padding: 14px;
+    font-size: 10px;
     text-align: left;
     margin-bottom: 16px;
 }
@@ -423,16 +423,16 @@ width: 100%;
 
 .highlight-amount {
     color: #dc2626;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
 }
 
 .btn-copy {
     background: #475569;
     color: white;
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 600;
     border: none;
     cursor: pointer;
@@ -446,9 +446,9 @@ width: 100%;
 .btn-app-link {
     background: #059669;
     color: white;
-    padding: 8px 14px;
+    padding: 8px 12px;
     border-radius: 8px;
-    font-size: 11.5px;
+    font-size: 10.5px;
     font-weight: 600;
     text-decoration: none;
     display: inline-block;
@@ -462,7 +462,7 @@ width: 100%;
     max-height: 200px;
     overflow-y: auto;
     border: 1px solid #e2e8f0;
-    padding: 12px;
+    padding: 10px;
     border-radius: 10px;
     background: #f8fafc;
 }
@@ -470,9 +470,9 @@ width: 100%;
 .symptom-pill {
     background: #ffffff;
     border: 1px solid #cbd5e1;
-    padding: 10px 12px;
+    padding: 8px 10px;
     border-radius: 10px;
-    font-size: 11.5px;
+    font-size: 10.5px;
     cursor: pointer;
     user-select: none;
     transition: all 0.2s ease;

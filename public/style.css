@@ -484,8 +484,8 @@ width: 100%;
 .symptom-pill input {
     margin-left: 8px;
     accent-color: #0f766e;
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
 }
 
 .symptom-pill.selected {

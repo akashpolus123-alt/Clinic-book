@@ -130,7 +130,7 @@ app.get("/api/track", async (req, res) => {
     const { query } = req.query;
     const appointment = await Appointment.findOne({ $or: [{ id: query }, { phone: query }] }).sort({ createdAt: -1 });
     if (!appointment) return res.status(404).json({ success: false, message: "Koi appointment nahi mili." });
-    res.json({ success: true, appointment });
+    res.json({ success: true, data: appointment });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -138,41 +138,28 @@ app.get("/api/track", async (req, res) => {
 
 app.put("/api/appointments/cancel/:id", async (req, res) => {
   try {
-    const updated = await Appointment.findOneAndUpdate({ id: req.params.id }, { status: "Cancelled" }, { new: true });
-    if (!updated) return res.status(404).json({ success: false, message: "Appointment nahi mili." });
-    res.json({ success: true, message: "Appointment cancel ho gayi hai." });
-  } catch (error) {
-    res.status(500).json({ success: false, error: error.message });
-  }
-});
+    const appointmentId = req.params.id;
+    const updatedAppt = await Appointment.findOneAndUpdate(
+        { id: appointmentId }, 
+        { status: 'Cancelled' }, 
+        { new: true }
+    );
 
-app.put('/api/appointments/cancel/:id', async (req, res) => {
-    try {
-        const appointmentId = req.params.id;
-        
-        // Agar aap MongoDB/Mongoose use kar rahe hain:
-        const updatedAppt = await Appointment.findOneAndUpdate(
-            { id: appointmentId }, 
-            { status: 'Cancelled' }, 
-            { new: true }
-        );
-
-        if (!updatedAppt) {
-            return res.status(404).json({ success: false, message: 'Appointment nahi mili.' });
-        }
-
-        res.json({ success: true, message: 'Appointment kamyaabi se cancel ho chuki hai.' });
-    } catch (error) {
-        console.error(error);
-        res.status(500).json({ success: false, message: 'Server error aaya hai.' });
+    if (!updatedAppt) {
+        return res.status(404).json({ success: false, message: 'Appointment nahi mili.' });
     }
+
+    res.json({ success: true, message: 'Appointment kamyaabi se cancel ho chuki hai.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: 'Server error aaya hai.' });
+  }
 });
 
 app.delete('/api/appointments/:id', async (req, res) => {
     try {
-        const { devPin } = req.body; // Frontend se aane wala PIN
+        const { devPin } = req.body;
         
-        // Yahan apna secret PIN set kar dein (misal ke tor par: 'AKASH123@')
         if (devPin !== '2527') {
             return res.status(403).json({ success: false, message: 'Access Denied! Sirf developer hi delete kar sakta hai.' });
         }

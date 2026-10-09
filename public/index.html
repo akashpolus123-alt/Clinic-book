@@ -178,6 +178,13 @@
     </footer>
 
     <script>
+        window.onload = function() {
+    // Form ko by default hide karne ke liye
+    const formCard = document.getElementById('bookingFormCard');
+    if (formCard) formCard.style.display = 'none';
+    
+    generateTimeSlots();
+};
         function openBookingForm() {
             const formCard = document.getElementById('bookingFormCard');
             formCard.style.display = 'block';

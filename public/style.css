@@ -241,13 +241,14 @@ main {
 }
 
 /* Form Styles */
-.form-card {
-    background: var(--card-bg); 
-    padding: 24px 20px; 
-    border-radius: 12px; 
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+.form-card { 
+    display: none; 
+    margin-top: 16px; 
+    background: var(--card-bg);
+    padding: 20px 16px;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.04);
     border: 1px solid var(--border-color);
-    margin-top: 20px;
 }
 
 .form-card h2 {

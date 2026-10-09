@@ -412,7 +412,7 @@ width: 100%;
     border: 1px solid #99f6e4;
     border-radius: 12px;
     padding: 14px;
-    font-size: 10px;
+    font-size: 11px;
     text-align: left;
     margin-bottom: 16px;
 }
@@ -423,16 +423,16 @@ width: 100%;
 
 .highlight-amount {
     color: #dc2626;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 700;
 }
 
 .btn-copy {
     background: #475569;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-radius: 8px;
-    font-size: 10.5px;
+    font-size: 11.5px;
     font-weight: 600;
     border: none;
     cursor: pointer;
@@ -446,9 +446,9 @@ width: 100%;
 .btn-app-link {
     background: #059669;
     color: white;
-    padding: 8px 12px;
+    padding: 10px 12px;
     border-radius: 8px;
-    font-size: 10.5px;
+    font-size: 11.5px;
     font-weight: 600;
     text-decoration: none;
     display: inline-block;

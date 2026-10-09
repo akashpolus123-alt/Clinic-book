@@ -35,13 +35,47 @@
             <h2>Prof. Dr. Shakil Jehangir Malik</h2>
             <p class="doctor-title-text">Consultant Neuro Psychiatrist</p>
             
+            <!-- Top Interactive Call & Location Buttons -->
+            <div class="action-buttons-grid">
+                <a href="tel:+92511234567" class="action-card-btn">
+                    <div class="action-icon">📞</div>
+                    <div class="action-text">
+                        <span class="action-title">Call Now</span>
+                        <span class="action-subtitle">+92 51 123 4567</span>
+                    </div>
+                    <span class="arrow">&gt;</span>
+                </a>
+                <a href="https://maps.google.com/?q=Rawalpindi" target="_blank" class="action-card-btn">
+                    <div class="action-icon">📍</div>
+                    <div class="action-text">
+                        <span class="action-title">Location</span>
+                        <span class="action-subtitle">View on Map</span>
+                    </div>
+                    <span class="arrow">&gt;</span>
+                </a>
+            </div>
+
+            <!-- Clinic Info Box (Without Duplicate Numbers) -->
+            <div class="clinic-details-box">
+                <div class="clinic-img-container">
+                    <img src="img/clinic.jpeg" alt="Neuro Sciences Clinic" class="clinic-img" onerror="this.src='https://via.placeholder.com/280x150?text=Clinic'">
+                </div>
+                <div class="clinic-info-content">
+                    <div class="clinic-address">
+                        <span>📍</span> House No. 12, Street 3, Satellite Town, Rawalpindi, Pakistan.
+                    </div>
+                    <div class="clinic-timings">
+                        <span>🕒</span> <strong>Clinic Timings</strong><br>
+                        Mon - Sat: 10:00 AM - 5:00 PM<br>
+                        <small>(By Appointment Only)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Hope Message Box (Cleaned Shadows) -->
             <div class="clinic-message">
                 <strong>You Have Not Lost Hope — There Is Still Help</strong>
                 If you feel discouraged after visiting different doctors and still have not found the right answers or relief, please do not lose hope. Our clinic welcomes patients who have been struggling for a long time and provides a careful, comprehensive evaluation with an individualized treatment plan.
-            </div>
-
-            <div class="clinic-location">
-                <strong>📍 Clinic Location:</strong> Rawalpindi, Pakistan
             </div>
 
             <!-- Professional Background & Achievements Section -->
@@ -61,14 +95,32 @@
                 </div>
             </div>
 
-            <!-- Button jo click hone par form show karega -->
-            <button type="button" class="book-btn-hero" onclick="openBookingForm()">Book Appointment Now</button>
+            <!-- Expert Features Footer inside Card -->
+            <div class="features-footer-grid">
+                <div class="mini-feature-box">
+                    <span>🛡️</span>
+                    <div>
+                        <strong>Expert Care</strong>
+                        <p>Comprehensive, evidence-based mental health support</p>
+                    </div>
+                </div>
+                <div class="mini-feature-box">
+                    <span>🌍</span>
+                    <div>
+                        <strong>Global Experience</strong>
+                        <p>Helping communities worldwide with dedication and care</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Fixed Bottom Book Button -->
+            <button type="button" class="book-btn-hero" onclick="openBookingForm()">📅 Book Appointment Now &gt;</button>
         </div>
 
         <!-- Booking Form Card (Hidden initially by default) -->
-         <div class="form-card" id="bookingFormCard" style="display: none !important;">
-    <h2>Book Your Appointment</h2>
-    <form id="bookingForm">
+        <div class="form-card" id="bookingFormCard" style="display: none !important;">
+            <h2>Book Your Appointment</h2>
+            <form id="bookingForm">
                 <div class="form-group">
                     <label>Full Name</label>
                     <input type="text" id="patientName" required placeholder="Enter your full name">
@@ -177,12 +229,11 @@
 
     <script>
         window.onload = function() {
-    // Form ko by default hide karne ke liye
-    const formCard = document.getElementById('bookingFormCard');
-    if (formCard) formCard.style.display = 'none';
-    
-    generateTimeSlots();
-};
+            const formCard = document.getElementById('bookingFormCard');
+            if (formCard) formCard.style.display = 'none';
+            generateTimeSlots();
+        };
+
         function openBookingForm() {
             const formCard = document.getElementById('bookingFormCard');
             formCard.style.display = 'block';
@@ -200,35 +251,15 @@
             const timeSelect = document.getElementById('appointmentTime');
             timeSelect.innerHTML = '<option value="">Select Time Slot</option>';
 
-            let slots = [];
-            if (type === 'Initial') {
-                slots = [
-                    "10:30 AM - 11:30 AM",
-                    "11:30 AM - 12:30 PM",
-                    "01:00 PM - 02:00 PM",
-                    "02:00 PM - 03:00 PM",
-                    "03:00 PM - 04:00 PM",
-                    "04:00 PM - 05:00 PM",
-                    "05:00 PM - 06:00 PM"
-                ];
-            } else {
-                slots = [
-                    "10:30 AM - 11:00 AM",
-                    "11:00 AM - 11:30 AM",
-                    "11:30 AM - 12:00 PM",
-                    "12:00 PM - 12:30 PM",
-                    "01:00 PM - 01:30 PM",
-                    "01:30 PM - 02:00 PM",
-                    "02:00 PM - 02:30 PM",
-                    "02:30 PM - 03:00 PM",
-                    "03:00 PM - 03:30 PM",
-                    "03:30 PM - 04:00 PM",
-                    "04:00 PM - 04:30 PM",
-                    "04:30 PM - 05:00 PM",
-                    "05:00 PM - 05:30 PM",
-                    "05:30 PM - 06:00 PM"
-                ];
-            }
+            let slots = type === 'Initial' ? [
+                "10:30 AM - 11:30 AM", "11:30 AM - 12:30 PM", "01:00 PM - 02:00 PM",
+                "02:00 PM - 03:00 PM", "03:00 PM - 04:00 PM", "04:00 PM - 05:00 PM", "05:00 PM - 06:00 PM"
+            ] : [
+                "10:30 AM - 11:00 AM", "11:00 AM - 11:30 AM", "11:30 AM - 12:00 PM", "12:00 PM - 12:30 PM",
+                "01:00 PM - 01:30 PM", "01:30 PM - 02:00 PM", "02:00 PM - 02:30 PM", "02:30 PM - 03:00 PM",
+                "03:00 PM - 03:30 PM", "03:30 PM - 04:00 PM", "04:00 PM - 04:30 PM", "04:30 PM - 05:00 PM",
+                "05:00 PM - 05:30 PM", "05:30 PM - 06:00 PM"
+            ];
 
             slots.forEach(slot => {
                 const opt = document.createElement('option');
@@ -246,8 +277,7 @@
 
         function updateFeeDisplay() {
             const type = document.getElementById('consultationType').value;
-            const amountStr = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
-            document.getElementById('payableAmount').innerText = amountStr;
+            document.getElementById('payableAmount').innerText = type === 'Initial' ? 'PKR 2,400' : 'PKR 1,600';
         }
 
         function updatePaymentDetails() {
@@ -287,73 +317,6 @@
                 return true;
             }
         }
-
-        window.onload = function() {
-            generateTimeSlots();
-        };
-
-        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            if (!validateAppointmentDate()) {
-                alert('Please select a valid appointment date (Tuesday or Saturday).');
-                return;
-            }
-            
-            const selectedSymptoms = Array.from(document.querySelectorAll('#symptomGrid input[type="checkbox"]:checked')).map(cb => cb.value);
-            if (selectedSymptoms.length === 0) {
-                alert('Please select at least one symptom.');
-                return;
-            }
-
-            const consultationType = document.getElementById('consultationType').value;
-            const fee = consultationType === 'Initial' ? 12000 : 8000;
-            const advanceFee = consultationType === 'Initial' ? 2400 : 1600;
-
-            const bookingData = {
-                clinicId: 'professorial-clinic',
-                doctorId: 'doc-shakil',
-                name: document.getElementById('patientName').value,
-                phone: document.getElementById('patientPhone').value,
-                dob: document.getElementById('patientDob').value,
-                gender: document.getElementById('patientGender').value,
-                date: document.getElementById('appointmentDate').value,
-                time: document.getElementById('appointmentTime').value,
-                consultationType: consultationType,
-                totalFee: fee,
-                advanceFee: advanceFee,
-                paymentMethod: document.getElementById('paymentMethod').value,
-                transactionId: document.getElementById('transactionId').value,
-                symptoms: selectedSymptoms
-            };
-
-            const msgBox = document.getElementById('responseMsg');
-            msgBox.style.color = '#0369a1';
-            msgBox.textContent = 'Submitting your appointment and verifying TID...';
-
-            try {
-                const response = await fetch('/api/appointments', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(bookingData)
-                });
-                const result = await response.json();
-
-                if (result.success || response.ok) {
-                    msgBox.style.color = '#16a34a';
-                    msgBox.textContent = 'Booking submitted successfully! Clinic will verify your payment and confirm your slot shortly.';
-                    document.getElementById('bookingForm').reset();
-                    document.querySelectorAll('.symptom-pill').forEach(p => p.classList.remove('selected'));
-                    generateTimeSlots();
-                } else {
-                    msgBox.style.color = '#dc2626';
-                    msgBox.textContent = result.message || 'Failed to submit appointment.';
-                }
-            } catch (err) {
-                msgBox.style.color = '#dc2626';
-                msgBox.textContent = 'Server connection error!';
-            }
-        });
     </script>
 </body>
 </html>

@@ -8,15 +8,17 @@
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="logo" style="color: var(--primary); font-weight: 800; font-size: 20px;">NSF Pakistan</div>
-        <nav>
-            <a href="index.html">Home</a>
-            <a href="track-booking.html" class="active">Track Appt</a>
-            <a href="admin.html">Admin</a>
-        </nav>
-    </header>
+  <!-- Header -->
+  <header>
+      <div class="logo">
+          <img src="img/logo.jpeg" alt="NSF Logo">
+      </div>
+      <nav>
+          <a href="index.html">Home</a>
+          <a href="track-booking.html" class="active">Track Appt</a>
+          <a href="admin.html">Admin</a>
+      </nav>
+  </header>
 
     <!-- Hero Section -->
     <section class="hero">
@@ -24,75 +26,83 @@
         <p class="subtitle">Enter your Booking ID or Phone Number to check status</p>
     </section>
 
-    <!-- Main Container -->
+    <!-- Main Content -->
     <main>
         <div class="form-card">
             <h2>Search Booking Status</h2>
+            
+            <!-- Status Legend Guide -->
+            <div class="status-legend">
+                <strong>📌 Status Guide:</strong>
+                • <span style="color:#d97706; font-weight:600;">Pending</span>: Payment verification or slot approval under process.<br>
+                • <span style="color:#166534; font-weight:600;">Completed/Confirmed</span>: Your appointment slot has been successfully booked!<br>
+                • <span style="color:#991b1b; font-weight:600;">Cancelled</span>: Appointment was cancelled.
+            </div>
+
             <div class="form-group">
                 <label>Booking ID or Phone Number</label>
-                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX" autocomplete="off">
+                <input type="text" id="searchQuery" placeholder="e.g., APT-1728... or 03XXXXXXXXX" class="search-input" style="max-width: 100%;">
             </div>
-            <button type="button" class="btn-search" onclick="trackBooking()">Search Status</button>
-            <div id="resultBox"></div>
+            <button type="button" class="btn-search" onclick="searchBookingStatus()">Search Status</button>
+            
+            <div id="resultBox" style="margin-top: 15px;"></div>
         </div>
     </main>
 
-    <!-- Footer -->
+    <!-- Professional Footer -->
     <footer>
         &copy; 2026 NSF Pakistan (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
     </footer>
 
     <script>
-        async function trackBooking() {
+        async function searchBookingStatus() {
             const query = document.getElementById('searchQuery').value.trim();
-            const box = document.getElementById('resultBox');
-            
+            const resultBox = document.getElementById('resultBox');
+
             if (!query) {
-                box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Baraye meharbani apni Booking ID ya Phone number darj karein.</div>';
+                alert('Please enter a Booking ID or Phone Number.');
                 return;
             }
 
-            box.innerHTML = '<p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 15px;">Searching record...</p>';
+            resultBox.innerHTML = '<div style="text-align: center; color: #0369a1; font-size: 13px; padding: 10px;">Searching appointment status...</div>';
 
             try {
-                const response = await fetch('/api/track?query=' + encodeURIComponent(query));
-                const data = await response.json();
+                const response = await fetch('/api/appointments/track?query=' + encodeURIComponent(query));
+                const result = await response.json();
 
-                if (data.success && data.appointment) {
-                    const appt = data.appointment;
-                    let badgeClass = appt.status === 'Completed' ? 'badge-completed' : (appt.status === 'Cancelled' ? 'badge-cancelled' : 'badge-pending');
-                    let cancelBtnHTML = appt.status === 'Pending' ? `<br><button class="btn-cancel" onclick="cancelAppointment('${appt.id}')">Cancel Appointment</button>` : '';
-
-                    box.innerHTML = `<div class="result-card" style="margin-top: 15px;">
-                        <div style="font-size: 16px; font-weight: bold; margin-bottom: 8px; border-bottom: 1px solid #bbf7d0; padding-bottom: 6px;">
-                            Status: <span class="badge ${badgeClass}">${appt.status}</span>
+                if (response.ok && result.success) {
+                    const appt = result.data;
+                    resultBox.innerHTML = `
+                        <div class="result-card">
+                            <strong>Appointment Found!</strong><br>
+                            <strong>Patient Name:</strong> ${appt.name}<br>
+                            <strong>Phone:</strong> ${appt.phone}<br>
+                            <strong>Date:</strong> ${appt.date}<br>
+                            <strong>Time Slot:</strong> ${appt.time}<br>
+                            <strong>Type:</strong> ${appt.consultationType || appt.type}<br>
+                            <strong>Status:</strong> <span class="badge badge-${appt.status ? appt.status.toLowerCase() : 'pending'}">${appt.status || 'Pending'}</span>
+                            
+                            <!-- Quick Action Buttons -->
+                            <div class="result-actions">
+                                <a href="tel:+92511234567" class="btn-quick btn-call-clinic">📞 Call Clinic</a>
+                                <a href="https://maps.google.com/?q=Rawalpindi" target="_blank" class="btn-quick btn-map-clinic">📍 View Location</a>
+                            </div>
+                            <a href="https://wa.me/923001234567?text=Hello,%20I%20want%20to%20inquire%20about%20my%20appointment%20Booking%20ID:%20${appt._id || 'N/A'}" target="_blank" class="btn-quick btn-support">💬 Contact Support / Reschedule</a>
                         </div>
-                        <strong>Booking ID:</strong> ${appt.id}<br>
-                        <strong>Patient Name:</strong> ${appt.name}<br>
-                        <strong>Phone:</strong> ${appt.phone}<br>
-                        <strong>Date & Time:</strong> ${appt.date} (${appt.time})<br>
-                        <strong>Consultation Type:</strong> ${appt.type || 'Initial'}<br>
-                        <strong>Total Fee:</strong> PKR ${appt.fee} (Advance Paid: PKR ${appt.advancePaid})<br>
-                        ${cancelBtnHTML}
-                    </div>`;
+                    `;
                 } else {
-                    box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Koi appointment ya record nahi mila is query ke khilaaf.</div>';
+                    resultBox.innerHTML = `
+                        <div class="error-card">
+                            No appointment found matching this Booking ID or Phone Number. Please check and try again.
+                        </div>
+                    `;
                 }
-            } catch (error) {
-                box.innerHTML = '<div class="error-card" style="margin-top: 15px;">Server se rabta karne mein masla hua. Dobara koshish karein.</div>';
-            }
-        }
-
-        async function cancelAppointment(id) {
-            if (!confirm("Kya aap waqai apni yeh appointment cancel karna chahte hain?")) return;
-            
-            try {
-                const res = await fetch(`/api/appointments/cancel/${id}`, { method: 'PUT' });
-                const result = await res.json();
-                alert(result.message || "Appointment cancel ho chuki hai.");
-                trackBooking();
             } catch (err) {
-                alert("Appointment cancel karne mein error aaya.");
+                resultBox.innerHTML = `
+                    <div class="error-card">
+                        Server connection error while tracking appointment. Please try again later.
+                    </div>
+                `;
             }
         }
     </script>

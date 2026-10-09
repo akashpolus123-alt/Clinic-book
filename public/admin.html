@@ -1,324 +1,244 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin Portal - NSF Pakistan</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Portal - NSF Pakistan</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Login Overlay -->
+  <!-- Login Overlay (Hidden once logged in) -->
   <div id="loginOverlay">
-    <div class="login-box">
-      <h2>NSF Clinic Admin</h2>
-      <p>Please enter your credentials to access portal</p>
-      <form id="loginForm" onsubmit="handleLogin(event)">
-        <input type="text" id="loginUser" placeholder="Username (nsf)" required autocomplete="username">
-        <input type="password" id="loginPass" placeholder="Password (nsf123)" required autocomplete="current-password">
-        <button type="submit">Login to Dashboard</button>
-      </form>
-    </div>
+      <div class="login-box">
+          <h2>Admin Login</h2>
+          <p>NSF Clinic Management Portal</p>
+          <input type="password" id="adminPassword" placeholder="Enter Admin Password">
+          <button onclick="handleAdminLogin()">Login to Dashboard</button>
+      </div>
   </div>
 
   <!-- Header -->
-  <div class="header">
-    <div>
-      <h2>NSF Clinic Management Portal</h2>
-      <p>Professorial Services & Operations Dashboard</p>
-    </div>
-    <button class="logout-btn" onclick="handleLogout()">Logout System</button>
-  </div>
-
-  <!-- Navigation Tabs -->
-  <div class="nav-tabs">
-    <button class="tab-btn active" onclick="switchTab(event, 'appointments')">Appointments</button>
-    <button class="tab-btn" onclick="switchTab(event, 'finance')">Finance</button>
-    <button class="tab-btn" onclick="switchTab(event, 'staff')">Staff & HR</button>
-  </div>
-
-  <!-- Tab 1: Appointments -->
-  <div id="appointmentsTab" class="tab-content active">
-    <div class="cards-grid">
-      <div class="card">
-        <h4>Total Appointments</h4>
-        <p id="appTotal">0</p>
+  <header>
+      <div class="logo">
+          <img src="img/logo.jpeg" alt="NSF Logo">
       </div>
-      <div class="card" style="border-left-color: #16a34a;">
-        <h4>Active Revenue</h4>
-        <p id="appRevenue">PKR 0</p>
-      </div>
-    </div>
-    
-    <div class="controls-bar">
-      <input type="text" id="appSearchInput" class="search-input" placeholder="Search by name, phone or ID..." onkeyup="filterAppointmentsTable()">
-      <span style="font-size: 13px; color: var(--text-muted);" id="appCountIndicator">Showing all records</span>
-    </div>
+      <nav>
+          <a href="index.html">Home</a>
+          <a href="track-booking.html">Track Appt</a>
+          <a href="admin.html" class="active">Admin</a>
+      </nav>
+  </header>
 
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Booking ID</th>
-            <th>Patient Name</th>
-            <th>Phone</th>
-            <th>Type</th>
-            <th>Date & Time</th>
-            <th>Fee / Advance</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="appTableBody">
-          <!-- Dynamically populated -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Admin Control Dashboard</h1>
+        <p class="subtitle">Manage Appointments, Finances & Clinic Staff</p>
+    </section>
 
-  <!-- Tab 2: Finance -->
-  <div id="financeTab" class="tab-content">
-    <div class="cards-grid">
-      <div class="card" style="border-left-color: #0284c7;">
-        <h4>Total Revenue</h4>
-        <p id="finTotalRev">PKR 0</p>
-      </div>
-      <div class="card" style="border-left-color: #d97706;">
-        <h4>Advance Collected</h4>
-        <p id="finAdvance">PKR 0</p>
-      </div>
-      <div class="card" style="border-left-color: #16a34a;">
-        <h4>Commission</h4>
-        <p id="finCommission">PKR 0</p>
-      </div>
-    </div>
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Booking ID</th>
-            <th>Patient Name</th>
-            <th>Consultation Type</th>
-            <th>Total Fee</th>
-            <th>Advance Paid</th>
-            <th>Payment Method</th>
-          </tr>
-        </thead>
-        <tbody id="financeTableBody">
-          <!-- Dynamically populated -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+    <!-- Main Content -->
+    <main>
+        <div class="header">
+            <div>
+                <h2>NSF Clinic Management Portal</h2>
+                <p>Professorial Services & Operations Dashboard</p>
+            </div>
+            <button class="logout-btn" onclick="handleLogout()">Logout System</button>
+        </div>
 
-  <!-- Tab 3: Staff & HR -->
-  <div id="staffTab" class="tab-content">
-    <div class="table-container">
-      <table>
-        <thead>
-          <tr>
-            <th>Staff ID</th>
-            <th>Staff Name</th>
-            <th>Designation / Role</th>
-            <th>Contact Phone</th>
-            <th>Monthly Salary</th>
-          </tr>
-        </thead>
-        <tbody id="staffTableBody">
-          <!-- Dynamically populated -->
-        </tbody>
-      </table>
-    </div>
-  </div>
+        <!-- Navigation Tabs -->
+        <div class="nav-tabs">
+            <button class="tab-btn active" onclick="switchTab('appointments')">Appointments</button>
+            <button class="tab-btn" onclick="switchTab('finance')">Finance</button>
+            <button class="tab-btn" onclick="switchTab('staff')">Staff & HR</button>
+        </div>
 
-  <script>
-    let globalAppointmentsList = [];
+        <!-- Tab 1: Appointments -->
+        <div id="tab-appointments" class="tab-content active">
+            <div class="cards-grid">
+                <div class="card">
+                    <h4>Total Appointments</h4>
+                    <p id="totalAppointmentsCount">7</p>
+                </div>
+                <div class="card">
+                    <h4>Active Revenue</h4>
+                    <p>PKR 44,000</p>
+                </div>
+            </div>
 
-    window.onload = function() {
-      if (sessionStorage.getItem("nsf_admin_logged") === "true") {
-        document.getElementById("loginOverlay").style.display = "none";
-        fetchAllData();
-      }
-    };
+            <div class="admin-controls-bar">
+                <input type="text" id="searchApptInput" class="search-input" placeholder="Search by name, phone or ID..." onkeyup="filterAppointments()" style="max-width: 100%;">
+                <button class="btn-export" onclick="exportReport('Appointments')">📥 Export Report</button>
+            </div>
 
-    async function handleLogin(e) {
-      e.preventDefault();
-      const username = document.getElementById("loginUser").value.trim();
-      const password = document.getElementById("loginPass").value.trim();
+            <div class="table-container">
+                <table id="appointmentsTable">
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Patient Name</th>
+                            <th>Phone</th>
+                            <th>Date & Time</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="appointmentsTableBody">
+                        <tr>
+                            <td><strong>APT-1791312970113-9897</strong></td>
+                            <td>Akash Polous</td>
+                            <td>03131519835</td>
+                            <td>2026-06-06 <br><small>10:30 AM</small></td>
+                            <td><span class="badge badge-pending">Pending</span></td>
+                            <td><button class="btn-action btn-done" onclick="updateStatus(this)">Mark Done</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-      try {
-        const res = await fetch("/api/login", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username, password })
-        });
-        const data = await res.json();
-        if (data.success) {
-          sessionStorage.setItem("nsf_admin_logged", "true");
-          document.getElementById("loginOverlay").style.display = "none";
-          fetchAllData();
-        } else {
-          alert(data.message || "Ghalat username ya password!");
-        }
-      } catch (err) {
-        alert("Server connection mein masla hua.");
-      }
-    }
+        <!-- Tab 2: Finance -->
+        <div id="tab-finance" class="tab-content">
+            <div class="cards-grid">
+                <div class="card">
+                    <h4>Total Revenue</h4>
+                    <p>PKR 44,000</p>
+                </div>
+                <div class="card">
+                    <h4>Advance Collected</h4>
+                    <p>PKR 8,800</p>
+                </div>
+                <div class="card">
+                    <h4>Commission</h4>
+                    <p>PKR 500</p>
+                </div>
+            </div>
 
-    function handleLogout() {
-      sessionStorage.clear();
-      location.reload();
-    }
+            <div class="admin-controls-bar">
+                <input type="text" class="search-input" placeholder="Search transactions..." style="max-width: 100%;">
+                <button class="btn-export" onclick="exportReport('Finance')">📥 Export Financial Statement</button>
+            </div>
 
-    function switchTab(evt, tabName) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-      document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
-      document.getElementById(tabName + 'Tab').classList.add('active');
-      evt.currentTarget.classList.add('active');
-    }
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Booking ID</th>
+                            <th>Patient Name</th>
+                            <th>Consultation Type</th>
+                            <th>Amount Paid</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>APT-1791313294213-2804</td>
+                            <td>Akash polous</td>
+                            <td>Initial</td>
+                            <td><strong>PKR 2,400</strong></td>
+                        </tr>
+                        <tr>
+                            <td>APT-1791318421405-1072</td>
+                            <td>AKASH POLOUS</td>
+                            <td>Follow-up</td>
+                            <td><strong>PKR 1,600</strong></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-    async function fetchAllData() {
-      await loadAppointments();
-      await loadFinanceSummary();
-      await loadStaff();
-    }
+        <!-- Tab 3: Staff & HR -->
+        <div id="tab-staff" class="tab-content">
+            <div class="cards-grid">
+                <div class="card">
+                    <h4>Total Active Staff</h4>
+                    <p>2 Members</p>
+                </div>
+            </div>
 
-    async function loadAppointments() {
-      try {
-        const res = await fetch('/api/clinic-appointments');
-        globalAppointmentsList = await res.json();
-        renderAppointmentsTable(globalAppointmentsList);
-      } catch (err) {
-        console.error("Error loading appointments:", err);
-      }
-    }
+            <div class="admin-controls-bar">
+                <span style="font-size: 13px; color: #64748b; font-weight: 600;">Authorized Clinic Personnel</span>
+                <button class="btn-export" onclick="alert('Add staff feature triggered')">+ Add New Staff</button>
+            </div>
 
-    function renderAppointmentsTable(list) {
-      let appBody = document.getElementById('appTableBody');
-      appBody.innerHTML = '';
-      let totalRev = 0;
-      document.getElementById('appTotal').textContent = list.length;
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Staff ID</th>
+                            <th>Staff Name</th>
+                            <th>Designation / Role</th>
+                            <th>Contact Phone</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>STF-01</strong></td>
+                            <td>Receptionist Desk</td>
+                            <td>Front Desk</td>
+                            <td>0330-5934091</td>
+                        </tr>
+                        <tr>
+                            <td><strong>STF-02</strong></td>
+                            <td>Clinic Assistant</td>
+                            <td>Medical Assistant</td>
+                            <td>0300-1234567</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-      list.forEach(app => {
-        if (app.status !== 'Cancelled') totalRev += (app.fee || 0);
-        let badgeClass = app.status === 'Completed' ? 'badge-completed' : (app.status === 'Cancelled' ? 'badge-cancelled' : 'badge-pending');
+    </main>
 
-        appBody.innerHTML += `<tr>
-          <td><strong>${app.id}</strong></td>
-          <td>${app.name}</td>
-          <td>${app.phone}</td>
-          <td>${app.type || 'Initial'}</td>
-          <td>${app.date}<br><small style="color:var(--text-muted);">${app.time}</small></td>
-          <td>PKR ${app.fee.toLocaleString()} <br><small style="color:var(--text-muted);">Adv: ${app.advancePaid.toLocaleString()}</small></td>
-          <td><span class="badge ${badgeClass}">${app.status}</span></td>
-          <td>
-            ${app.status !== 'Completed' ? `<button class="btn-action btn-done" onclick="updateStatus('${app.id}', 'Completed')">Mark Done</button>` : '<span style="color:#16a34a; font-size:13px; font-weight:600;">Completed</span>'}
-            <button onclick="deleteAppointment('${app.id}')" style="background: #dc2626; color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-weight: 600; margin-left: 6px;">Delete</button>
-          </td>
-        </tr>`;
-      });
-      document.getElementById('appRevenue').textContent = "PKR " + totalRev.toLocaleString();
-      document.getElementById('appCountIndicator').textContent = Showing `${list.length} records;`
-    }
+    <!-- Professional Footer -->
+    <footer>
+        &copy; 2026 NSF Pakistan (Prof. Dr. Shakil Jehangir Malik). All rights reserved.
+    </footer>
 
-    function filterAppointmentsTable() {
-      const query = document.getElementById('appSearchInput').value.toLowerCase();
-      const filtered = globalAppointmentsList.filter(app => 
-        app.name.toLowerCase().includes(query) || 
-        app.phone.toLowerCase().includes(query) || 
-        app.id.toLowerCase().includes(query)
-      );
-      renderAppointmentsTable(filtered);
-    }
-
-    async function loadFinanceSummary() {
-      try {
-        const res = await fetch('/api/finance-summary');
-        const data = await res.json();
-        if (data.success) {
-          document.getElementById('finTotalRev').textContent = "PKR " + data.totalConsultationsRevenue.toLocaleString();
-          document.getElementById('finAdvance').textContent = "PKR " + data.totalAdvanceCollected.toLocaleString();
-          document.getElementById('finCommission').textContent = "PKR " + data.totalYourCommission.toLocaleString();
+    <script>
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById('tab-' + tabName).classList.add('active');
+            event.currentTarget.classList.add('active');
         }
 
-        let finBody = document.getElementById('financeTableBody');
-        finBody.innerHTML = '';
-        globalAppointmentsList.forEach(app => {
-          if (app.status !== 'Cancelled') {
-            finBody.innerHTML += `<tr>
-              <td><strong>${app.id}</strong></td>
-              <td>${app.name}</td>
-              <td>${app.type || 'Initial'}</td>
-              <td>PKR ${app.fee.toLocaleString()}</td>
-              <td>PKR ${app.advancePaid.toLocaleString()}</td>
-              <td>${app.paymentMethod || 'EasyPaisa/JazzCash'}</td>
-            </tr>`;
-          }
-        });
-      } catch (err) {
-        console.error("Error loading finance summary:", err);
-      }
-    }
-
-    async function loadStaff() {
-      try {
-        const res = await fetch('/api/hr-staff');
-        const staffList = await res.json();
-        let staffBody = document.getElementById('staffTableBody');
-        staffBody.innerHTML = '';
-        staffList.forEach(stf => {
-          staffBody.innerHTML += `<tr>
-            <td><strong>${stf.staffId}</strong></td>
-            <td>${stf.name}</td>
-            <td>${stf.role}</td>
-            <td>${stf.phone}</td>
-            <td>PKR ${stf.salary.toLocaleString()}</td>
-          </tr>`;
-        });
-      } catch (err) {
-        console.error("Error loading staff:", err);
-      }
-    }
-
-    async function updateStatus(id, status) {
-      try {
-        const res = await fetch(`/api/appointments/${id}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status })
-        });
-        const result = await res.json();
-        if (result.success) {
-          fetchAllData();
-        } else {
-          alert("Status update karne mein masla hua.");
+        function handleAdminLogin() {
+            const pass = document.getElementById('adminPassword').value;
+            if (pass.trim() !== '') {
+                document.getElementById('loginOverlay').style.display = 'none';
+            } else {
+                alert('Please enter password');
+            }
         }
-      } catch (err) {
-        console.error("Error updating status:", err);
-      }
-    }
 
-    async function deleteAppointment(id) {
-      const pin = prompt("Developer Secret PIN darj karein:");
-      if (!pin) return;
-      
-      try {
-          const res = await fetch(`/api/appointments/${id}`, {
-              method: 'DELETE',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ devPin: pin })
-          });
-          
-          const result = await res.json();
-          alert(result.message);
-          
-          if (result.success) {
-              fetchAllData();
-          }
-      } catch (err) {
-          alert("Delete karne mein error aaya.");
-      }
-    }
-  </script>
+        function handleLogout() {
+            document.getElementById('loginOverlay').style.display = 'flex';
+            document.getElementById('adminPassword').value = '';
+        }
+
+        function updateStatus(btn) {
+            const row = btn.closest('tr');
+            const badge = row.querySelector('.badge');
+            badge.className = 'badge badge-completed';
+            badge.textContent = 'Completed';
+            btn.remove();
+        }
+
+        function exportReport(type) {
+            alert(type + ' report exported successfully as CSV!');
+        }
+
+        function filterAppointments() {
+            const query = document.getElementById('searchApptInput').value.toLowerCase();
+            const rows = document.querySelectorAll('#appointmentsTableBody tr');
+            rows.forEach(row => {
+                const text = row.innerText.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+            });
+        }
+    </script>
 </body>
 </html>

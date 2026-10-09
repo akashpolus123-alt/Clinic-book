@@ -366,157 +366,153 @@ max-height: 150px;
 width: 100%;
 }
 }
-/* --- Professional Booking Form Styles --- */
+/* --- Booking Form Premium Styling --- */
 .form-card {
-background: #ffffff;
-border: 1px solid var(--border-color);
-border-radius: 14px;
-padding: 20px;
-margin-bottom: 20px;
-box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-text-align: left;
+    background: #ffffff;
+    border: 1px solid #ccfbf1;
+    border-radius: 14px;
+    padding: 22px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(15, 118, 110, 0.08);
+    text-align: left;
 }
+
 .form-card h2 {
-font-size: 16px;
-color: #1e293b;
-margin-bottom: 14px;
-border-bottom: 2px solid #f1f5f9;
-padding-bottom: 8px;
+    font-size: 16px;
+    color: #0f766e;
+    margin-bottom: 16px;
+    border-bottom: 2px solid #f0fdfa;
+    padding-bottom: 8px;
+    font-weight: 700;
 }
-.form-group {
-margin-top: 12px;
-margin-bottom: 14px;
-text-align: left;
-}
-.form-group label {
-display: block;
-font-size: 11.5px;
-font-weight: 600;
-color: #475569;
-margin-bottom: 6px;
-}
+
 .form-group input,
 .form-group select {
-width: 100%;
-padding: 11px 12px;
-border: 1px solid var(--border-color);
-border-radius: 8px;
-font-size: 13px;
-background: #ffffff;
-color: #1e293b;
-outline: none;
-transition: border-color 0.2s, box-shadow 0.2s;
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 13px;
+    background: #f8fafc;
+    color: #1e293b;
+    outline: none;
+    transition: all 0.2s ease;
 }
+
 .form-group input:focus,
 .form-group select:focus {
-border-color: var(--primary);
-box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.1);
+    border-color: #0f766e;
+    background: #ffffff;
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.12);
 }
-.form-row {
-display: flex;
-gap: 12px;
-}
-.form-col {
-flex: 1;
-}
-.date-warning {
-color: #dc2626;
-font-size: 11px;
-margin-top: 4px;
-display: block;
-}
-/* Payment Box Styling */
+
+/* --- Premium Payment Box --- */
 .payment-box {
-background: #f8fafc;
-border: 1px solid #e2e8f0;
-border-radius: 10px;
-padding: 14px;
-font-size: 12px;
-text-align: left;
-margin-bottom: 16px;
+    background: #f0fdfa;
+    border: 1px solid #99f6e4;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 12px;
+    text-align: left;
+    margin-bottom: 16px;
 }
+
 .payment-box strong {
-color: #0f766e;
+    color: #0f766e;
 }
+
 .highlight-amount {
-color: #dc2626;
-font-size: 15px;
+    color: #dc2626;
+    font-size: 16px;
+    font-weight: 700;
 }
-.payment-actions {
-display: flex;
-gap: 8px;
-margin-top: 10px;
-}
+
 .btn-copy {
-background: #64748b;
-color: white;
-padding: 7px 12px;
-border-radius: 6px;
-font-size: 11px;
-font-weight: 600;
-border: none;
-cursor: pointer;
+    background: #475569;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
 }
+
+.btn-copy:hover {
+    background: #334155;
+}
+
 .btn-app-link {
-background: #16a34a;
-color: white;
-padding: 7px 12px;
-border-radius: 6px;
-font-size: 11px;
-font-weight: 600;
-text-decoration: none;
-display: inline-block;
+    background: #059669;
+    color: white;
+    padding: 8px 14px;
+    border-radius: 8px;
+    font-size: 11.5px;
+    font-weight: 600;
+    text-decoration: none;
+    display: inline-block;
 }
-/* Symptoms Grid Styling */
+
+/* --- Modern Symptom Pills --- */
 .symptom-grid {
-display: grid;
-grid-template-columns: repeat(2, 1fr);
-gap: 8px;
-max-height: 180px;
-overflow-y: auto;
-border: 1px solid var(--border-color);
-padding: 10px;
-border-radius: 8px;
-background: #f8fafc;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid #e2e8f0;
+    padding: 12px;
+    border-radius: 10px;
+    background: #f8fafc;
 }
+
 .symptom-pill {
-background: #ffffff;
-border: 1px solid var(--border-color);
-padding: 8px 10px;
-border-radius: 8px;
-font-size: 11px;
-cursor: pointer;
-user-select: none;
-transition: all 0.2s;
-display: flex;
-align-items: center;
-justify-content: space-between;
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 11.5px;
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
+
 .symptom-pill input {
-margin-left: 6px;
-accent-color: var(--primary);
+    margin-left: 8px;
+    accent-color: #0f766e;
+    width: 16px;
+    height: 16px;
 }
+
 .symptom-pill.selected {
-background: #f0fdfa;
-color: #0f766e;
-border-color: var(--primary);
-font-weight: 600;
+    background: #f0fdfa;
+    color: #0f766e;
+    border-color: #0f766e;
+    font-weight: 600;
+    box-shadow: 0 2px 5px rgba(15, 118, 110, 0.1);
 }
+
 .submit-btn {
-background: var(--primary);
-color: white;
-border: none;
-width: 100%;
-padding: 13px;
-border-radius: 8px;
-font-size: 14px;
-font-weight: 700;
-cursor: pointer;
-margin-top: 10px;
-transition: background 0.2s;
+    background: linear-gradient(135deg, #0f766e, #115e59);
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 14px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 10px;
+    box-shadow: 0 4px 12px rgba(15, 118, 110, 0.25);
+    transition: opacity 0.2s;
 }
+
 .submit-btn:hover {
-background: var(--primary-dark);
+    opacity: 0.95;
 }
 /* --- Hero Track Section (Optimized Compact & Professional) --- */
 .hero-track-box {

@@ -589,7 +589,7 @@ body {
 /* --- Professional Header & Logo Alignment --- */
 header {
     background: var(--primary);
-    padding: 10px 20px;
+    padding: 8px 15px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -605,7 +605,7 @@ header {
 }
 
 .logo img {
-    height: 36px;
+    height: 28px;
     width: auto;
     object-fit: contain;
     display: block;
@@ -614,7 +614,7 @@ header {
 nav {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 nav a {
@@ -622,9 +622,9 @@ nav a {
     color: white;
     background: rgba(255, 255, 255, 0.12);
     font-weight: 600;
-    font-size: 12px;
-    padding: 6px 12px;
-    border-radius: 20px;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 16px;
     display: inline-flex;
     align-items: center;
     gap: 5px;
@@ -683,17 +683,17 @@ main {
     padding: 14px;
     border-radius: 10px;
     margin-bottom: 18px;
-    font-size: 11.5px;
+    font-size: 11px;
     color: #475569;
     text-align: left;
-    line-height: 1.5;
+    line-height: 1.4;
 }
 
 .status-legend strong {
     display: block;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     color: #1e293b;
-    font-size: 12px;
+    font-size: 11px;
 }
 
 .status-legend div {

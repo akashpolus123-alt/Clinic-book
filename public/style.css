@@ -78,23 +78,27 @@ box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
 text-align: left;
 }
 .profile-top-box {
-display: flex;
-align-items: center;
-gap: 15px;
-margin-bottom: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
 }
+
 .doctor-img {
-width: 90px;
-height: 90px;
-border-radius: 50%;
-object-fit: cover;
-border: 3px solid var(--primary);
-flex-shrink: 0;
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2.5px solid var(--primary);
+    flex-shrink: 0;
 }
+
 .doctor-info h2 {
-font-size: 15px;
-color: #1e293b;
-margin-bottom: 2px;
+    font-size: 13px;
+    color: #1e293b;
+    margin-bottom: 2px;
+    white-space: nowrap;
+    font-weight: 700;
 }
 .doctor-title-text {
 font-size: 11px;

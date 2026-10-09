@@ -242,7 +242,6 @@ main {
 
 /* Form Styles */
 .form-card { 
-    display: none; 
     margin-top: 16px; 
     background: var(--card-bg);
     padding: 20px 16px;
@@ -463,11 +462,14 @@ input:focus, select:focus, textarea:focus {
 /* Footer */
 footer {
     text-align: center; 
-    padding: 20px 10px; 
-    font-size: 11px; 
-    color: #64748b; 
-    border-top: 1px solid #e2e8f0; 
-    margin-top: 30px;
+    padding: 24px 15px; 
+    font-size: 12px; 
+    color: white; 
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    border-radius: 12px;
+    margin-top: 30px; 
+    box-shadow: 0 4px 15px rgba(18, 185, 161, 0.2);
+    font-weight: 500;
 }
 
 /* --- Admin Portal Styles ---[span_0](start_span)[span_0](end_span) */
